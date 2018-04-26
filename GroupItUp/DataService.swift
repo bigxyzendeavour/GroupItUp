@@ -21,18 +21,10 @@ class DataService {
     //DB references
     private var _REF_BASE = DB_BASE
     private var _REF_USERS = DB_BASE.child("Users")
-    private var _REF_POSTS = DB_BASE.child("All Groups")
-    private var _REF_MY_LIKE_GROUPS = DB_BASE.child("Likes")
-    private var _REF_MY_FOLLOW_GROUPS = DB_BASE.child("Follow")
-    private var _REF_MY_ATTENDING_GROUPS = DB_BASE.child("Attending")
-    private var _REF_MY_JOINED_GROUPS = DB_BASE.child("Joined")
-    private var _REF_MY_HOSTING_GROUPS = DB_BASE.child("Hosting")
-    private var _REF_MY_HOSTED_GROUPS = DB_BASE.child("Hosted")
+    private var _REF_GROUPS = DB_BASE.child("Groups")
     
     //STORAGE references
     private var _STORAGE_USER_IMAGE = STORAGE_BASE.child("Users")
-    private var _POST_IMAGE = STORAGE_BASE.child("Posts")
-    private var _STEP_IMAGE = STORAGE_BASE.child("step_pic")
     
     var REF_BASE: DatabaseReference {
         return _REF_BASE
@@ -45,6 +37,10 @@ class DataService {
     var REF_USERS_CURRENT: DatabaseReference {
         let currentUser = DataService.ds._REF_USERS.child(uid!)
         return currentUser
+    }
+    
+    var REF_GROUPS: DatabaseReference {
+        return _REF_GROUPS
     }
     
     var REF_USERS_CURRENT_LIKE: DatabaseReference {
@@ -71,10 +67,6 @@ class DataService {
         return REF_USERS_CURRENT.child("Hosted")
     }
     
-//    var REF_POSTS: DatabaseReference {
-//        return _REF_POSTS
-//    }
-//    
     var STORAGE_USER_IMAGE: StorageReference {
         return _STORAGE_USER_IMAGE
     }

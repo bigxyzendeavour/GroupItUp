@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import SwiftKeychainWrapper
 
 class Comment {
     
@@ -18,10 +19,29 @@ class Comment {
     private var _userDisplayImageURL: String?
     private var _userDisplayImage: UIImage?
     
+    //Initiate a comment to be sent, no commentID yet, this is set when initiating a comment
     init() {
+        self._userID = DataService.ds.uid
+        let username = KeychainWrapper.standard.string(forKey: CURRENT_USERNAME)
+        self._username = username
+        DataService.ds.REF_USERS_CURRENT.observeSingleEvent(of: .value, with: { (snapshot) in
+            if let snapShot = snapshot.value as? Dictionary<String, String> {
+                let url = snapShot["User Display Photo URL"]
+                self._userDisplayImageURL = url
+            }
+        })
         
+        DataService.ds.STORAGE_USER_IMAGE.child("\(userID).jpg").getData(maxSize: 1024 * 1024) { (data, error) in
+            if error != nil {
+                print("Comment(2): Error - \(error?.localizedDescription)")
+            } else {
+                let image = UIImage(data: data!)
+                self._userDisplayImage = image
+            }
+        }
     }
     
+    //Download data
     init(commentID: String, commentData: Dictionary<String, Any>) {
         self._commentID = commentID
         let userID = commentData["User ID"] as! String

@@ -27,11 +27,11 @@ class LoginVC: UIViewController {
 
         initialize()
         if Auth.auth().currentUser != nil {
-            Timer.scheduledTimer(withTimeInterval: 3, repeats: false, block: { (timer) in
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (timer) in
                 self.performSegue(withIdentifier: "NearbyVC", sender: nil)
             })
         }
-        
+        self.hideKeyboardWhenTappedAround()
     }
 
     func initialize() {

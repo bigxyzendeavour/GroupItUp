@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import SwiftKeychainWrapper
 
 class SignUpVC: UIViewController {
     
@@ -43,6 +44,7 @@ class SignUpVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initialize()
+        self.hideKeyboardWhenTappedAround()
      
     }
     
@@ -98,6 +100,7 @@ class SignUpVC: UIViewController {
                             self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: error.localizedDescription, actionTitle: ["OK"])
                         } else {
                             print("Grandon: successfully create a new user")
+                            KeychainWrapper.standard.set(username, forKey: CURRENT_USERNAME)
                             if let user = user {
                                 var userData = [String: Any]()
                                 userData = ["Username": username]

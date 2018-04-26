@@ -22,11 +22,24 @@ class GroupDetail {
     private var _groupContactPhone: Int!
     private var _groupLikes: Int!
     private var _groupAttending: Int!
+    private var _groupAttendingUsers: [String]!
+    private var _groupMaxMembers: Int!
     private var _groupMeetingTime: String!
     private var _groupMeetUpAddress: Address!
+    private var _groupCreationDate: String!
+    private var _groupStatus: String!
+    private var _groupHost: String!
     
     init() {
         
+    }
+    
+    //Current user creates a new group
+    init(status: String, attending: Int) {
+        self._groupCreationDate = "\(NSDate().fullTimeCreated())"
+        self._groupAttending = attending
+        self._groupStatus = status
+        self._groupHost = DataService.ds.uid
     }
     
     init(groupID: String, groupDetailData: Dictionary<String, Any>) {
@@ -45,6 +58,10 @@ class GroupDetail {
                     self._groupDisplayImage = image
                 }
             })
+        }
+        
+        if let groupCreationDate = groupDetailData["Created"] as? String {
+            self._groupCreationDate = groupCreationDate
         }
         
         if let detailDescription = groupDetailData["Detail Description"] as? String {
@@ -75,6 +92,19 @@ class GroupDetail {
             self._groupAttending = attending
         }
         
+        if let attendingUsers = groupDetailData["Attending Users"] as? Dictionary<String, Bool> {
+            var tempUsers = [String]()
+            for eachAttendingUser in attendingUsers {
+                let userID = eachAttendingUser.key
+                tempUsers.append(userID)
+                self._groupAttendingUsers = tempUsers
+            }
+        }
+        
+        if let maxAttendingMembers = groupDetailData["Max Attending Members"] as? Int {
+            self._groupMaxMembers = maxAttendingMembers
+        }
+        
         if let meetingTime = groupDetailData["Time"] as? String {
             self._groupMeetingTime = meetingTime
         }
@@ -87,6 +117,14 @@ class GroupDetail {
             let country = meetUpAddressData["Country"]!
             let address = Address(street: street, city: city, province: province, postal: postal, country: country)
             self._groupMeetUpAddress = address
+        }
+        
+        if let groupStatus = groupDetailData["Status"] as? String {
+            self._groupStatus = groupStatus
+        }
+        
+        if let groupHost = groupDetailData["Host"] as? String {
+            self._groupHost = groupHost
         }
     }
     
@@ -190,6 +228,24 @@ class GroupDetail {
         }
     }
     
+    var groupAttendingUsers: [String] {
+        get {
+            return _groupAttendingUsers
+        }
+        set {
+            _groupAttendingUsers = newValue
+        }
+    }
+    
+    var groupMaxMembers: Int {
+        get {
+            return _groupMaxMembers
+        }
+        set {
+            _groupMaxMembers = newValue
+        }
+    }
+    
     var groupMeetingTime: String {
         get {
             return _groupMeetingTime
@@ -206,5 +262,41 @@ class GroupDetail {
         set {
             _groupMeetUpAddress = newValue
         }
+    }
+    
+    var groupCreationDate: String {
+        get {
+            return _groupCreationDate
+        }
+        set {
+            _groupCreationDate = newValue
+        }
+    }
+    
+    var groupStatus: String {
+        get {
+            return _groupStatus
+        }
+        set {
+            _groupStatus = newValue
+        }
+    }
+    
+    var groupHost: String {
+        get {
+            return _groupHost
+        }
+        set {
+            _groupHost = newValue
+        }
+    }
+}
+
+extension NSDate {
+    
+    func fullTimeCreated() -> String {
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return df.string(from: self as Date)
     }
 }

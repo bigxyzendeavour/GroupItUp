@@ -69,4 +69,7 @@ class Group {
             _groupPhotos = newValue
         }
     }
+
 }
+
+

@@ -13,13 +13,17 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     @IBOutlet weak var tableView: UITableView!
     
     var selectedGroup: Group!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.delegate = self
         tableView.dataSource = self
-  
+        
+        tableView.estimatedRowHeight = tableView.rowHeight
+        tableView.rowHeight = UITableViewAutomaticDimension
+        
+       
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -38,86 +42,76 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        if tableView.tag == 0 {
-            return 3
-        } else {
-            return 1
-        }
+        return 6
     }
    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if tableView.tag == 0 {
-            return 1
-        } else {
+        if section == 4 {
             return selectedGroup.groupComments.count
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if tableView.tag == 0 {
-            var hight = CGFloat()
-            if indexPath.section == 0 {
-                tableView.rowHeight = 560
-                return tableView.rowHeight
-            } else if indexPath.section == 1 {
-                hight = CGFloat(integerLiteral: 125)
-                return hight
-            } else {
-                hight = CGFloat(integerLiteral: 120)
-                return hight
-            }
         } else {
-            return tableView.rowHeight
+            return 1
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if tableView.tag == 0 {
-            if indexPath.section == 0 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDetailCell") as! NearbyGroupDetailCell
-                cell.configureCell(group: selectedGroup)
-                return cell
-            } else if indexPath.section == 1 {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupPreviousPhotoCell") as! NearbyGroupPreviousPhotoCell
-                cell.setCollectionViewDataSourceDelegate(dataSourceDelegate: self, forRow: indexPath.row)
-                return cell
-            } else {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDetailCommentCell") as! NearbyGroupDetailCommentCell
-                cell.setTableViewDataSourceDelegate(dataSourceDelegate: self, forRow: indexPath.row)
-                return cell
-            }
-        } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "GroupDetailCommentCell") as! GroupDetailCommentCell
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDisplayPhotoCell") as! NearbyGroupDisplayPhotoCell
+            cell.configureCell(group: selectedGroup)
+            return cell
+        } else if indexPath.section == 1 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDescriptionCell") as! NearbyGroupDescriptionCell
+            cell.setSelectedGroup(group: selectedGroup)
+            cell.configureCell(group: selectedGroup)
+            return cell
+        } else if indexPath.section == 2 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDetailCell") as! NearbyGroupDetailCell
+            cell.configureCell(group: selectedGroup)
+            return cell
+        } else if indexPath.section == 3 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupPreviousPhotoCell") as! NearbyGroupPreviousPhotoCell
+            cell.setCollectionViewDataSourceDelegate(dataSourceDelegate: self, forRow: indexPath.row)
+            return cell
+        } else if indexPath.section == 4 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDetailCommentCell") as! NearbyGroupDetailCommentCell
             let comment = selectedGroup.groupComments[indexPath.row]
             cell.configureCell(comment: comment)
             return cell
+        } else {
+            let cell = UITableViewCell() as! NearbyGroupCommentEntryCell
+            return cell
         }
-        
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if tableView.tag == 0 {
-            if section == 0 {
-                return CGFloat.leastNormalMagnitude
-            } else {
-                return 17
-            }
-        } else {
+        if section <= 2 {
             return CGFloat.leastNormalMagnitude
+        } else if section <= 4 {
+            return 25
+        } else {
+            return 0.0000000001
         }
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if tableView.tag == 0 {
-            if section == 1 {
-                return "Previous Photos"
-            } else if section == 2 {
-                return "Comments"
-            } else {
-                return ""
-            }
+        if section == 3 {
+            return "Previous Photos"
+        } else if section == 4 {
+            return "Comments"
         } else {
             return ""
         }
     }
+    
+    //Scroll to the end, then display the comment entry
+//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//        if indexPath.section == 4 {
+//            if indexPath.row + 1 == selectedGroup.groupComments.count {
+//                commentEntryView.isHidden = false
+//            } else {
+//                commentEntryView.isHidden = true
+//            }
+//        } else {
+//            commentEntryView.isHidden = true
+//        }
+//    }
 }

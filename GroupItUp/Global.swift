@@ -8,6 +8,9 @@
 
 import UIKit
 
+var username: String!
+let CURRENT_USERNAME = "current username"
+
 extension UIView {
     func widthCircleView() {
         layer.cornerRadius = self.frame.width / 2.0
@@ -69,6 +72,18 @@ extension UIViewController {
         }
         return index
     }
+    
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
+    }
+
 }
 
 extension UIImage {
