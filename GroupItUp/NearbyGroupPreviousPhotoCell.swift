@@ -33,7 +33,6 @@ class NearbyGroupPreviousPhotoCell: UITableViewCell {
         
         previousPhotoCollectionView.delegate = dataSourceDelegate
         previousPhotoCollectionView.dataSource = dataSourceDelegate
-        previousPhotoCollectionView.tag = row
         previousPhotoCollectionView.reloadData()
     }
 }

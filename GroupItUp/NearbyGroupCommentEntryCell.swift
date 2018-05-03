@@ -9,11 +9,17 @@
 import UIKit
 import Firebase
 
+protocol NearbyGroupCommentEntryCellDelegate {
+    func reloadCommentSection()
+    func updateSelectedGroupComments(comments: [Comment])
+}
+
 class NearbyGroupCommentEntryCell: UITableViewCell {
 
     @IBOutlet weak var commentTextField: UITextField!
     
     var selectedGroup: Group!
+    var delegate: NearbyGroupCommentEntryCellDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -44,8 +50,11 @@ class NearbyGroupCommentEntryCell: UITableViewCell {
                 comments.append(userEntryComment)
                 let commentData = [userEntryComment.commentID: ["Comment": comment, "User ID": userEntryComment.userID, "Username": userEntryComment.username]]
                 DataService.ds.REF_GROUPS.child(selectedGroup.groupID).child("Comments").updateChildValues(commentData)
-                let viewController = self.viewController() as! GroupDetailVC
-                viewController.tableView.reloadData()
+                if let delegate = self.delegate {
+                    delegate.updateSelectedGroupComments(comments: comments)
+                    delegate.reloadCommentSection()
+                }
+                commentTextField.text = ""
             }
         }
     }

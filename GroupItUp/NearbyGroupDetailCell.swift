@@ -7,6 +7,13 @@
 //
 
 import UIKit
+import CoreLocation
+import MapKit
+
+protocol NearbyGroupDetailCellDelegate {
+    func sendAlertWithoutHandler(alertTitle: String, alertMessage: String, actionTitle: [String])
+}
+
 
 class NearbyGroupDetailCell: UITableViewCell {
 
@@ -19,6 +26,8 @@ class NearbyGroupDetailCell: UITableViewCell {
     @IBOutlet weak var groupContactEmailLabel: UILabel!
     @IBOutlet weak var groupMeetUpAddressLabel: UILabel!
     
+    var delegate: NearbyGroupDetailCellDelegate?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -27,6 +36,11 @@ class NearbyGroupDetailCell: UITableViewCell {
     func configureCell(group: Group) {
         let groupDetail = group.groupDetail
         groupStatusLabel.text = groupDetail.groupStatus
+        if groupDetail.groupStatus == "Cancel" {
+            groupStatusLabel.backgroundColor = UIColor.red
+            let viewController = UIViewController(nibName: "GroupDetailVC", bundle: nil)
+            viewController.sendAlertWithoutHandler(alertTitle: "Cancelled", alertMessage: "This group has been cancelled!", actionTitle: ["Cancel"])
+        }
         groupMaxMembersLabel.text = "\(groupDetail.groupMaxMembers)"
         groupCategoryLabel.text = groupDetail.groupCategory
         groupMeetingUpTimeLabel.text = groupDetail.groupMeetingTime
@@ -37,6 +51,29 @@ class NearbyGroupDetailCell: UITableViewCell {
     }
 
     @IBAction func directionBtnPressed(_ sender: UIButton) {
+        let geoCoder = CLGeocoder()
+        let address = groupMeetUpAddressLabel.text
+        if address != "" {
+            geoCoder.geocodeAddressString(address!, completionHandler: { (placemarks, error) in
+                if error != nil {
+                    if let delegate = self.delegate {
+                        delegate.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Address is not found or incorrect, please contact the host for correction.", actionTitle: ["Cancel"])
+                    }
+                } else {
+                    if let placemark = placemarks?.first {
+                        let location = placemark.location!
+                        let regionDistance: CLLocationDistance = 1000
+                        let coordinate = location.coordinate
+                        let regionSpan = MKCoordinateRegionMakeWithDistance(coordinate, regionDistance, regionDistance)
+                        let options = [MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center), MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span)]
+                        let destinationPlacemark = MKPlacemark(coordinate: coordinate)
+                        let mapItem = MKMapItem(placemark: destinationPlacemark)
+                        mapItem.name = "Destination"
+                        mapItem.openInMaps(launchOptions: options)
+                    }
+                }
+            })
+        }
     }
 
 }

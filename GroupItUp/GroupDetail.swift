@@ -29,6 +29,7 @@ class GroupDetail {
     private var _groupCreationDate: String!
     private var _groupStatus: String!
     private var _groupHost: String!
+    private var _groupMaxReached: Bool!
     
     init() {
         
@@ -125,6 +126,12 @@ class GroupDetail {
         
         if let groupHost = groupDetailData["Host"] as? String {
             self._groupHost = groupHost
+        }
+        
+        if groupAttending == groupMaxMembers {
+            self._groupMaxReached = true
+        } else {
+            self._groupMaxReached = false
         }
     }
     
@@ -288,6 +295,15 @@ class GroupDetail {
         }
         set {
             _groupHost = newValue
+        }
+    }
+    
+    var groupMaxReached: Bool {
+        get {
+            return _groupMaxReached
+        }
+        set {
+            _groupMaxReached = newValue
         }
     }
 }

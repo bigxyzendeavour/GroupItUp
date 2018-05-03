@@ -8,7 +8,7 @@
 
 import UIKit
 
-class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource {
+class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, NearbyGroupCommentEntryCellDelegate, NearbyGroupDetailCellDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -23,6 +23,8 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         
+//        photoOpenCollectionView.delegate = self
+//        photoOpenCollectionView.dataSource = self
        
     }
     
@@ -35,12 +37,36 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let photo = selectedGroup.groupPhotos[indexPath.row]
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NearbyGroupDetailPreviousMeetPhotoCollectionCell", for: indexPath) as! NearbyGroupDetailPreviousMeetPhotoCollectionCell
-        cell.configureCell(photo: photo)
-        return cell
+        
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NearbyGroupDetailPreviousMeetPhotoCollectionCell", for: indexPath) as? NearbyGroupDetailPreviousMeetPhotoCollectionCell {
+            let photo = selectedGroup.groupPhotos[indexPath.row]
+            cell.groupPhotoImage.isUserInteractionEnabled = true
+            
+            cell.configureCell(photo: photo)
+            return cell
+        }
+//        else if let cell = photoOpenCollectionView.dequeueReusableCell(withReuseIdentifier: "NearbyGroupPreviousPhotoOpenCollectionCell", for: indexPath) as? NearbyGroupPreviousPhotoOpenCollectionCell {
+//            let photo = selectedGroup.groupPhotos[indexPath.row]
+//            cell.configureCell(image: photo.photo)
+//            return cell
+//        }
+//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
+//        tapGesture.numberOfTapsRequired = 1
+//        cell.groupPhotoImage.addGestureRecognizer(tapGesture)
+        
+        return UICollectionViewCell()
     }
 
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "PreviousPhotoOpenVC", sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segue.destination as? PreviousPhotoOpenVC {
+            destination.selectedGroup = selectedGroup
+        }
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 6
     }
@@ -65,6 +91,7 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             return cell
         } else if indexPath.section == 2 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDetailCell") as! NearbyGroupDetailCell
+            cell.delegate = self
             cell.configureCell(group: selectedGroup)
             return cell
         } else if indexPath.section == 3 {
@@ -77,7 +104,9 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             cell.configureCell(comment: comment)
             return cell
         } else {
-            let cell = UITableViewCell() as! NearbyGroupCommentEntryCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupCommentEntryCell") as! NearbyGroupCommentEntryCell
+            cell.delegate = self
+            cell.setSelectedGroup(group: selectedGroup)
             return cell
         }
     }
@@ -102,16 +131,20 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         }
     }
     
-    //Scroll to the end, then display the comment entry
-//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        if indexPath.section == 4 {
-//            if indexPath.row + 1 == selectedGroup.groupComments.count {
-//                commentEntryView.isHidden = false
-//            } else {
-//                commentEntryView.isHidden = true
-//            }
-//        } else {
-//            commentEntryView.isHidden = true
-//        }
+    func updateSelectedGroupComments(comments: [Comment]) {
+        selectedGroup.groupComments = comments
+    }
+    
+    func reloadCommentSection() {
+        tableView.beginUpdates()
+        let indexSet = NSIndexSet(index: 4)
+        tableView.reloadSections(indexSet as IndexSet, with: .bottom)
+//        tableView.reloadData()
+        tableView.endUpdates()
+    }
+    
+//    func openPhotoCollectionView() {
+//        photoOpenCollectionView.isHidden = false
 //    }
+
 }

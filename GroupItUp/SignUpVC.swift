@@ -50,7 +50,7 @@ class SignUpVC: UIViewController {
     
     func initialize() {
         let allTextFields = [usernameTextField, emailTextField, passwordTextField]
-        self.configureTextField(textFields: allTextFields as! [UITextField])
+        self.configureTextFieldWithImage(textFields: allTextFields as! [UITextField])
         signUpButton.heightCircleView()
     }
 

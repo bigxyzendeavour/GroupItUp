@@ -7,9 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C12407DD2093EE3D006DBC4E /* NearbyGroupPreviousPhotoOpenCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12407DC2093EE3D006DBC4E /* NearbyGroupPreviousPhotoOpenCollectionCell.swift */; };
+		C12407DF20941B77006DBC4E /* PreviousPhotoOpenVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12407DE20941B77006DBC4E /* PreviousPhotoOpenVC.swift */; };
+		C12407E3209573FD006DBC4E /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12407E2209573FD006DBC4E /* SearchTableViewCell.swift */; };
+		C12407E520957B2E006DBC4E /* LocationSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12407E420957B2E006DBC4E /* LocationSearchVC.swift */; };
+		C12407E720958670006DBC4E /* SearchResultVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12407E620958670006DBC4E /* SearchResultVC.swift */; };
+		C12407ED2097B560006DBC4E /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12407EC2097B560006DBC4E /* SearchResultCell.swift */; };
+		C12407F02099D83C006DBC4E /* UserSavedGroupCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12407EF2099D83C006DBC4E /* UserSavedGroupCollectionCell.swift */; };
+		C12407F2209A61B6006DBC4E /* MySavedGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12407F1209A61B6006DBC4E /* MySavedGroupVC.swift */; };
+		C12407F4209BB08F006DBC4E /* SavedCategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12407F3209BB08F006DBC4E /* SavedCategoryCell.swift */; };
 		C14465192083C090002D219D /* GroupDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14465182083C090002D219D /* GroupDetailVC.swift */; };
 		C144651B2083C1FE002D219D /* NearbyGroupCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C144651A2083C1FE002D219D /* NearbyGroupCell.swift */; };
-		C144652120859032002D219D /* MapVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C144652020859032002D219D /* MapVC.swift */; };
 		C144652320859775002D219D /* NearGroupDetailPreviousMeetPhotoCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C144652220859775002D219D /* NearGroupDetailPreviousMeetPhotoCollectionCell.swift */; };
 		C14465252085A15D002D219D /* NearbyGroupPreviousPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14465242085A15D002D219D /* NearbyGroupPreviousPhotoCell.swift */; };
 		C144652720860685002D219D /* NearbyGroupDetailCommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C144652620860685002D219D /* NearbyGroupDetailCommentCell.swift */; };
@@ -44,9 +52,17 @@
 		7F6147D2582298EA09C7B596 /* Pods-GroupItUp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GroupItUp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GroupItUp/Pods-GroupItUp.debug.xcconfig"; sourceTree = "<group>"; };
 		B8734D3A1447F8512DA58390 /* Pods_GroupItUp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GroupItUp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C09023D5F2C0F3821D62D3D2 /* Pods-GroupItUp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GroupItUp.release.xcconfig"; path = "Pods/Target Support Files/Pods-GroupItUp/Pods-GroupItUp.release.xcconfig"; sourceTree = "<group>"; };
+		C12407DC2093EE3D006DBC4E /* NearbyGroupPreviousPhotoOpenCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyGroupPreviousPhotoOpenCollectionCell.swift; sourceTree = "<group>"; };
+		C12407DE20941B77006DBC4E /* PreviousPhotoOpenVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviousPhotoOpenVC.swift; sourceTree = "<group>"; };
+		C12407E2209573FD006DBC4E /* SearchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
+		C12407E420957B2E006DBC4E /* LocationSearchVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationSearchVC.swift; sourceTree = "<group>"; };
+		C12407E620958670006DBC4E /* SearchResultVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultVC.swift; sourceTree = "<group>"; };
+		C12407EC2097B560006DBC4E /* SearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
+		C12407EF2099D83C006DBC4E /* UserSavedGroupCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSavedGroupCollectionCell.swift; sourceTree = "<group>"; };
+		C12407F1209A61B6006DBC4E /* MySavedGroupVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MySavedGroupVC.swift; sourceTree = "<group>"; };
+		C12407F3209BB08F006DBC4E /* SavedCategoryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavedCategoryCell.swift; sourceTree = "<group>"; };
 		C14465182083C090002D219D /* GroupDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupDetailVC.swift; sourceTree = "<group>"; };
 		C144651A2083C1FE002D219D /* NearbyGroupCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyGroupCell.swift; sourceTree = "<group>"; };
-		C144652020859032002D219D /* MapVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapVC.swift; sourceTree = "<group>"; };
 		C144652220859775002D219D /* NearGroupDetailPreviousMeetPhotoCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearGroupDetailPreviousMeetPhotoCollectionCell.swift; sourceTree = "<group>"; };
 		C14465242085A15D002D219D /* NearbyGroupPreviousPhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyGroupPreviousPhotoCell.swift; sourceTree = "<group>"; };
 		C144652620860685002D219D /* NearbyGroupDetailCommentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyGroupDetailCommentCell.swift; sourceTree = "<group>"; };
@@ -98,6 +114,44 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		C12407E820976370006DBC4E /* SignUpAndLogIn */ = {
+			isa = PBXGroup;
+			children = (
+				C15F211220802DAC004BF1FB /* SignUpVC.swift */,
+				C15F20F2207EE571004BF1FB /* LoginVC.swift */,
+			);
+			name = SignUpAndLogIn;
+			sourceTree = "<group>";
+		};
+		C12407E920976384006DBC4E /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				C15F210C20802D3F004BF1FB /* SearchVC.swift */,
+				C12407E420957B2E006DBC4E /* LocationSearchVC.swift */,
+				C12407E620958670006DBC4E /* SearchResultVC.swift */,
+			);
+			name = Search;
+			sourceTree = "<group>";
+		};
+		C12407EB209763A7006DBC4E /* Nearby */ = {
+			isa = PBXGroup;
+			children = (
+				C15F210A20802D21004BF1FB /* NearbyVC.swift */,
+				C14465182083C090002D219D /* GroupDetailVC.swift */,
+				C12407DE20941B77006DBC4E /* PreviousPhotoOpenVC.swift */,
+			);
+			name = Nearby;
+			sourceTree = "<group>";
+		};
+		C12407EE2099D778006DBC4E /* Me */ = {
+			isa = PBXGroup;
+			children = (
+				C15F210E20802D5B004BF1FB /* MeVC.swift */,
+				C12407F1209A61B6006DBC4E /* MySavedGroupVC.swift */,
+			);
+			name = Me;
+			sourceTree = "<group>";
+		};
 		C15F20E4207EE570004BF1FB = {
 			isa = PBXGroup;
 			children = (
@@ -136,14 +190,11 @@
 		C15F2104207EF351004BF1FB /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				C15F211220802DAC004BF1FB /* SignUpVC.swift */,
-				C15F20F2207EE571004BF1FB /* LoginVC.swift */,
-				C15F210A20802D21004BF1FB /* NearbyVC.swift */,
-				C15F210C20802D3F004BF1FB /* SearchVC.swift */,
-				C15F210E20802D5B004BF1FB /* MeVC.swift */,
+				C12407E820976370006DBC4E /* SignUpAndLogIn */,
+				C12407EB209763A7006DBC4E /* Nearby */,
+				C12407E920976384006DBC4E /* Search */,
+				C12407EE2099D778006DBC4E /* Me */,
 				C15F211020802D69004BF1FB /* MoreVC.swift */,
-				C14465182083C090002D219D /* GroupDetailVC.swift */,
-				C144652020859032002D219D /* MapVC.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -160,6 +211,11 @@
 				C144652620860685002D219D /* NearbyGroupDetailCommentCell.swift */,
 				C144653E209171B0002D219D /* NearbyGroupCommentEntryCell.swift */,
 				C1446538208C3418002D219D /* GroupDetailCommentCell.swift */,
+				C12407DC2093EE3D006DBC4E /* NearbyGroupPreviousPhotoOpenCollectionCell.swift */,
+				C12407E2209573FD006DBC4E /* SearchTableViewCell.swift */,
+				C12407EC2097B560006DBC4E /* SearchResultCell.swift */,
+				C12407EF2099D83C006DBC4E /* UserSavedGroupCollectionCell.swift */,
+				C12407F3209BB08F006DBC4E /* SavedCategoryCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -324,27 +380,35 @@
 				C144652D2088B7B8002D219D /* Group.swift in Sources */,
 				C14465252085A15D002D219D /* NearbyGroupPreviousPhotoCell.swift in Sources */,
 				C15F20F3207EE571004BF1FB /* LoginVC.swift in Sources */,
+				C12407F2209A61B6006DBC4E /* MySavedGroupVC.swift in Sources */,
 				C1446533208A8672002D219D /* Photo.swift in Sources */,
 				C1446539208C3418002D219D /* GroupDetailCommentCell.swift in Sources */,
 				C144652320859775002D219D /* NearGroupDetailPreviousMeetPhotoCollectionCell.swift in Sources */,
 				C1446535208A8954002D219D /* Address.swift in Sources */,
+				C12407F02099D83C006DBC4E /* UserSavedGroupCollectionCell.swift in Sources */,
+				C12407DD2093EE3D006DBC4E /* NearbyGroupPreviousPhotoOpenCollectionCell.swift in Sources */,
 				C144651B2083C1FE002D219D /* NearbyGroupCell.swift in Sources */,
+				C12407E3209573FD006DBC4E /* SearchTableViewCell.swift in Sources */,
+				C12407E720958670006DBC4E /* SearchResultVC.swift in Sources */,
 				C15F210D20802D3F004BF1FB /* SearchVC.swift in Sources */,
 				C14465192083C090002D219D /* GroupDetailVC.swift in Sources */,
-				C144652120859032002D219D /* MapVC.swift in Sources */,
 				C15F20F1207EE571004BF1FB /* AppDelegate.swift in Sources */,
 				C144653D208FF230002D219D /* NearbyGroupDisplayPhotoCell.swift in Sources */,
 				C144652920876637002D219D /* DataService.swift in Sources */,
 				C144652B2088B4C7002D219D /* LocationService.swift in Sources */,
 				C144653B208FD0A5002D219D /* NearbyGroupDetailCell.swift in Sources */,
+				C12407ED2097B560006DBC4E /* SearchResultCell.swift in Sources */,
 				C15F211120802D69004BF1FB /* MoreVC.swift in Sources */,
 				C144652720860685002D219D /* NearbyGroupDetailCommentCell.swift in Sources */,
+				C12407E520957B2E006DBC4E /* LocationSearchVC.swift in Sources */,
 				C15F2109207F006B004BF1FB /* Global.swift in Sources */,
 				C15F210F20802D5B004BF1FB /* MeVC.swift in Sources */,
+				C12407F4209BB08F006DBC4E /* SavedCategoryCell.swift in Sources */,
 				C1446531208A8666002D219D /* Comment.swift in Sources */,
 				C144652F208A8640002D219D /* GroupDetail.swift in Sources */,
 				C15F210B20802D21004BF1FB /* NearbyVC.swift in Sources */,
 				C1446537208C2C4A002D219D /* NearbyGroupDescriptionCell.swift in Sources */,
+				C12407DF20941B77006DBC4E /* PreviousPhotoOpenVC.swift in Sources */,
 				C144653F209171B0002D219D /* NearbyGroupCommentEntryCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

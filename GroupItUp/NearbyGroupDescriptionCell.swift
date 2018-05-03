@@ -25,6 +25,10 @@ class NearbyGroupDescriptionCell: UITableViewCell {
         
     }
     
+    func setSelectedGroup(group: Group) {
+        selectedGroup = group
+    }
+    
     func configureCell(group: Group) {
         let groupDetail = group.groupDetail
         groupTitleLabel.text = groupDetail.groupTitle
@@ -45,6 +49,10 @@ class NearbyGroupDescriptionCell: UITableViewCell {
                     joinBtn.backgroundColor = UIColor.lightGray
                 }
             }
+            if groupDetail.groupStatus == "Cancel" {
+                joinBtn.isEnabled = false
+                likeBtn.isEnabled = false
+            }
             let myLikeRef = DataService.ds.REF_USERS_CURRENT_LIKE
             myLikeRef.observeSingleEvent(of: .value, with: { (snapshot) in
                 if let snapShot = snapshot.value as? Dictionary<String, Bool> {
@@ -61,10 +69,6 @@ class NearbyGroupDescriptionCell: UITableViewCell {
             joinBtn.backgroundColor = UIColor.lightGray
             likeBtn.isHidden = true
         }
-    }
-    
-    func setSelectedGroup(group: Group) {
-        selectedGroup = group
     }
     
     @IBAction func likeBtnPressed(_ sender: UIButton) {

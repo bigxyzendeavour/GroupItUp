@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import SwiftKeychainWrapper
 
 class MoreVC: UIViewController {
 
@@ -21,6 +22,7 @@ class MoreVC: UIViewController {
         do {
             try Auth.auth().signOut()
             print("Grandon(SetupVC): the current key is \(Auth.auth().currentUser?.uid)")
+            KeychainWrapper.standard.removeObject(forKey: CURRENT_USERNAME)
             performSegue(withIdentifier: "LoginVC", sender: nil)
         } catch let err as NSError {
             print(err.debugDescription)

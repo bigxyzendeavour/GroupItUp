@@ -10,6 +10,7 @@ import UIKit
 
 var username: String!
 let CURRENT_USERNAME = "current username"
+let CURRENT_USER_PROFILE_IMAGE_URL = "current user profile image url"
 
 extension UIView {
     func widthCircleView() {
@@ -37,18 +38,18 @@ extension UIViewController {
 //        self.navigationItem.setLeftBarButton(backButton, animated: false)
 //    }
     
-    func configureTextField(textFields: [UITextField]) {
+    func configureTextFieldWithImage(textFields: [UITextField]) {
         for i in 0..<textFields.count {
             textFields[i].layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0)
             assignImageToTextField(imageName: i, textField: textFields[i])
         }
     }
     
-//    func configureTextFieldWithoutImage(textFields: [UITextField]) {
-//        for i in 0..<textFields.count {
-//            textFields[i].layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0)
-//        }
-//    }
+    func configureTextFieldWithoutImage(textFields: [UITextField]) {
+        for i in 0..<textFields.count {
+            textFields[i].layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0)
+        }
+    }
     
     func assignImageToTextField(imageName: Int, textField: UITextField) {
         let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 25, height: 25))
@@ -84,6 +85,47 @@ extension UIViewController {
         view.endEditing(true)
     }
 
+    func orderCommentsByID(comments: [Comment]) -> [Comment]{
+        var newComments = comments
+        var newCommentID: Int!
+        for i in 0..<comments.count {
+            let commentID = comments[i].commentID
+            let startIndex = commentID.startIndex
+            if commentID[startIndex] == "0" {
+                let id = commentID.substring(from: commentID.index(after: startIndex))
+                newCommentID = Int(id)
+            } else {
+                newCommentID = Int(commentID)
+            }
+            newComments[newCommentID - 1] = comments[i]
+        }
+        return newComments
+    }
+    
+    func orderPhotosByID(photos: [Photo]) -> [Photo] {
+        var newPhotos = photos
+        var newPhotoID: Int!
+        for i in 0..<photos.count {
+            let photoID = photos[i].photoID
+            let startIndex = photoID.startIndex
+            if photoID[startIndex] == "0" {
+                let id = photoID.substring(from: photoID.index(after: startIndex))
+                newPhotoID = Int(id)
+            } else {
+                newPhotoID = Int(photoID)
+            }
+            newPhotos[newPhotoID - 1] = photos[i]
+        }
+        return newPhotos
+    }
+    
+    func orderGroupsByID(groups: [Group]) -> [Group] {
+        var newGroups = groups
+        for i in 0..<groups.count {
+            newGroups[groups.count - 1 - i] = groups[i]
+        }
+        return newGroups
+    }
 }
 
 extension UIImage {

@@ -12,9 +12,18 @@ class NearbyGroupDetailPreviousMeetPhotoCollectionCell: UICollectionViewCell {
     
     @IBOutlet weak var groupPhotoImage: UIImageView!
     
+    
     func configureCell(photo: Photo) {
         
         groupPhotoImage.image = photo.photo
     }
     
+    func setCollectionViewDataSourceDelegate
+        <D: UICollectionViewDataSource & UICollectionViewDelegate>
+        (dataSourceDelegate: D, forRow row: Int) {
+        
+//        previousPhotoCollectionView.delegate = dataSourceDelegate
+//        previousPhotoCollectionView.dataSource = dataSourceDelegate
+//        previousPhotoCollectionView.reloadData()
+    }
 }

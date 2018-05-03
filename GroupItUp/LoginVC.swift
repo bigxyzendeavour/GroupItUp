@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import SwiftKeychainWrapper
 
 class LoginVC: UIViewController {
 
@@ -37,7 +38,7 @@ class LoginVC: UIViewController {
     func initialize() {
         
         let allTextFields = [UITextField(), emailTextField, passwordTextField]
-        configureTextField(textFields: allTextFields as! [UITextField])
+        configureTextFieldWithImage(textFields: allTextFields as! [UITextField])
         loginButton.heightCircleView()
     }
 
@@ -67,6 +68,11 @@ class LoginVC: UIViewController {
 //        DataService.ds.uid = KeychainWrapper.standard.string(forKey: KEY_UID)
 //        activityIndicator.stopAnimating()
         //        loadingView.hide()
+        DataService.ds.REF_USERS.child(id).child("Username").observeSingleEvent(of: .value, with: { (snapshot) in
+            if let username = snapshot.value as? String {
+                KeychainWrapper.standard.set(username, forKey: CURRENT_USERNAME)
+            }
+        })
         performSegue(withIdentifier: "NearbyVC", sender: nil)
     }
     

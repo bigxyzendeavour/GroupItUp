@@ -7,29 +7,66 @@
 //
 
 import UIKit
+import SwiftKeychainWrapper
+import Firebase
 
-class MeVC: UIViewController {
+class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
 
+    @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var userDisplayImageView: UIImageView!
+    @IBOutlet weak var userCollectionView: UICollectionView!
+    
+    let savedCategory = ["Like", "Follow", "Attending", "Joined", "Hosted", "Hosting"]
+    var selectedSavedOption: String!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        userCollectionView.delegate = self
+        userCollectionView.dataSource = self
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func initialize() {
+        if KeychainWrapper.standard.string(forKey: CURRENT_USER_PROFILE_IMAGE_URL) != nil {
+            let url = KeychainWrapper.standard.string(forKey: CURRENT_USER_PROFILE_IMAGE_URL)
+            Storage.storage().reference(forURL: url!).getData(maxSize: 1024 * 1024, completion: { (data, error) in
+                if error != nil {
+                    self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription)", actionTitle: ["Cancel"])
+                } else {
+                    let image = UIImage(data: data!)
+                    self.userDisplayImageView.image = image
+                }
+            })
+        }
+        
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
     }
-    */
-
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 6
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let category = savedCategory[indexPath.item]
+        let cell = userCollectionView.dequeueReusableCell(withReuseIdentifier: "UserSavedGroupCollectionCell", for: indexPath) as! UserSavedGroupCollectionCell
+//        cell.frame.size.width = (userCollectionView.frame.width / 2) * 2/3
+//        cell.frame.size.height = cell.frame.size.width
+//        cell.savedCategoryImageView.frame.size.height = cell.frame.size.height * 2/3
+        cell.configureCell(category: category)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        selectedSavedOption = savedCategory[indexPath.item]
+        performSegue(withIdentifier: "MySavedGroupVC", sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segue.destination as? MySavedGroupVC {
+            destination.selectedSavedOption = selectedSavedOption
+        }
+    }
 }
