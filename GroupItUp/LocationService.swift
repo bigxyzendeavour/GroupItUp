@@ -59,4 +59,22 @@ class LocationServices {
         
     }
     
+    func getAddressDetail(address: CLLocation, completion: @escaping (_ finalAddress: JSONDictionary?, _ error: Error?) -> ()) {
+        let geoCoder = CLGeocoder()
+        geoCoder.reverseGeocodeLocation(address) { (placemarks, error) in
+            if error != nil {
+                print("Error: \(error?.localizedDescription)")
+            } else {
+                let placeArray = placemarks as [CLPlacemark]!
+                var placeMark: CLPlacemark!
+                placeMark = placeArray?[0]
+                guard let specificAddress = placeMark.addressDictionary as? JSONDictionary else {
+                    return
+                }
+                
+                completion(specificAddress, nil)
+            }
+        }
+    }
+    
 }

@@ -179,45 +179,4 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     }
     
-    func orderCommentsByID(comments: [Comment]) -> [Comment]{
-        var newComments = comments
-        var newCommentID: Int!
-        for i in 0..<comments.count {
-            let commentID = comments[i].commentID
-            let startIndex = commentID.startIndex
-            if commentID[startIndex] == "0" {
-                let id = commentID.substring(from: commentID.index(after: startIndex))
-                newCommentID = Int(id)
-            } else {
-                newCommentID = Int(commentID)
-            }
-            newComments[newCommentID - 1] = comments[i]
-        }
-        return newComments
-    }
-    
-    func orderPhotosByID(photos: [Photo]) -> [Photo] {
-        var newPhotos = photos
-        var newPhotoID: Int!
-        for i in 0..<photos.count {
-            let photoID = photos[i].photoID
-            let startIndex = photoID.startIndex
-            if photoID[startIndex] == "0" {
-                let id = photoID.substring(from: photoID.index(after: startIndex))
-                newPhotoID = Int(id)
-            } else {
-                newPhotoID = Int(photoID)
-            }
-            newPhotos[newPhotoID - 1] = photos[i]
-        }
-        return newPhotos
-    }
-
-    func orderGroupsByID(groups: [Group]) -> [Group] {
-        var newGroups = groups
-        for i in 0..<groups.count {
-            newGroups[groups.count - 1 - i] = groups[i]
-        }
-        return newGroups
-    }
 }

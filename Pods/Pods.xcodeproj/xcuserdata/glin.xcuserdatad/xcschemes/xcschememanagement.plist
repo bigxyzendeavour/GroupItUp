@@ -34,6 +34,16 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>OpalImagePicker-OpalImagePickerResources.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>OpalImagePicker.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-GroupItUp.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -62,7 +72,17 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>050EDF7E7482CD4823839E2C37C23AF8</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>107A9565F9DF88517DFD3E28C05B2B96</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>17C31A12BC5716A3D218515DFF920004</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -73,6 +93,21 @@
 			<true/>
 		</dict>
 		<key>44CAD6CE523055ED339E87154473A254</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>8D43695A86CACC471532F7EC560604AA</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>A4F4961AD67247AEB20CB2EAE6302179</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>A788EAF8F204D12AB1257CEC8A444A4C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -97,22 +132,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>C3DFA77B9DC0704EE748B192961C49BF</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>DC9A719705D7D1510CE458556ABE942A</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>E4DD95323C54A78F879DAB0F1508B8E7</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>EDA30A2FCEA3A884F6847007E1B2E078</key>
 		<dict>
 			<key>primary</key>
 			<true/>

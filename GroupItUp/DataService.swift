@@ -25,6 +25,7 @@ class DataService {
     
     //STORAGE references
     private var _STORAGE_USER_IMAGE = STORAGE_BASE.child("Users")
+    private var _STORAGE_GROUP_IMAGE = STORAGE_BASE.child("All Groups")
     
     var REF_BASE: DatabaseReference {
         return _REF_BASE
@@ -70,11 +71,11 @@ class DataService {
     var STORAGE_USER_IMAGE: StorageReference {
         return _STORAGE_USER_IMAGE
     }
-//    
-//    var POST_IMAGE: StorageReference {
-//        return _POST_IMAGE
-//    }
-//    
+    
+    var STORAGE_GROUP_IMAGE: StorageReference {
+        return _STORAGE_GROUP_IMAGE
+    }
+//
 //    var STEP_IMAGE: StorageReference {
 //        return _STEP_IMAGE
 //    }

@@ -14,5 +14,6 @@ target 'GroupItUp' do
   pod 'SZTextView'
   pod 'SwiftKeychainWrapper'
   pod 'IQKeyboardManagerSwift'
-
+  pod 'OpalImagePicker', '~> 1.4.0'
+  
 end

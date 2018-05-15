@@ -9,8 +9,9 @@
 import UIKit
 import Firebase
 import SwiftKeychainWrapper
+import OpalImagePicker
 
-class MoreVC: UIViewController {
+class MoreVC: UIViewController, OpalImagePickerControllerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,5 +29,12 @@ class MoreVC: UIViewController {
             print(err.debugDescription)
         }
     }
+    
+    @IBAction func picBtnPressed(_ sender: UIButton) {
+        let ip = OpalImagePickerController()
+        ip.imagePickerDelegate = self
+        present(ip, animated: true, completion: nil)
+    }
+    
 
    }

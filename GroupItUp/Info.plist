@@ -43,5 +43,7 @@
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>GroupItUp requires access to your location to find the nearby groups for you.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Group would like to access your photo library for photo selection.</string>
 </dict>
 </plist>

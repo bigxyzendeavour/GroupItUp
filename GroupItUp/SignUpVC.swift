@@ -17,6 +17,7 @@ class SignUpVC: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var signUpButton: UIButton!
+    @IBOutlet weak var loginButton: UIButton!
     
     @IBAction func signUpBtnPressed(_ sender: UIButton) {
         guard let username = usernameTextField.text, username != "" else {
@@ -52,11 +53,20 @@ class SignUpVC: UIViewController {
         let allTextFields = [usernameTextField, emailTextField, passwordTextField]
         self.configureTextFieldWithImage(textFields: allTextFields as! [UITextField])
         signUpButton.heightCircleView()
+        loginButton.heightCircleView()
     }
 
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         UIApplication.shared.open(URL, options: [:])
         return false
+    }
+    
+    @IBAction func loginBtnPressed(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func xBtnPressed(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
     }
 
     func passwordValidationPassed(password: String) -> Bool {

@@ -24,6 +24,13 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
 
         userCollectionView.delegate = self
         userCollectionView.dataSource = self
+        
+        userDisplayImageView.heightCircleView()
+        
+        let layout = userCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        layout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0)
+        layout.minimumInteritemSpacing = 0
+        layout.itemSize = CGSize(width: (self.view.frame.width - 20)/2, height: (self.userCollectionView.frame.height - 10)/3)
     }
 
     func initialize() {
@@ -69,4 +76,9 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
             destination.selectedSavedOption = selectedSavedOption
         }
     }
+    
+    @IBAction func addBtnPressed(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: "NewGroupCreationVC", sender: nil)
+    }
+    
 }

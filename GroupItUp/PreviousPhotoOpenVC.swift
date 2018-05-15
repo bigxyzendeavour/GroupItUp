@@ -22,6 +22,11 @@ class PreviousPhotoOpenVC: UIViewController, UICollectionViewDelegate, UICollect
         photoCollectionView.dataSource = self
         photoCollectionView.isPagingEnabled = true
         pageControl.numberOfPages = selectedGroup.groupPhotos.count
+        
+        let layout = photoCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        layout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0)
+        layout.minimumInteritemSpacing = 0
+        layout.itemSize = CGSize(width: self.view.frame.width, height: self.view.frame.height)
     }
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -34,7 +39,6 @@ class PreviousPhotoOpenVC: UIViewController, UICollectionViewDelegate, UICollect
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = photoCollectionView.dequeueReusableCell(withReuseIdentifier: "NearbyGroupPreviousPhotoOpenCollectionCell", for: indexPath) as! NearbyGroupPreviousPhotoOpenCollectionCell
-        
         let image = selectedGroup.groupPhotos[indexPath.row].photo
         cell.configureCell(image: image)
         return cell

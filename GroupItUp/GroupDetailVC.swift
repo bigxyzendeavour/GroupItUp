@@ -113,6 +113,7 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section <= 2 {
+            //return nothing
             return CGFloat.leastNormalMagnitude
         } else if section <= 4 {
             return 25

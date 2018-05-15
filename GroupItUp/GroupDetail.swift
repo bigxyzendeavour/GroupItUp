@@ -36,13 +36,18 @@ class GroupDetail {
     }
     
     //Current user creates a new group
-    init(status: String, attending: Int) {
-        self._groupCreationDate = "\(NSDate().fullTimeCreated())"
-        self._groupAttending = attending
-        self._groupStatus = status
-        self._groupHost = DataService.ds.uid
+    init(new: Bool) {
+        if new {
+            self._groupCreationDate = "\(NSDate().fullTimeCreated())"
+            self._groupHost = DataService.ds.uid
+            self._groupAttending = 1
+            self._groupLikes = 0
+            self._groupStatus = "Planning"
+            self._groupAttendingUsers = [_groupHost]
+        }
     }
     
+    //Download from Firebase
     init(groupID: String, groupDetailData: Dictionary<String, Any>) {
         self._groupID = groupID
         if let title = groupDetailData["Title"] as? String {

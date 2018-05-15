@@ -32,6 +32,14 @@ extension UIViewController {
         }
         self.present(alert, animated: true, completion: nil)
     }
+    
+    func sendAlertWithHandler(alertTitle: String, alertMessage: String, actionTitle: [String], handlers:[(_ action: UIAlertAction) -> Void]) {
+        let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
+        for i in 0..<actionTitle.count {
+            alert.addAction(UIAlertAction(title: actionTitle[i], style: .default, handler: handlers[i]))
+        }
+        self.present(alert, animated: true, completion: nil)
+    }
 //    
 //    func setNoTextOnBackBarButton() {
 //        let backButton = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
