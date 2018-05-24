@@ -18,7 +18,12 @@ class Address {
     private var _address: String!
     
     init() {
-        
+        self._street = ""
+        self._city = ""
+        self._province = ""
+        self._postal = ""
+        self._country = ""
+        self._address = ""
     }
     
     init(street: String, city: String, province: String, postal: String, country: String) {
@@ -81,6 +86,14 @@ class Address {
         }
         set {
             _address = newValue
+        }
+    }
+    
+    func isEmpty() -> Bool {
+        if _street == "" && _city == "" && _province == "" && _postal == "" && _country == "" {
+            return true
+        } else {
+            return false
         }
     }
 }

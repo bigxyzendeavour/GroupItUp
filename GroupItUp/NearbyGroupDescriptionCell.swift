@@ -35,24 +35,7 @@ class NearbyGroupDescriptionCell: UITableViewCell {
         groupDetailDescriptionLabel.text = groupDetail.groupDetailDescription
         groupAttendingNumberLabel.text = "\(groupDetail.groupAttending)"
         if groupDetail.groupHost != DataService.ds.uid {
-            for member in groupDetail.groupAttendingUsers {
-                if member == DataService.ds.uid {
-                    joinBtn.setTitle("I'm Out!", for: .normal)
-                    break
-                }
-            }
-            if groupDetail.groupAttending >= groupDetail.groupMaxMembers {
-                let currentUserID = DataService.ds.uid!
-                let groupAttendingMembers = groupDetail.groupAttendingUsers
-                if !groupAttendingMembers.contains(currentUserID) {
-                    joinBtn.isEnabled = false
-                    joinBtn.backgroundColor = UIColor.lightGray
-                }
-            }
-            if groupDetail.groupStatus == "Cancel" {
-                joinBtn.isEnabled = false
-                likeBtn.isEnabled = false
-            }
+            
             let myLikeRef = DataService.ds.REF_USERS_CURRENT_LIKE
             myLikeRef.observeSingleEvent(of: .value, with: { (snapshot) in
                 if let snapShot = snapshot.value as? Dictionary<String, Bool> {
@@ -65,6 +48,7 @@ class NearbyGroupDescriptionCell: UITableViewCell {
                 }
             })
         } else {
+            //owner viewing the group post
             joinBtn.isEnabled = false
             joinBtn.backgroundColor = UIColor.lightGray
             likeBtn.isHidden = true
@@ -122,6 +106,13 @@ class NearbyGroupDescriptionCell: UITableViewCell {
 
     }
 
-
+    func configureNewGroupCell(group: Group) {
+        groupTitleLabel.text = group.groupDetail.groupTitle
+        groupDetailDescriptionLabel.text = group.groupDetail.groupDetailDescription
+        groupAttendingNumberLabel.text = "\(group.groupDetail.groupAttending)"
+        joinBtn.isEnabled = false
+        joinBtn.backgroundColor = UIColor.lightGray
+        likeBtn.isHidden = true
+    }
     
 }

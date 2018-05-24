@@ -7,15 +7,24 @@
 //
 
 import UIKit
+import Firebase
 
 class NearbyGroupDetailPreviousMeetPhotoCollectionCell: UICollectionViewCell {
     
     @IBOutlet weak var groupPhotoImage: UIImageView!
     
     
-    func configureCell(photo: Photo) {
-        
-        groupPhotoImage.image = photo.photo
+    func configureCell(image: UIImage) {
+//        let url = photo.photoURL
+//        Storage.storage().reference(forURL: url).getData(maxSize: 1024 * 1024) { (data, error) in
+//            if error != nil {
+//                print("NearbyGroupDetailPreviousMeetPhotoCollectionCell: \(error?.localizedDescription)")
+//            } else {
+//                let image = UIImage(data: data!)
+//                self.groupPhotoImage.image = image
+//            }
+//        }
+        groupPhotoImage.image = image
     }
     
     func setCollectionViewDataSourceDelegate

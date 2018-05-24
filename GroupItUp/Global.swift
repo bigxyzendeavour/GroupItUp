@@ -7,10 +7,12 @@
 //
 
 import UIKit
+import Firebase
 
 var username: String!
 let CURRENT_USERNAME = "current username"
 let CURRENT_USER_PROFILE_IMAGE_URL = "current user profile image url"
+let EMPTY_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/groupitup.appspot.com/o/emptyImage.jpg?alt=media&token=506a3a20-cccb-4a6d-9c71-fbf61e0b17e5"
 
 extension UIView {
     func widthCircleView() {
@@ -105,7 +107,7 @@ extension UIViewController {
             } else {
                 newCommentID = Int(commentID)
             }
-            newComments[newCommentID - 1] = comments[i]
+            newComments[comments.count - newCommentID] = comments[i]
         }
         return newComments
     }
@@ -122,7 +124,7 @@ extension UIViewController {
             } else {
                 newPhotoID = Int(photoID)
             }
-            newPhotos[newPhotoID - 1] = photos[i]
+            newPhotos[photos.count - newPhotoID] = photos[i]
         }
         return newPhotos
     }
@@ -156,5 +158,21 @@ extension UIImage {
             imageName = ""
         }
         return imageName
+    }
+}
+
+extension NSDate {
+    
+    func fullTimeCreated() -> String {
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd HH:mm"
+        return df.string(from: self as Date)
+    }
+    
+    func calculateIntervalBetweenDates(newDate: Date, compareDate: Date) -> Int {
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd HH:mm"
+        let interval = compareDate.timeIntervalSince(newDate)
+        return Int(interval) / 259200
     }
 }

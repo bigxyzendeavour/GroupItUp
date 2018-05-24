@@ -20,9 +20,7 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
     var pickerView: UIPickerView!
     var countryPicker: UIPickerView!
     var groupCreatingInProgress: Group!
-    let stringArray = ["Max Attending Members", "Time", "Contact", "Phone", "Email", "Category"]
-    let addressEntryArray = ["Street", "City", "Province", "Postal Code", "Country"]
-    let categoryArray = ["Sport", "Entertainment", "Travel", "Food", "Study"]
+    let categoryArray = ["", "Sport", "Entertainment", "Travel", "Food", "Study"]
     var selectedIndex: Int!
     var selectedImage: UIImage?
     var groupTitle: String!
@@ -33,6 +31,8 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
     var previousPhotos = [UIImage]()
     var countries: [String] = []
     var groupMeetingAddress: Address!
+    var groupDetailForGroup: GroupDetail!
+    var newGroup: Group!
     
     override func viewWillAppear(_ animated: Bool) {
         reloadSection(indexSection: 4)
@@ -87,13 +87,7 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 2 {
-            return stringArray.count
-        } else if section == 3 {
-            return addressEntryArray.count
-        } else {
-            return 1
-        }
+        return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -111,42 +105,27 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
             return UITableViewCell()
         } else if indexPath.section == 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NewGroupDescriptionCell") as! NewGroupDescriptionCell
-            if cell.groupDescriptionTextView.tag == 0 {
-                cell.configureCell(description: self.getGroupDescription())
-            }
             cell.delegate = self
             return cell
         } else if indexPath.section == 2 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NewGroupDetailCell") as! NewGroupDetailCell
-            let detail = stringArray[indexPath.row]
-            cell.configureCell(detail: detail)
-            cell.groupDetailTextField.tag = indexPath.row
-            if indexPath.row == 0 {
-                cell.groupDetailTextField.keyboardType = .numberPad
-            } else if indexPath.row == 1 {
-                cell.groupDetailTextField.inputView = datePicker
-                cell.datePicker = datePicker
-            } else if indexPath.row == 2 {
-                cell.groupDetailTextField.keyboardType = .default
-            } else if indexPath.row == 3 {
-                cell.groupDetailTextField.keyboardType = .phonePad
-            } else if indexPath.row == 4 {
-                cell.groupDetailTextField.keyboardType = .emailAddress
-            } else {
-                cell.groupDetailTextField.inputView = pickerView
-                cell.pickerView = pickerView
-            }
+            cell.maxTextField.keyboardType = .numberPad
+            datePicker.minimumDate = NSDate() as Date
+            cell.timeTextField.inputView = datePicker
+            cell.datePicker = datePicker
+            cell.contactTextField.keyboardType = .default
+            cell.phoneTextField.keyboardType = .phonePad
+            cell.emailTextField.keyboardType = .emailAddress
+            cell.categoryTextField.inputView = pickerView
+            cell.pickerView = pickerView
             cell.delegate = self
+//            cell.configureCell(detail: getGroupDetail())
             return cell
         } else if indexPath.section == 3 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NewGroupAddressEntryCell") as! NewGroupAddressEntryCell
-            cell.addressComponentTextField.tag = indexPath.row
-            let placeHolderValue = addressEntryArray[indexPath.row]
-            cell.configureCell(placeHolderValue: placeHolderValue)
-            if indexPath.row == 4 {
-                cell.addressComponentTextField.inputView = countryPicker
-                cell.countryPicker = countryPicker
-            }
+            cell.countryTextField.inputView = countryPicker
+            cell.countryPicker = countryPicker
+            cell.countries = countries
             cell.delegate = self
             return cell
         } else if indexPath.section == 4 {
@@ -309,7 +288,7 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
     func imagePicker(_ picker: OpalImagePickerController, didFinishPickingImages images: [UIImage]) {
         previousPhotos = images
         picker.dismiss(animated: true, completion: nil)
-        
+        reloadSection(indexSection: 5)
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -369,6 +348,13 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
         return groupDetail
     }
     
+    func getGroupDetailForGroup() -> GroupDetail {
+        if groupDetailForGroup == nil {
+            groupDetailForGroup = GroupDetail()
+        }
+        return groupDetailForGroup
+    }
+    
     func setAllowEmptyGroupDisplayImage(allow: Bool) {
         allowEmptyGroupDisplayImage = allow
     }
@@ -386,23 +372,45 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func setAddress(address: Address) {
-        groupMeetingAddress = address
-        let street = address.street
-        let city = address.city
-        let province = address.province
-        let postal = address.postal
-        let country = address.country
-        groupMeetingAddress.address = "\(street), \(city), \(province), \(postal), \(country)"
-        print(groupMeetingAddress.address)
+        if !address.isEmpty() {
+            groupMeetingAddress = address
+            let street = address.street
+            let city = address.city
+            let province = address.province
+            let postal = address.postal
+            let country = address.country
+            groupMeetingAddress.address = "\(street), \(city), \(province), \(postal), \(country)"
+        } else {
+            groupMeetingAddress = nil
+        }
     }
     
     func getGroupMeetingAddress() -> Dictionary<String, Any> {
-        let street = groupMeetingAddress.street
-        let city = groupMeetingAddress.city
-        let province = groupMeetingAddress.province
-        let postal = groupMeetingAddress.postal
-        let country = groupMeetingAddress.country
-        let groupMeetingUpAddress = ["Street": street, "City": city, "Province": province, "Postal": postal, "Country": country]
-        return groupMeetingUpAddress
+        if groupMeetingAddress != nil {
+            let street = groupMeetingAddress.street
+            let city = groupMeetingAddress.city
+            let province = groupMeetingAddress.province
+            let postal = groupMeetingAddress.postal
+            let country = groupMeetingAddress.country
+            let groupMeetingUpAddress = ["Street": street, "City": city, "Province": province, "Postal": postal, "Country": country]
+            return groupMeetingUpAddress
+        } else {
+            return [String: Any]()
+        }
+    }
+    
+    func getGroupAddressForGroup() -> Address {
+        return groupMeetingAddress
+    }
+    
+    func setSelectedGroup(group: Group) {
+        newGroup = group
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segue.destination as? NewGroupCreationCompletedVC {
+            destination.selectedGroup = newGroup
+            destination.newCreatedGroup = true
+        }
     }
 }

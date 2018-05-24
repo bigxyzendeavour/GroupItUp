@@ -111,7 +111,12 @@ class Comment {
     
     var comment: String {
         get {
-            return _comment
+            if _comment != nil {
+                return _comment
+            } else {
+                _comment = ""
+                return _comment
+            }
         }
         set {
             _comment = newValue

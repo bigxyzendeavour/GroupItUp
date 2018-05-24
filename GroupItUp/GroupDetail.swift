@@ -12,8 +12,8 @@ import Firebase
 class GroupDetail {
     
     private var _groupID: String!
-    private var _groupDisplayImageURL: String!
-    private var _groupDisplayImage: UIImage!
+    private var _groupDisplayImageURL: String?
+    private var _groupDisplayImage: UIImage?
     private var _groupTitle: String!
     private var _groupDetailDescription: String!
     private var _groupCategory: String!
@@ -22,7 +22,7 @@ class GroupDetail {
     private var _groupContactPhone: Int!
     private var _groupLikes: Int!
     private var _groupAttending: Int!
-    private var _groupAttendingUsers: [String]!
+    private var _groupAttendingUsers: [String: Bool]!
     private var _groupMaxMembers: Int!
     private var _groupMeetingTime: String!
     private var _groupMeetUpAddress: Address!
@@ -32,18 +32,36 @@ class GroupDetail {
     private var _groupMaxReached: Bool!
     
     init() {
-        
+        self._groupID = ""
+        self._groupDisplayImageURL = ""
+        self._groupDisplayImage = UIImage()
+        self._groupTitle = ""
+        self._groupDetailDescription = ""
+        self._groupCategory = ""
+        self._groupContact = ""
+        self._groupContactEmail = ""
+        self._groupContactPhone = Int()
+        self._groupMaxMembers = 0
+        self._groupMeetUpAddress = nil
+        self._groupLikes = 0
+        self._groupAttending = 1
+        self._groupAttendingUsers = [String: Bool]()
+        self._groupCreationDate = ""
+        self._groupStatus = ""
+        self._groupHost = ""
+        self._groupMaxReached = false
     }
     
     //Current user creates a new group
     init(new: Bool) {
         if new {
-            self._groupCreationDate = "\(NSDate().fullTimeCreated())"
             self._groupHost = DataService.ds.uid
+            self._groupCreationDate = "\(NSDate().fullTimeCreated())"
             self._groupAttending = 1
             self._groupLikes = 0
             self._groupStatus = "Planning"
-            self._groupAttendingUsers = [_groupHost]
+            self._groupAttendingUsers = [_groupHost: true]
+            self._groupMaxReached = false
         }
     }
     
@@ -56,18 +74,35 @@ class GroupDetail {
         
         if let groupDisplayImageURL = groupDetailData["Group Display Photo URL"] as? String {
             self._groupDisplayImageURL = groupDisplayImageURL
-            Storage.storage().reference(forURL: groupDisplayImageURL).getData(maxSize: 1024 * 1024, completion: { (data, error) in
-                if error != nil {
-                    print("GroupDetailModel: Error - \(error?.localizedDescription)")
-                } else {
-                    let image = UIImage(data: data!)
-                    self._groupDisplayImage = image
-                }
-            })
+//            DispatchQueue.global().async {
+//                Storage.storage().reference(forURL: groupDisplayImageURL).getData(maxSize: 1024 * 1024){ (data, error) in
+//                    if error != nil {
+//                        print("GroupDetailModel: Error - \(error?.localizedDescription)")
+//                    } else {
+//                        let image = UIImage(data: data!)
+//                        self._groupDisplayImage = image
+//                    }
+//                }
+//            }
+        } else {
+            self._groupDisplayImageURL = ""
         }
         
         if let groupCreationDate = groupDetailData["Created"] as? String {
             self._groupCreationDate = groupCreationDate
+        }
+        
+        if let groupStatus = groupDetailData["Status"] as? String {
+            let df = DateFormatter()
+            df.dateFormat = "yyyy-MM-dd HH:mm"
+            let currentDate = NSDate() as Date
+            let creationDate = df.date(from: groupCreationDate)!
+            let daysDiff = NSDate().calculateIntervalBetweenDates(newDate: creationDate, compareDate: currentDate)
+            if daysDiff > 1 {
+                self._groupStatus = "Completed"
+            } else {
+               self._groupStatus = groupStatus
+            }
         }
         
         if let detailDescription = groupDetailData["Detail Description"] as? String {
@@ -99,12 +134,12 @@ class GroupDetail {
         }
         
         if let attendingUsers = groupDetailData["Attending Users"] as? Dictionary<String, Bool> {
-            var tempUsers = [String]()
+            var tempUsers = [String: Bool]()
             for eachAttendingUser in attendingUsers {
                 let userID = eachAttendingUser.key
-                tempUsers.append(userID)
-                self._groupAttendingUsers = tempUsers
+                tempUsers[userID] = true
             }
+            self._groupAttendingUsers = tempUsers
         }
         
         if let maxAttendingMembers = groupDetailData["Max Attending Members"] as? Int {
@@ -123,11 +158,11 @@ class GroupDetail {
             let country = meetUpAddressData["Country"]!
             let address = Address(street: street, city: city, province: province, postal: postal, country: country)
             self._groupMeetUpAddress = address
+        } else {
+            self._groupMeetUpAddress = Address()
         }
         
-        if let groupStatus = groupDetailData["Status"] as? String {
-            self._groupStatus = groupStatus
-        }
+        
         
         if let groupHost = groupDetailData["Host"] as? String {
             self._groupHost = groupHost
@@ -151,7 +186,12 @@ class GroupDetail {
     
     var groupDisplayImageURL: String {
         get {
-            return _groupDisplayImageURL
+            if _groupDisplayImageURL != nil {
+                return _groupDisplayImageURL!
+            } else {
+                _groupDisplayImageURL = ""
+                return _groupDisplayImageURL!
+            }
         }
         set {
             _groupDisplayImageURL = newValue
@@ -161,7 +201,12 @@ class GroupDetail {
     
     var groupDisplayImage: UIImage {
         get {
-            return _groupDisplayImage
+            if _groupDisplayImage != nil {
+                return _groupDisplayImage!
+            } else {
+                _groupDisplayImage = UIImage()
+                return _groupDisplayImage!
+            }
         }
         set {
             _groupDisplayImage = newValue
@@ -240,7 +285,7 @@ class GroupDetail {
         }
     }
     
-    var groupAttendingUsers: [String] {
+    var groupAttendingUsers: [String: Bool] {
         get {
             return _groupAttendingUsers
         }
@@ -310,14 +355,5 @@ class GroupDetail {
         set {
             _groupMaxReached = newValue
         }
-    }
-}
-
-extension NSDate {
-    
-    func fullTimeCreated() -> String {
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        return df.string(from: self as Date)
     }
 }

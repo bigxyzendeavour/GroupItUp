@@ -50,31 +50,33 @@ class LocationServices {
                     }
                     
                     completion(address, nil)
-                    
                 }
+            }
+        }
+    }
+    
+    func getLocation(address: String, completion: @escaping (_ location: CLLocation?, _ error: Error?) -> ()) {
+        let geoCoder = CLGeocoder()
+        
+        geoCoder.geocodeAddressString(address, completionHandler: {(placemarks, error) -> Void in
+            
+            if let e = error {
                 
+                completion(nil, e)
+                
+            } else{
+                
+                let placeArray = placemarks as [CLPlacemark]!
+                
+                var placeMark: CLPlacemark!
+                
+                placeMark = placeArray?.first
+                
+                let destinationLocation = placeMark.location
+                
+                completion(destinationLocation, nil)
             }
             
-        }
-        
+        })
     }
-    
-    func getAddressDetail(address: CLLocation, completion: @escaping (_ finalAddress: JSONDictionary?, _ error: Error?) -> ()) {
-        let geoCoder = CLGeocoder()
-        geoCoder.reverseGeocodeLocation(address) { (placemarks, error) in
-            if error != nil {
-                print("Error: \(error?.localizedDescription)")
-            } else {
-                let placeArray = placemarks as [CLPlacemark]!
-                var placeMark: CLPlacemark!
-                placeMark = placeArray?[0]
-                guard let specificAddress = placeMark.addressDictionary as? JSONDictionary else {
-                    return
-                }
-                
-                completion(specificAddress, nil)
-            }
-        }
-    }
-    
 }

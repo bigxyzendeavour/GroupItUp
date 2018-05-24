@@ -29,6 +29,10 @@ class NearbyGroupCommentEntryCell: UITableViewCell {
 //    func getNearbyGroupDetailCommentCell() -> NearbyGroupDetailCommentCell {
 //        return 
 //    }
+    
+    func configureCell() {
+        commentTextField.placeholder = "Leave a comment"
+    }
 
 
     func setSelectedGroup(group: Group) {
@@ -38,6 +42,7 @@ class NearbyGroupCommentEntryCell: UITableViewCell {
     @IBAction func sendBtnPressed(_ sender: UIButton) {
         if let comment = commentTextField.text {
             if comment != "" {
+                commentTextField.resignFirstResponder()
                 var comments = selectedGroup.groupComments
                 let userEntryComment = Comment()
                 userEntryComment.comment = comment
@@ -47,7 +52,7 @@ class NearbyGroupCommentEntryCell: UITableViewCell {
                 } else {
                     userEntryComment.commentID = "\(count + 1)"
                 }
-                comments.append(userEntryComment)
+                comments.insert(userEntryComment, at: 0)
                 let commentData = [userEntryComment.commentID: ["Comment": comment, "User ID": userEntryComment.userID, "Username": userEntryComment.username]]
                 DataService.ds.REF_GROUPS.child(selectedGroup.groupID).child("Comments").updateChildValues(commentData)
                 if let delegate = self.delegate {

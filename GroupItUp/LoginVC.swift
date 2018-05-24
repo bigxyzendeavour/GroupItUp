@@ -68,11 +68,6 @@ class LoginVC: UIViewController {
 //        DataService.ds.uid = KeychainWrapper.standard.string(forKey: KEY_UID)
 //        activityIndicator.stopAnimating()
         //        loadingView.hide()
-        DataService.ds.REF_USERS.child(id).child("Username").observeSingleEvent(of: .value, with: { (snapshot) in
-            if let username = snapshot.value as? String {
-                KeychainWrapper.standard.set(username, forKey: CURRENT_USERNAME)
-            }
-        })
         performSegue(withIdentifier: "NearbyVC", sender: nil)
     }
     

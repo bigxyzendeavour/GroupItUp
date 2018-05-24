@@ -24,19 +24,16 @@ class NewGroupDescriptionCell: UITableViewCell, UITextFieldDelegate, UITextViewD
     override func awakeFromNib() {
         super.awakeFromNib()
         groupDescriptionTextView.delegate = self
-    }
-    
-    func configureCell(description: String) {
-        groupDescriptionTextView.text = description
+        groupTitleTextField.delegate = self
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
         let delegate = self.delegate
-        let tag = groupDescriptionTextView.tag
-        if tag == 0 {
-            if let groupDescription = groupDescriptionTextView.text, groupDescription != "" {
-                delegate?.setGroupDescription(description: groupDescription)
-            }
+        
+        if let groupDescription = groupDescriptionTextView.text, groupDescription != "" {
+            delegate?.setGroupDescription(description: groupDescription)
+        } else {
+            delegate?.setGroupDescription(description: "")
         }
     }
     
@@ -44,6 +41,8 @@ class NewGroupDescriptionCell: UITableViewCell, UITextFieldDelegate, UITextViewD
         let delegate = self.delegate
         if let groupTitle = groupTitleTextField.text, groupTitle != "" {
             delegate?.setGroupTitle(title: groupTitle)
+        } else {
+            delegate?.setGroupTitle(title: "")
         }
         
     }

@@ -7,12 +7,17 @@
 //
 
 import UIKit
+import Firebase
 
 class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, NearbyGroupCommentEntryCellDelegate, NearbyGroupDetailCellDelegate {
     
     @IBOutlet weak var tableView: UITableView!
-    
+    @IBOutlet weak var actionBtn: UIBarButtonItem!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+
+    var newCreatedGroup: Bool = false
     var selectedGroup: Group!
+    static var imageCache: NSCache<NSString, UIImage> = NSCache()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,9 +28,18 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         
-//        photoOpenCollectionView.delegate = self
-//        photoOpenCollectionView.dataSource = self
-       
+        if newCreatedGroup == true {
+            self.navigationItem.hidesBackButton = true
+        }
+        
+        if selectedGroup.groupDetail.groupHost != DataService.ds.uid {
+            actionBtn.isEnabled = false
+        }
+        
+        if selectedGroup.groupDetail.groupStatus != "Planning" {
+            sendAlertWithoutHandler(alertTitle: "Inactive", alertMessage: "This group has been closed!", actionTitle: ["Cancel"])
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -39,10 +53,26 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NearbyGroupDetailPreviousMeetPhotoCollectionCell", for: indexPath) as? NearbyGroupDetailPreviousMeetPhotoCollectionCell {
-            let photo = selectedGroup.groupPhotos[indexPath.row]
+            var photo = Photo()
+            if selectedGroup.groupPhotos.count > 0 {
+                photo = selectedGroup.groupPhotos[indexPath.row]
+                if photo.photo != UIImage() {
+                    cell.configureCell(image: photo.photo)
+                } else {
+                    let url = photo.photoURL
+                    Storage.storage().reference(forURL: url).getData(maxSize: 1024 * 1024) { (data, error) in
+                        if error != nil {
+                            print("NearbyGroupDetailPreviousMeetPhotoCollectionCell: \(error?.localizedDescription)")
+                        } else {
+                            let image = UIImage(data: data!)
+                            cell.configureCell(image: image!)
+                            self.selectedGroup.groupPhotos[indexPath.row].photo = image!
+                        }
+                    }
+                }            }
             cell.groupPhotoImage.isUserInteractionEnabled = true
             
-            cell.configureCell(photo: photo)
+            
             return cell
         }
 //        else if let cell = photoOpenCollectionView.dequeueReusableCell(withReuseIdentifier: "NearbyGroupPreviousPhotoOpenCollectionCell", for: indexPath) as? NearbyGroupPreviousPhotoOpenCollectionCell {
@@ -72,8 +102,19 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     }
    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 3 {
+            if selectedGroup.groupPhotos.count > 0 {
+                return 1
+            } else {
+                return 0
+            }
+        }
         if section == 4 {
-            return selectedGroup.groupComments.count
+            if selectedGroup.groupComments.count > 0 {
+                return selectedGroup.groupComments.count
+            } else {
+                return 0
+            }
         } else {
             return 1
         }
@@ -82,7 +123,14 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDisplayPhotoCell") as! NearbyGroupDisplayPhotoCell
-            cell.configureCell(group: selectedGroup)
+            if selectedGroup.groupDetail.groupDisplayImage != UIImage() {
+                cell.configureCell(group: selectedGroup, image: selectedGroup.groupDetail.groupDisplayImage)
+            } else if let image = GroupDetailVC.imageCache.object(forKey: selectedGroup.groupDetail.groupDisplayImageURL as NSString) {
+                cell.configureCell(group: selectedGroup, image: image)
+            } else {
+                cell.configureCell(group: selectedGroup, image: nil)
+            }
+            
             return cell
         } else if indexPath.section == 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDescriptionCell") as! NearbyGroupDescriptionCell
@@ -100,8 +148,11 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             return cell
         } else if indexPath.section == 4 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDetailCommentCell") as! NearbyGroupDetailCommentCell
-            let comment = selectedGroup.groupComments[indexPath.row]
-            cell.configureCell(comment: comment)
+            var comment = Comment()
+            if selectedGroup.groupComments.count > 0 {
+                comment = selectedGroup.groupComments[indexPath.row]
+                cell.configureCell(comment: comment)
+            } 
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupCommentEntryCell") as! NearbyGroupCommentEntryCell
@@ -115,16 +166,24 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         if section <= 2 {
             //return nothing
             return CGFloat.leastNormalMagnitude
-        } else if section <= 4 {
+        } else if section == 3 {
+            if selectedGroup.groupPhotos.count > 0 {
+                return 25
+            }
+            return CGFloat.leastNormalMagnitude
+        } else if section == 4 {
             return 25
         } else {
-            return 0.0000000001
+            return CGFloat.leastNormalMagnitude
         }
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 3 {
-            return "Previous Photos"
+            if selectedGroup.groupPhotos.count > 0 {
+                return "Previous Photos"
+            }
+            return ""
         } else if section == 4 {
             return "Comments"
         } else {
@@ -138,14 +197,17 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     
     func reloadCommentSection() {
         tableView.beginUpdates()
-        let indexSet = NSIndexSet(index: 4)
-        tableView.reloadSections(indexSet as IndexSet, with: .bottom)
+//        let indexSet = NSIndexSet(index: 4)
+//        tableView.reloadSections(indexSet as IndexSet, with: .bottom)
+        let indexPath = IndexPath(row: selectedGroup.groupComments.count - 1, section: 4)
+        tableView.insertRows(at: [indexPath], with: .automatic)
 //        tableView.reloadData()
         tableView.endUpdates()
     }
+
+    @IBAction func actionBtnPressed(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: "SettingVC", sender: nil)
+    }
     
-//    func openPhotoCollectionView() {
-//        photoOpenCollectionView.isHidden = false
-//    }
 
 }

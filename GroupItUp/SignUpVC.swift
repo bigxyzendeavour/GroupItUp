@@ -111,9 +111,10 @@ class SignUpVC: UIViewController {
                         } else {
                             print("Grandon: successfully create a new user")
                             KeychainWrapper.standard.set(username, forKey: CURRENT_USERNAME)
+                            KeychainWrapper.standard.set(EMPTY_IMAGE_URL, forKey: CURRENT_USER_PROFILE_IMAGE_URL)
                             if let user = user {
                                 var userData = [String: Any]()
-                                userData = ["Username": username]
+                                userData = ["Username": username, "User Display Photo URL": EMPTY_IMAGE_URL]
                                 self.completeSignIn(id: user.uid, userData: userData)
                                 Auth.auth().currentUser?.sendEmailVerification(completion: { (error) in
                                     if error == nil {

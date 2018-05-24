@@ -36,10 +36,8 @@ class NearbyGroupDetailCell: UITableViewCell {
     func configureCell(group: Group) {
         let groupDetail = group.groupDetail
         groupStatusLabel.text = groupDetail.groupStatus
-        if groupDetail.groupStatus == "Cancel" {
+        if groupDetail.groupStatus == "Cancel" || groupDetail.groupStatus == "Completed" {
             groupStatusLabel.backgroundColor = UIColor.red
-            let viewController = UIViewController(nibName: "GroupDetailVC", bundle: nil)
-            viewController.sendAlertWithoutHandler(alertTitle: "Cancelled", alertMessage: "This group has been cancelled!", actionTitle: ["Cancel"])
         }
         groupMaxMembersLabel.text = "\(groupDetail.groupMaxMembers)"
         groupCategoryLabel.text = groupDetail.groupCategory
@@ -48,6 +46,17 @@ class NearbyGroupDetailCell: UITableViewCell {
         groupContactPhoneLabel.text = "\(groupDetail.groupContactPhone)"
         groupContactEmailLabel.text = groupDetail.groupContactEmail
         groupMeetUpAddressLabel.text = groupDetail.groupMeetUpAddress.address
+    }
+    
+    func configureNewGroupCell(group: Group) {
+        groupStatusLabel.text = group.groupDetail.groupStatus
+        groupMaxMembersLabel.text = "\(group.groupDetail.groupMaxMembers)"
+        groupCategoryLabel.text = group.groupDetail.groupCategory
+        groupMeetingUpTimeLabel.text = group.groupDetail.groupMeetingTime
+        groupContactPersonLabel.text = group.groupDetail.groupContact
+        groupContactPhoneLabel.text = "\(group.groupDetail.groupContactPhone)"
+        groupContactEmailLabel.text = group.groupDetail.groupContactEmail
+        groupMeetUpAddressLabel.text = group.groupDetail.groupMeetUpAddress.address
     }
 
     @IBAction func directionBtnPressed(_ sender: UIButton) {

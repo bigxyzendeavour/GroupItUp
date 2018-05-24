@@ -1,14 +1,14 @@
 //
-//  NewGroupAddressEntryVC.swift
+//  DetailSettingVC.swift
 //  GroupItUp
 //
-//  Created by Grandon Lin on 2018-05-05.
+//  Created by Grandon Lin on 2018-05-17.
 //  Copyright © 2018 Grandon Lin. All rights reserved.
 //
 
 import UIKit
 
-class NewGroupAddressEntryVC: UIViewController {
+class DetailSettingVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

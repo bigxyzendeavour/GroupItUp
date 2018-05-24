@@ -23,7 +23,7 @@ class NearbyGroupDetailCommentCell: UITableViewCell {
     func configureCell(comment: Comment) {
         userDisplayImage.image = comment.userDisplayImage
         usernameLabel.text = comment.username
-        userCommentLabel.text = comment.comment
+        userCommentLabel.text = comment.comment        
     }
 
 //    func setTableViewDataSourceDelegate

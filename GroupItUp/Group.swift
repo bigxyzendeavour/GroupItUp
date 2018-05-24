@@ -16,9 +16,14 @@ class Group {
     private var _groupPhotos: [Photo]?
     
     init() {
+        self._groupID = ""
+        self._groupDetail = GroupDetail()
+        self._groupComments = [Comment]()
+        self._groupPhotos = [Photo]()
     }
     
     init(groupID: String, groupComments: [Comment], groupDetails: GroupDetail, groupPhotos: [Photo]) {
+        self._groupID = groupID
         self._groupComments = groupComments
         self._groupDetail = groupDetails
         self._groupPhotos = groupPhotos

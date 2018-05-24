@@ -24,6 +24,7 @@ class MoreVC: UIViewController, OpalImagePickerControllerDelegate {
             try Auth.auth().signOut()
             print("Grandon(SetupVC): the current key is \(Auth.auth().currentUser?.uid)")
             KeychainWrapper.standard.removeObject(forKey: CURRENT_USERNAME)
+            KeychainWrapper.standard.removeObject(forKey: CURRENT_USER_PROFILE_IMAGE_URL)
             performSegue(withIdentifier: "LoginVC", sender: nil)
         } catch let err as NSError {
             print(err.debugDescription)

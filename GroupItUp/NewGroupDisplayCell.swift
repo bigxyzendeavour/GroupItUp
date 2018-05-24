@@ -23,4 +23,6 @@ class NewGroupDisplayCell: UITableViewCell {
         groupDisplayImageView.image = groupDisplayImage
     }
     
+    
+    
 }

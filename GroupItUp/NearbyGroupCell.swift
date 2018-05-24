@@ -24,35 +24,21 @@ class NearbyGroupCell: UITableViewCell {
     }
 
     func configureCell(group: Group) {
-        let groupDisplayURL = group.groupDetail.groupDisplayImageURL
-        let groupDisplayPhotoRef = Storage.storage().reference(forURL: groupDisplayURL)
-        groupDisplayPhotoRef.getData(maxSize: 1024 * 1024) { (data, error) in
-            if error != nil {
-                print("Photo: Error - \(error?.localizedDescription)")
-            } else {
-                let image = UIImage(data: data!)
-                self.groupDisplayImage.image = image
-            }
-        }
+        groupDisplayImage.image = group.groupDetail.groupDisplayImage
         groupTitleLabel.text = group.groupDetail.groupTitle
         groupDetailLabel.text = group.groupDetail.groupDetailDescription
         groupLocationLabel.text = group.groupDetail.groupMeetUpAddress.city
-        let daysPassed = calculateInterval(group: group)
-        assignPostDateLbl(daysPassed: daysPassed, group: group)
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd HH:mm"
+        let currentDate = NSDate() as Date
+        let creationDate = df.date(from: group.groupDetail.groupCreationDate)!
+        let daysDiff = NSDate().calculateIntervalBetweenDates(newDate: creationDate, compareDate: currentDate)
+        assignPostDateLbl(daysDifference: daysDiff, group: group)
     }
 
-    func calculateInterval(group: Group) -> Int {
-        let currentDate = NSDate()
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let date = df.date(from: group.groupDetail.groupCreationDate)!
-        let interval = currentDate.timeIntervalSince(date as Date)
-        return Int(interval) / 259200
-    }
-    
-    func assignPostDateLbl(daysPassed: Int, group: Group) {
-        if  daysPassed > 3 {
-            self.groupCreationDateLabel.text = "\(daysPassed)ds ago"
+    func assignPostDateLbl(daysDifference: Int, group: Group) {
+        if  daysDifference > 3 {
+            self.groupCreationDateLabel.text = "\(daysDifference)ds ago"
         } else {
             let date = group.groupDetail.groupCreationDate
             let index = date.index(date.startIndex, offsetBy: 10)

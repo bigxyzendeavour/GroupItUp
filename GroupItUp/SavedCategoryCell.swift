@@ -23,16 +23,29 @@ class SavedCategoryCell: UITableViewCell {
     }
 
     func configureCell(group: Group) {
-        let groupDisplayURL = group.groupDetail.groupDisplayImageURL
-        let groupDisplayPhotoRef = Storage.storage().reference(forURL: groupDisplayURL)
-        groupDisplayPhotoRef.getData(maxSize: 1024 * 1024) { (data, error) in
-            if error != nil {
-                print("Photo: Error - \(error?.localizedDescription)")
-            } else {
-                let image = UIImage(data: data!)
-                self.groupDisplayImageView.image = image
-            }
-        }
+//        if group.groupDetail.groupDisplayImageURL != "" {
+//            let groupDisplayURL = group.groupDetail.groupDisplayImageURL
+//            let groupDisplayPhotoRef = Storage.storage().reference(forURL: groupDisplayURL)
+//            groupDisplayPhotoRef.getData(maxSize: 1024 * 1024) { (data, error) in
+//                if error != nil {
+//                    print("Photo: Error - \(error?.localizedDescription)")
+//                } else {
+//                    let image = UIImage(data: data!)
+//                    self.groupDisplayImageView.image = image
+//                }
+//            }
+//        }
+//        let groupID = group.groupID
+//        DataService.ds.STORAGE_GROUP_IMAGE.child(groupID).child("Display").getData(maxSize: 1024 * 1024) { (data, error) in
+//            if error != nil {
+//                print("\(error?.localizedDescription)")
+//            } else {
+//                let image = UIImage(data: data!)
+//                self.groupDisplayImageView.image = image!
+//                MySavedGroupVC.imageCache.setObject(image!, forKey: group.groupDetail.groupDisplayImageURL as NSString)
+//            }
+//        }
+        groupDisplayImageView.image = group.groupDetail.groupDisplayImage
         groupTitleLabel.text = group.groupDetail.groupTitle
         groupDescriptionLabel.text = group.groupDetail.groupDetailDescription
         groupLocationLabel.text = group.groupDetail.groupMeetUpAddress.city
@@ -43,7 +56,7 @@ class SavedCategoryCell: UITableViewCell {
     func calculateInterval(group: Group) -> Int {
         let currentDate = NSDate()
         let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        df.dateFormat = "yyyy-MM-dd HH:mm"
         let date = df.date(from: group.groupDetail.groupCreationDate)!
         let interval = currentDate.timeIntervalSince(date as Date)
         return Int(interval) / 259200

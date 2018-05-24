@@ -15,31 +15,58 @@ protocol NewGroupDetailCellDelegate {
 
 class NewGroupDetailCell: UITableViewCell, UITextFieldDelegate {
     
-    @IBOutlet weak var groupDetailTextField: UITextField!
+    @IBOutlet weak var maxTextField: UITextField!
+    @IBOutlet weak var timeTextField: UITextField!
+    @IBOutlet weak var contactTextField: UITextField!
+    @IBOutlet weak var phoneTextField: UITextField!
+    @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var categoryTextField: UITextField!
 
     var delegate: NewGroupDetailCellDelegate?
     var datePicker: UIDatePicker!
     var pickerView: UIPickerView!
-    let categoryArray = ["Sport", "Entertainment", "Travel", "Food", "Study"]
+    let categoryArray = ["", "Sport", "Entertainment", "Travel", "Food", "Study"]
     static var detail = [String: Any]()
 
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        groupDetailTextField.delegate = self
+        maxTextField.delegate = self
+        timeTextField.delegate = self
+        contactTextField.delegate = self
+        phoneTextField.delegate = self
+        emailTextField.delegate = self
+        categoryTextField.delegate = self
         
     }
     
-    func configureCell(detail: String) {
-        groupDetailTextField.placeholder = detail
-    }
+//    func configureCell(detail: Dictionary<String, Any>) {
+//        if detail.keys.contains("Max Attending Members") {
+//            maxTextField.text = "\(detail["Max Attending Members"]!)"
+//            }
+//        if detail.keys.contains("Time") {
+//            timeTextField.text = "\(detail["Time"]!)"
+//        }
+//        if detail.keys.contains("Contact") {
+//            contactTextField.text = "\(detail["Contact"])"
+//        }
+//        if detail.keys.contains("Phone") {
+//            phoneTextField.text = "\(detail["Phone"])"
+//        }
+//        if detail.keys.contains("Email") {
+//            emailTextField.text = "\(detail["Email"])"
+//        }
+//        if detail.keys.contains("Category") {
+//            categoryTextField.text = "\(detail["Category"])"
+//        }
+//    }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         if let delegate = self.delegate {
-            let tag = groupDetailTextField.tag
+            let tag = textField.tag
             switch tag {
             case 0:
-                if let max = Int(groupDetailTextField.text!) {
+                if let max = Int(maxTextField.text!) {
                     NewGroupDetailCell.detail["Max Attending Members"] = max
                 } else {
                     NewGroupDetailCell.detail["Max Attending Members"] = nil
@@ -50,11 +77,11 @@ class NewGroupDetailCell: UITableViewCell, UITextFieldDelegate {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
                 let date = dateFormatter.string(from: selectedDate as Date)
-                groupDetailTextField.text = date
+                timeTextField.text = date
                 NewGroupDetailCell.detail["Time"] = date
                 break
             case 2:
-                let contactPerson = groupDetailTextField.text
+                let contactPerson = contactTextField.text
                 if contactPerson != "" {
                     NewGroupDetailCell.detail["Contact"] = contactPerson
                 } else {
@@ -62,16 +89,17 @@ class NewGroupDetailCell: UITableViewCell, UITextFieldDelegate {
                 }
                 break
             case 3:
-                if let phoneNumber = Int(groupDetailTextField.text!) {
-                    if phoneNumber != Int() {
-                        NewGroupDetailCell.detail["Phone"] = phoneNumber
+                if let phoneNumber = phoneTextField.text {
+                    if phoneNumber != "" {
+                        let phone = Int(phoneNumber)
+                        NewGroupDetailCell.detail["Phone"] = phone
                     } else {
                         NewGroupDetailCell.detail["Phone"] = nil
                     }
                 }
                 break
             case 4:
-                let emailAddress = groupDetailTextField.text
+                let emailAddress = emailTextField.text
                 if emailAddress != "" {
                     NewGroupDetailCell.detail["Email"] = emailAddress
                 } else {
@@ -79,23 +107,16 @@ class NewGroupDetailCell: UITableViewCell, UITextFieldDelegate {
                 }
                 break
             case 5:
-                
-                let locationAddress = groupDetailTextField.text
-                if locationAddress != "" {
-                    NewGroupDetailCell.detail["Address"] = locationAddress
-                } else {
-                    NewGroupDetailCell.detail["Address"] = nil
-                }
-                break
-            case 6:
                 let selectedRow = pickerView.selectedRow(inComponent: 0)
                 let selectedCategory = categoryArray[selectedRow]
                 if selectedCategory != "" {
-                    groupDetailTextField.text = selectedCategory
+                    categoryTextField.text = selectedCategory
                     NewGroupDetailCell.detail["Category"] = selectedCategory
                 } else {
+                    categoryTextField.text = ""
                     NewGroupDetailCell.detail["Category"] = nil
                 }
+                break
             default:
                 break
             }

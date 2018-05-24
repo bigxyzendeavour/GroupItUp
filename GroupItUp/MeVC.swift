@@ -34,18 +34,15 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
     }
 
     func initialize() {
-        if KeychainWrapper.standard.string(forKey: CURRENT_USER_PROFILE_IMAGE_URL) != nil {
-            let url = KeychainWrapper.standard.string(forKey: CURRENT_USER_PROFILE_IMAGE_URL)
-            Storage.storage().reference(forURL: url!).getData(maxSize: 1024 * 1024, completion: { (data, error) in
-                if error != nil {
-                    self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription)", actionTitle: ["Cancel"])
-                } else {
-                    let image = UIImage(data: data!)
-                    self.userDisplayImageView.image = image
-                }
-            })
-        }
-        
+        let userID = DataService.ds.uid!
+        DataService.ds.STORAGE_USER_IMAGE.child("\(userID).jpg").getData(maxSize: 1024 * 1024, completion: { (data, error) in
+            if error != nil {
+                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription)", actionTitle: ["Cancel"])
+            } else {
+                let image = UIImage(data: data!)
+                self.userDisplayImageView.image = image
+            }
+        })
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -74,6 +71,7 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? MySavedGroupVC {
             destination.selectedSavedOption = selectedSavedOption
+            destination.activityIndicator.startAnimating()
         }
     }
     
