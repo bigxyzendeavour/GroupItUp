@@ -10,9 +10,11 @@ import UIKit
 import Firebase
 
 var username: String!
-let CURRENT_USERNAME = "current username"
-let CURRENT_USER_PROFILE_IMAGE_URL = "current user profile image url"
 let EMPTY_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/groupitup.appspot.com/o/emptyImage.jpg?alt=media&token=506a3a20-cccb-4a6d-9c71-fbf61e0b17e5"
+var currentUser = User()
+var countries = [String]()
+var countries_provinces = [String: Any]()
+var provinces = [String]()
 
 extension UIView {
     func widthCircleView() {
@@ -22,6 +24,11 @@ extension UIView {
     
     func heightCircleView() {
         layer.cornerRadius = self.frame.height / 2.0
+        clipsToBounds = true
+    }
+    
+    func heightCircleView(radius: CGFloat) {
+        layer.cornerRadius = radius
         clipsToBounds = true
     }
 }
@@ -136,6 +143,15 @@ extension UIViewController {
         }
         return newGroups
     }
+    
+    func reloadSection(tableView: UITableView, indexSection: Int) {
+        tableView.beginUpdates()
+        let indexSet = NSIndexSet(index: indexSection)
+        tableView.reloadSections(indexSet as IndexSet, with: .automatic)
+        tableView.endUpdates()
+    }
+    
+
 }
 
 extension UIImage {
@@ -169,10 +185,10 @@ extension NSDate {
         return df.string(from: self as Date)
     }
     
-    func calculateIntervalBetweenDates(newDate: Date, compareDate: Date) -> Int {
+    func calculateIntervalBetweenDates(newDate: Date, compareDate: Date) -> Double {
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd HH:mm"
         let interval = compareDate.timeIntervalSince(newDate)
-        return Int(interval) / 259200
+        return Double(interval) / 86400
     }
 }

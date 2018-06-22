@@ -36,14 +36,16 @@ class NearbyGroupDetailCell: UITableViewCell {
     func configureCell(group: Group) {
         let groupDetail = group.groupDetail
         groupStatusLabel.text = groupDetail.groupStatus
-        if groupDetail.groupStatus == "Cancel" || groupDetail.groupStatus == "Completed" {
+        if groupDetail.groupStatus == "Cancelled" || groupDetail.groupStatus == "Completed" {
             groupStatusLabel.backgroundColor = UIColor.red
+        } else {
+            groupStatusLabel.backgroundColor = UIColor.clear
         }
         groupMaxMembersLabel.text = "\(groupDetail.groupMaxMembers)"
         groupCategoryLabel.text = groupDetail.groupCategory
         groupMeetingUpTimeLabel.text = groupDetail.groupMeetingTime
         groupContactPersonLabel.text = groupDetail.groupContact
-        groupContactPhoneLabel.text = "\(groupDetail.groupContactPhone)"
+        groupContactPhoneLabel.text = groupDetail.groupContactPhone
         groupContactEmailLabel.text = groupDetail.groupContactEmail
         groupMeetUpAddressLabel.text = groupDetail.groupMeetUpAddress.address
     }
@@ -54,7 +56,7 @@ class NearbyGroupDetailCell: UITableViewCell {
         groupCategoryLabel.text = group.groupDetail.groupCategory
         groupMeetingUpTimeLabel.text = group.groupDetail.groupMeetingTime
         groupContactPersonLabel.text = group.groupDetail.groupContact
-        groupContactPhoneLabel.text = "\(group.groupDetail.groupContactPhone)"
+        groupContactPhoneLabel.text = group.groupDetail.groupContactPhone
         groupContactEmailLabel.text = group.groupDetail.groupContactEmail
         groupMeetUpAddressLabel.text = group.groupDetail.groupMeetUpAddress.address
     }

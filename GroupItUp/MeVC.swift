@@ -10,14 +10,15 @@ import UIKit
 import SwiftKeychainWrapper
 import Firebase
 
-class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, EditProfileVCDelegate {
 
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var userDisplayImageView: UIImageView!
     @IBOutlet weak var userCollectionView: UICollectionView!
     
-    let savedCategory = ["Like", "Follow", "Attending", "Joined", "Hosted", "Hosting"]
+    let savedCategory = ["Likes", "Follow", "Attending", "Joined", "Hosting", "Hosted"]
     var selectedSavedOption: String!
+    var fromNewGroupCreationCompleteVC = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,19 +31,36 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
         let layout = userCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
         layout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0)
         layout.minimumInteritemSpacing = 0
-        layout.itemSize = CGSize(width: (self.view.frame.width - 20)/2, height: (self.userCollectionView.frame.height - 10)/3)
+        layout.itemSize = CGSize(width: (self.view.frame.width - 20)/2, height: (self.userCollectionView.frame.height - 20)/3)
+        
+        initialize()
+        
+        
+        
     }
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if fromNewGroupCreationCompleteVC == true {
+            self.navigationItem.hidesBackButton = true
+            self.tabBarController?.tabBar.isHidden = false
+            fromNewGroupCreationCompleteVC = false
+        }
+        
+    }
+    
     func initialize() {
-        let userID = DataService.ds.uid!
-        DataService.ds.STORAGE_USER_IMAGE.child("\(userID).jpg").getData(maxSize: 1024 * 1024, completion: { (data, error) in
-            if error != nil {
-                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription)", actionTitle: ["Cancel"])
-            } else {
-                let image = UIImage(data: data!)
-                self.userDisplayImageView.image = image
-            }
-        })
+        usernameLabel.text = currentUser.username
+        userDisplayImageView.image = currentUser.userDisplayImage
+        
+        
+//        Storage.storage().reference(forURL: CURRENT_USER_PROFILE_IMAGE_URL).getData(maxSize: 1024 * 1024) { (data, error) in
+//                if error != nil {
+//                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription)", actionTitle: ["Cancel"])
+//            } else {
+//                let image = UIImage(data: data!)
+//                self.userDisplayImageView.image = image
+//            }
+//        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -71,7 +89,11 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? MySavedGroupVC {
             destination.selectedSavedOption = selectedSavedOption
-            destination.activityIndicator.startAnimating()
+        }
+        if let destination = segue.destination as? EditProfileVC {
+            destination.delegate = self
+            let displayImage = userDisplayImageView.image!
+            destination.displayImage = displayImage
         }
     }
     
@@ -79,4 +101,17 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
         performSegue(withIdentifier: "NewGroupCreationVC", sender: nil)
     }
     
+    @IBAction func editProfileBtnPressed(_ sender: UIButton) {
+        
+        
+        performSegue(withIdentifier: "EditProfileVC", sender: nil)
+    }
+    
+    func updateProfileDisplayImageFromEditProfileVC(image: UIImage) {
+        userDisplayImageView.image = image
+    }
+    
+    func updateUsernameFromEditProfileVC(newName: String) {
+        usernameLabel.text = newName
+    }
 }

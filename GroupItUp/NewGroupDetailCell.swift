@@ -91,8 +91,7 @@ class NewGroupDetailCell: UITableViewCell, UITextFieldDelegate {
             case 3:
                 if let phoneNumber = phoneTextField.text {
                     if phoneNumber != "" {
-                        let phone = Int(phoneNumber)
-                        NewGroupDetailCell.detail["Phone"] = phone
+                        NewGroupDetailCell.detail["Phone"] = phoneNumber
                     } else {
                         NewGroupDetailCell.detail["Phone"] = nil
                     }

@@ -24,12 +24,16 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
     var inUse = false
     static var imageCache: NSCache<NSString, UIImage> = NSCache()
     private var refreshControl = UIRefreshControl()
+    var isRefreshing: Bool!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         tableView.delegate = self
         tableView.dataSource = self
+        
+        let insets = UIEdgeInsets(top: 0, left: 0, bottom: 100, right: 0)
+        tableView.contentInset = insets
         
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -43,19 +47,19 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
         }
         refreshControl.addTarget(self, action: #selector(refreshNearbyGroups), for: .valueChanged)
         refreshControl.attributedTitle = NSAttributedString(string: "Refreshing nearby groups", attributes: nil)
+
         
-        activityIndicator.startAnimating()
-        self.view.isUserInteractionEnabled = false
-//        LocationServices.shared.getAdress { (address, error) in
-//            if let a = address, let city = a["City"] as? String {
-//                self.city = city
-//                DispatchQueue.global().async {
-//                    self.fetchNearbyGroups(city: city)
-//                    
-//                }
-//                
-//            }
-//        }
+        initialize()
+        
+        print(currentUser)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.endRefrenshing()
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -80,8 +84,17 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
                 locationManager.stopUpdatingLocation()
             }
             LocationServices.shared.getAdress { address, error in
-                if let a = address, let city = a["City"] as? String {
+                if error != nil {
+                    self.sendAlertWithoutHandler(alertTitle: "Location Error", alertMessage: "\(error?.localizedDescription). Please refresh.", actionTitle: ["Cancel"])
+                    return
+                }
+                if let a = address, let city = a["City"] as? String, let country = a["Country"] as? String {
                     self.city = city
+                    if currentUser.region == "" {
+                        currentUser.region = country
+                        DataService.ds.REF_USERS_CURRENT.child("Region").setValue(country)
+                    }
+                    
                     self.fetchNearbyGroups(city: city)
                     
                 }
@@ -91,6 +104,55 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
         }
     }
 
+    func initialize() {
+        parseCountriesCSV()
+        currentLocation = locationManager.location
+        if currentLocation != nil {
+            LocationServices.shared.getAdress { address, error in
+                if error != nil {
+                    self.sendAlertWithoutHandler(alertTitle: "Location Error", alertMessage: "\(error?.localizedDescription). Please refresh.", actionTitle: ["Cancel"])
+                    return
+                }
+                if let a = address, let city = a["City"] as? String {
+                    self.city = city
+                    self.fetchNearbyGroups(city: city)
+                    
+                }
+            }
+        } else {
+            self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Network connection issue, please wait and refresh.", actionTitle: ["OK"])
+        }
+        
+    }
+    
+    func parseCountriesCSV() {
+        let path = Bundle.main.path(forResource: "countries_provinces", ofType: "csv")!
+        
+        do {
+            let csv = try CSV(contentsOfURL: path)
+            let rows = csv.rows
+            
+            for row in rows {
+                let country = row["country"]!
+                
+                let province = row["state"]!
+                if !countries.contains(country) {
+                    countries.append(country)
+                    provinces.removeAll()
+                    provinces.append("")
+                    provinces.append(province)
+                    countries_provinces[country] = provinces
+                } else {
+                    provinces.append(province)
+                    countries_provinces[country] = provinces
+                }
+            }
+            
+        } catch let err as NSError {
+            
+            print(err.debugDescription)
+        }
+    }
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -102,20 +164,21 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let group = nearbyGroups[indexPath.row]
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupCell") as? NearbyGroupCell {
-            cell.configureCell(group: group)
-//            DispatchQueue.main.async {
-//                self.activityIndicator.stopAnimating()
-//            }
-            return cell
-        } else {
-            return UITableViewCell()
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupCell") as! NearbyGroupCell
+        cell.configureCell(group: group)
+        //            DispatchQueue.main.async {
+        //                self.activityIndicator.stopAnimating()
+        //            }
+        return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedGroup = nearbyGroups[indexPath.row]
         performSegue(withIdentifier: "GroupDetailVC", sender: nil)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -125,123 +188,132 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
     }
     
     @objc private func refreshNearbyGroups() {
-        fetchNearbyGroups(city: city)
+        if inUse == true {
+            if city != nil {
+                fetchNearbyGroups(city: city)
+            } else {
+                endRefrenshing()
+                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Network connection issue, please check your network.", actionTitle: ["OK"])
+                return
+            }
+            
+        } else {
+            locationManager.requestWhenInUseAuthorization()
+        }
+        
     }
     
     func fetchNearbyGroups(city: String) {
         nearbyGroups.removeAll()
         var tempGroups = [Group]()
+        self.startRefreshing()
+        Timer.scheduledTimer(withTimeInterval: 20, repeats: false, block: { (timer) in
+            if self.isRefreshing == true {
+                self.endRefrenshing()
+                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please refresh", actionTitle: ["Cancel"])
+                
+                return
+            }
+        })
         DataService.ds.REF_BASE.child("Groups").observeSingleEvent(of: .value, with: { (snapshot) -> Void in
-            DispatchQueue.global().async {
-                if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
-                    for snap in snapShot {
-                        let group = Group()
-                        var comments = [Comment]()
-                        var previousPhotos = [Photo]()
-                        
-                        let groupID = snap.key
-                        let groupData = snap.value as! Dictionary<String, Any>
-                        let groupDetailData = groupData["Group Detail"] as! Dictionary<String, Any>
-                        if let addressData = groupDetailData["Address"] as? Dictionary<String, String> {
-                            let groupCity = addressData["City"]!
-                            if groupCity == city {
-                                if let commentData = groupData["Comments"] as? Dictionary<String, Any> {
-                                    for eachComment in commentData {
-                                        let commentID = eachComment.key
-                                        let commentDetail = eachComment.value as! Dictionary<String, Any>
-                                        let comment = Comment(commentID: commentID, commentData: commentDetail)
-                                        comments.append(comment)
-                                    }
-                                    let newComments = self.orderCommentsByID(comments: comments)
-                                    group.groupComments = newComments
+            self.tabBarItem.isEnabled = false
+            if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
+                if snapShot.count == 0 {
+                    self.sendAlertWithoutHandler(alertTitle: "No groups nearby", alertMessage: "There are no groups around, please search by another location or interest.", actionTitle: ["OK"])
+                    return
+                }
+                for snap in snapShot {
+                    let group = Group()
+                    var comments = [Comment]()
+                    var previousPhotos = [Photo]()
+                    
+                    let groupID = snap.key
+                    let groupData = snap.value as! Dictionary<String, Any>
+                    let groupDetailData = groupData["Group Detail"] as! Dictionary<String, Any>
+                    if let addressData = groupDetailData["Address"] as? Dictionary<String, String> {
+                        let groupCity = addressData["City"]!
+                        if groupCity == city {
+                            if let commentData = groupData["Comments"] as? Dictionary<String, Any> {
+                                for eachComment in commentData {
+                                    let commentID = eachComment.key
+                                    let commentDetail = eachComment.value as! Dictionary<String, Any>
+                                    let comment = Comment(commentID: commentID, commentData: commentDetail)
+                                    comments.append(comment)
                                 }
-                                if let previousPhotoData = groupData["Previous Photos"] as? Dictionary<String, String> {
-                                    for eachPhoto in previousPhotoData {
-                                        let photoID = eachPhoto.key
-                                        let photoURL = eachPhoto.value
-                                        let photo = Photo(photoID: photoID, photoURL: photoURL)
-                                        previousPhotos.append(photo)
-                                    }
-                                    let newPhotos = self.orderPhotosByID(photos: previousPhotos)
-                                    group.groupPhotos = newPhotos
-                                }
-                                group.groupID = groupID
-                                let details = GroupDetail(groupID: groupID, groupDetailData: groupDetailData)
-                                group.groupDetail = details
-                                tempGroups.append(group)
-                                
+                                let newComments = self.orderCommentsByID(comments: comments)
+                                group.groupComments = newComments
                             }
+                            if let previousPhotoData = groupData["Previous Photos"] as? Dictionary<String, String> {
+                                for eachPhoto in previousPhotoData {
+                                    let photoID = eachPhoto.key
+                                    let photoURL = eachPhoto.value
+                                    let photo = Photo(photoID: photoID, photoURL: photoURL)
+                                    previousPhotos.append(photo)
+                                }
+                                let newPhotos = self.orderPhotosByID(photos: previousPhotos)
+                                group.groupPhotos = newPhotos
+                            }
+                            group.groupID = groupID
+                            let details = GroupDetail(groupID: groupID, groupDetailData: groupDetailData)
+                            group.groupDetail = details
+                            tempGroups.append(group)
                             
                         }
-                    }
-                    self.nearbyGroups = self.orderGroupsByID(groups: tempGroups)
-                    
-                    for group in self.nearbyGroups {
-                        var photoURLs = [String]()
-                        let displayURL = group.groupDetail.groupDisplayImageURL
-                        photoURLs.append(displayURL)
-                        for photo in group.groupPhotos {
-                            let url = photo.photoURL
-                            photoURLs.append(url)
-                        }
                         
-                        for i in 0..<photoURLs.count {
-                            let url = photoURLs[i]
-                            Storage.storage().reference(forURL: url).getData(maxSize: 1024 * 1024, completion: { (data, error) in
-                                if error != nil {
-                                    print("Error: \(error!.localizedDescription)")
-                                } else {
-                                    let image = UIImage(data: data!)
-                                    if i == 0 {
-                                        group.groupDetail.groupDisplayImage = image!
-                                    } else {
-                                        group.groupPhotos[i - 1].photo = image!
-                                    }
-                                    self.updateNearbyGroups(groups: self.nearbyGroups)
-                                    self.tableView.reloadData()
-                                }
-                            })
-                        }
+                    }
+                }
+                self.nearbyGroups = self.orderGroupsByID(groups: tempGroups)
+                
+                for group in self.nearbyGroups {
+                    var photoURLs = [String]()
+                    let displayURL = group.groupDetail.groupDisplayImageURL
+                    photoURLs.append(displayURL)
+                    for photo in group.groupPhotos {
+                        let url = photo.photoURL
+                        photoURLs.append(url)
                     }
                     
-                    self.refreshControl.endRefreshing()
-                    self.activityIndicator.stopAnimating()
-                    self.view.isUserInteractionEnabled = true
-                    
-                    //                for group in self.nearbyGroups {
-                    //                    for photo in group.groupPhotos {
-                    //                        let url = photo.photoURL
-                    //                        Storage.storage().reference(forURL: url).getData(maxSize: 1024 * 1024, completion: { (data, error) in
-                    //                            if error != nil {
-                    //                                print("NearbyVC: \(error?.localizedDescription)")
-                    //                            } else {
-                    //                                let image = UIImage(data: data!)
-                    //                                photo.photo = image!
-                    //                            }
-                    //                        })
-                    //                    }
-                    //                }
-                    //
-                    //                for group in self.nearbyGroups {
-                    //                    let groupID = group.groupID
-                    //                    DataService.ds.STORAGE_GROUP_IMAGE.child(groupID).child("Display.jpg").getData(maxSize: 1024 * 1024, completion: { (data, error) in
-                    //                        if error != nil {
-                    //                            print("\(error?.localizedDescription)")
-                    //                        } else {
-                    //                            let image = UIImage(data: data!)
-                    //                            group.groupDetail.groupDisplayImage = image!
-                    //                        }
-                    //                    })
-                    //                    self.updateNearbyGroups(groups: self.nearbyGroups)
-                    //                    self.tableView.reloadData()
-                    //                }
-                    
+                    for i in 0..<photoURLs.count {
+                        let url = photoURLs[i]
+                        Storage.storage().reference(forURL: url).getData(maxSize: 1024 * 1024, completion: { (data, error) in
+                            if error != nil {
+                                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error!.localizedDescription)", actionTitle: ["Cancel"])
+                                self.endRefrenshing()
+                                return
+                            } else {
+                                let image = UIImage(data: data!)
+                                if i == 0 {
+                                    group.groupDetail.groupDisplayImage = image!
+                                } else {
+                                    group.groupPhotos[i - 1].photo = image!
+                                }
+                                self.updateNearbyGroups(groups: self.nearbyGroups)
+                                self.tableView.reloadData()
+                                self.endRefrenshing()
+                            }
+                        })
+                    }
                 }
             }
             
         })
         
-        
+    }
+    
+    func startRefreshing() {
+        self.isRefreshing = true
+        self.activityIndicator.startAnimating()
+        self.refreshControl.beginRefreshing()
+        self.tableView.isUserInteractionEnabled = false
+        self.view.isUserInteractionEnabled = false
+    }
+    
+    func endRefrenshing() {
+        self.isRefreshing = false
+        self.activityIndicator.stopAnimating()
+        self.refreshControl.endRefreshing()
+        self.tableView.isUserInteractionEnabled = true
+        self.view.isUserInteractionEnabled = true
     }
     
     func updateNearbyGroups(groups: [Group]) {

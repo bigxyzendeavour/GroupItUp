@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, NearbyGroupCommentEntryCellDelegate, NearbyGroupDetailCellDelegate {
+class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, NearbyGroupCommentEntryCellDelegate, NearbyGroupDetailCellDelegate, SettingVCDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var actionBtn: UIBarButtonItem!
@@ -18,6 +18,7 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     var newCreatedGroup: Bool = false
     var selectedGroup: Group!
     static var imageCache: NSCache<NSString, UIImage> = NSCache()
+    var groupDisplay: UIImage!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,14 +33,20 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             self.navigationItem.hidesBackButton = true
         }
         
-        if selectedGroup.groupDetail.groupHost != DataService.ds.uid {
-            actionBtn.isEnabled = false
+        if selectedGroup.groupDetail.groupHost != currentUser.userID {
+            self.actionBtn.isEnabled = false
         }
         
         if selectedGroup.groupDetail.groupStatus != "Planning" {
             sendAlertWithoutHandler(alertTitle: "Inactive", alertMessage: "This group has been closed!", actionTitle: ["Cancel"])
         }
         
+        
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        tableView.reloadData()
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -55,7 +62,7 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NearbyGroupDetailPreviousMeetPhotoCollectionCell", for: indexPath) as? NearbyGroupDetailPreviousMeetPhotoCollectionCell {
             var photo = Photo()
             if selectedGroup.groupPhotos.count > 0 {
-                photo = selectedGroup.groupPhotos[indexPath.row]
+                photo = selectedGroup.groupPhotos[indexPath.item]
                 if photo.photo != UIImage() {
                     cell.configureCell(image: photo.photo)
                 } else {
@@ -71,8 +78,6 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                     }
                 }            }
             cell.groupPhotoImage.isUserInteractionEnabled = true
-            
-            
             return cell
         }
 //        else if let cell = photoOpenCollectionView.dequeueReusableCell(withReuseIdentifier: "NearbyGroupPreviousPhotoOpenCollectionCell", for: indexPath) as? NearbyGroupPreviousPhotoOpenCollectionCell {
@@ -94,6 +99,10 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? PreviousPhotoOpenVC {
             destination.selectedGroup = selectedGroup
+        }
+        if let destination = segue.destination as? SettingVC {
+            destination.currentGroup = selectedGroup
+            destination.delegate = self
         }
     }
     
@@ -125,7 +134,7 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDisplayPhotoCell") as! NearbyGroupDisplayPhotoCell
             if selectedGroup.groupDetail.groupDisplayImage != UIImage() {
                 cell.configureCell(group: selectedGroup, image: selectedGroup.groupDetail.groupDisplayImage)
-            } else if let image = GroupDetailVC.imageCache.object(forKey: selectedGroup.groupDetail.groupDisplayImageURL as NSString) {
+            } else if let image = GroupDetailVC.imageCache.object(forKey: "New Group Display Image" as NSString) {
                 cell.configureCell(group: selectedGroup, image: image)
             } else {
                 cell.configureCell(group: selectedGroup, image: nil)
@@ -148,9 +157,9 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             return cell
         } else if indexPath.section == 4 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDetailCommentCell") as! NearbyGroupDetailCommentCell
-            var comment = Comment()
             if selectedGroup.groupComments.count > 0 {
-                comment = selectedGroup.groupComments[indexPath.row]
+                let comment = selectedGroup.groupComments[indexPath.row]
+                cell.userDisplayImage.heightCircleView()
                 cell.configureCell(comment: comment)
             } 
             return cell
@@ -199,15 +208,73 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         tableView.beginUpdates()
 //        let indexSet = NSIndexSet(index: 4)
 //        tableView.reloadSections(indexSet as IndexSet, with: .bottom)
-        let indexPath = IndexPath(row: selectedGroup.groupComments.count - 1, section: 4)
+        let indexPath = IndexPath(row: 0, section: 4)
         tableView.insertRows(at: [indexPath], with: .automatic)
 //        tableView.reloadData()
         tableView.endUpdates()
-    }
-
-    @IBAction func actionBtnPressed(_ sender: UIBarButtonItem) {
-        performSegue(withIdentifier: "SettingVC", sender: nil)
+        tableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
     
-
+    @IBAction func actionBtnPressed(_ sender: UIBarButtonItem) {
+        if selectedGroup.groupDetail.groupStatus == "Completed" {
+            sendAlertWithoutHandler(alertTitle: "Group Event Completed", alertMessage: "The group event has been completed. Please leave a comment if necessary. Sorry for inconvenience.", actionTitle: ["OK"])
+        } else {
+            performSegue(withIdentifier: "SettingVC", sender: nil)
+        }
+    }
+    
+    func updateDisplayImageFromSettingVC(image: UIImage) {
+        selectedGroup.groupDetail.groupDisplayImage = image
+    }
+    
+    func updateGroupStatus(status: String) {
+        selectedGroup.groupDetail.groupStatus = status
+    }
+    
+    //From SettingVC
+    func updateGroupDetail(detail: GroupDetail) {
+        selectedGroup.groupDetail = detail
+    }
+    
+    func updateGroupAddress(address: Address) {
+        selectedGroup.groupDetail.groupMeetUpAddress = address
+    }
+    
+    func updatePreviousGroupPhotos(groupPhotos: [UIImage]) {
+        if selectedGroup.groupPhotos.count > 0 {
+            for group in selectedGroup.groupPhotos {
+                let id = group.photoID
+                DataService.ds.REF_GROUPS.child(selectedGroup.groupID).child("Previous Photos").child(id).removeValue()
+                DataService.ds.STORAGE_GROUP_IMAGE.child(selectedGroup.groupID).child("\(id).jpg").delete(completion: { (error) in
+                    if error != nil {
+                        self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error!.localizedDescription)", actionTitle: ["Cancel"])
+                    }
+                })
+            }
+        }
+        selectedGroup.groupPhotos.removeAll()
+        for i in 0..<groupPhotos.count {
+            var id: String!
+            if i + 1 < 10 {
+                id = "0\(i + 1)"
+            } else {
+                id = "\(i + 1)"
+            }
+            let image = groupPhotos[i]
+            let imageData = UIImageJPEGRepresentation(image, 0.5)
+            let metadata = StorageMetadata()
+            metadata.contentType = "image/jpeg"
+            DataService.ds.STORAGE_GROUP_IMAGE.child(selectedGroup.groupID).child("\(id!).jpg").putData(imageData!, metadata: metadata, completion: { (metadata, error) in
+                if error != nil {
+                    print("Error: \(error?.localizedDescription)")
+                } else {
+                    let url = metadata?.downloadURL()?.absoluteString
+                    let photo = Photo(photoID: id, photoURL: url!)
+                    photo.photo = image
+                    self.selectedGroup.groupPhotos.append(photo)
+                    DataService.ds.REF_GROUPS.child(self.selectedGroup.groupID).child("Previous Photos").child(id).setValue(url!)
+                }
+            })
+        }
+    }
 }

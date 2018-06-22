@@ -23,6 +23,7 @@ class SearchResultCell: UITableViewCell {
     }
 
     func configureCell(group: Group) {
+        groupDisplayImage.image = group.groupDetail.groupDisplayImage
         let groupDisplayURL = group.groupDetail.groupDisplayImageURL
         let groupDisplayPhotoRef = Storage.storage().reference(forURL: groupDisplayURL)
         groupDisplayPhotoRef.getData(maxSize: 1024 * 1024) { (data, error) in
@@ -37,16 +38,16 @@ class SearchResultCell: UITableViewCell {
         groupDetailLabel.text = group.groupDetail.groupDetailDescription
         groupLocationLabel.text = group.groupDetail.groupMeetUpAddress.city
         let daysPassed = calculateInterval(group: group)
-        assignPostDateLbl(daysPassed: daysPassed, group: group)
+        assignPostDateLbl(daysPassed: Int(daysPassed), group: group)
     }
     
-    func calculateInterval(group: Group) -> Int {
-        let currentDate = NSDate()
+    func calculateInterval(group: Group) -> Double {
+        let currentDate = NSDate() as Date
         let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let date = df.date(from: group.groupDetail.groupCreationDate)!
-        let interval = currentDate.timeIntervalSince(date as Date)
-        return Int(interval) / 259200
+        df.dateFormat = "yyyy-MM-dd HH:mm"
+        let creationDate = df.date(from: group.groupDetail.groupCreationDate)!
+        let dayDiff = NSDate().calculateIntervalBetweenDates(newDate: creationDate, compareDate: currentDate)
+        return dayDiff
     }
     
     func assignPostDateLbl(daysPassed: Int, group: Group) {

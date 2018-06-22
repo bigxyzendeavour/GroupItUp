@@ -19,7 +19,7 @@ class GroupDetail {
     private var _groupCategory: String!
     private var _groupContact: String!
     private var _groupContactEmail: String!
-    private var _groupContactPhone: Int!
+    private var _groupContactPhone: String!
     private var _groupLikes: Int!
     private var _groupAttending: Int!
     private var _groupAttendingUsers: [String: Bool]!
@@ -40,7 +40,7 @@ class GroupDetail {
         self._groupCategory = ""
         self._groupContact = ""
         self._groupContactEmail = ""
-        self._groupContactPhone = Int()
+        self._groupContactPhone = ""
         self._groupMaxMembers = 0
         self._groupMeetUpAddress = nil
         self._groupLikes = 0
@@ -55,7 +55,7 @@ class GroupDetail {
     //Current user creates a new group
     init(new: Bool) {
         if new {
-            self._groupHost = DataService.ds.uid
+            self._groupHost = currentUser.userID
             self._groupCreationDate = "\(NSDate().fullTimeCreated())"
             self._groupAttending = 1
             self._groupLikes = 0
@@ -93,16 +93,7 @@ class GroupDetail {
         }
         
         if let groupStatus = groupDetailData["Status"] as? String {
-            let df = DateFormatter()
-            df.dateFormat = "yyyy-MM-dd HH:mm"
-            let currentDate = NSDate() as Date
-            let creationDate = df.date(from: groupCreationDate)!
-            let daysDiff = NSDate().calculateIntervalBetweenDates(newDate: creationDate, compareDate: currentDate)
-            if daysDiff > 1 {
-                self._groupStatus = "Completed"
-            } else {
-               self._groupStatus = groupStatus
-            }
+            self._groupStatus = groupStatus
         }
         
         if let detailDescription = groupDetailData["Detail Description"] as? String {
@@ -121,7 +112,7 @@ class GroupDetail {
             self._groupContactEmail = contactEmail
         }
         
-        if let contactPhone = groupDetailData["Phone"] as? Int {
+        if let contactPhone = groupDetailData["Phone"] as? String {
             self._groupContactPhone = contactPhone
         }
         
@@ -258,7 +249,7 @@ class GroupDetail {
         }
     }
     
-    var groupContactPhone: Int {
+    var groupContactPhone: String {
         get {
             return _groupContactPhone
         }

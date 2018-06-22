@@ -33,7 +33,7 @@ class NearbyGroupCell: UITableViewCell {
         let currentDate = NSDate() as Date
         let creationDate = df.date(from: group.groupDetail.groupCreationDate)!
         let daysDiff = NSDate().calculateIntervalBetweenDates(newDate: creationDate, compareDate: currentDate)
-        assignPostDateLbl(daysDifference: daysDiff, group: group)
+        assignPostDateLbl(daysDifference: Int(daysDiff), group: group)
     }
 
     func assignPostDateLbl(daysDifference: Int, group: Group) {

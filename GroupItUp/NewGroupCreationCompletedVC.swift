@@ -58,6 +58,9 @@ class NewGroupCreationCompletedVC: UIViewController, UITableViewDelegate, UITabl
         if let destination = segue.destination as? PreviousPhotoOpenVC {
             destination.selectedGroup = selectedGroup
         }
+        if let destination = segue.destination as? MeVC {
+            destination.fromNewGroupCreationCompleteVC = true
+        }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -128,4 +131,6 @@ class NewGroupCreationCompletedVC: UIViewController, UITableViewDelegate, UITabl
     func completeCreatingGroup() {
         self.performSegue(withIdentifier: "MeVC", sender: nil)
     }
+    
+    
 }

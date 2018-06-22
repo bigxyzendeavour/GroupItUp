@@ -89,6 +89,10 @@ class Address {
         }
     }
     
+    func resetAddress() {
+        self._address = "\(self._street!), \(self._city!), \(self._province!), \(self._postal!), \(self._country!)"
+    }
+    
     func isEmpty() -> Bool {
         if _street == "" && _city == "" && _province == "" && _postal == "" && _country == "" {
             return true

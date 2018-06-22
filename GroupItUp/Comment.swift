@@ -16,29 +16,21 @@ class Comment {
     private var _userID: String!
     private var _username: String!
     private var _comment: String!
-    private var _userDisplayImageURL: String?
     private var _userDisplayImage: UIImage?
     
-    //Initiate a comment to be sent, no commentID yet, this is set when initiating a comment
     init() {
-        self._userID = DataService.ds.uid
-        let username = KeychainWrapper.standard.string(forKey: CURRENT_USERNAME)
-        self._username = username
-        DataService.ds.REF_USERS_CURRENT.observeSingleEvent(of: .value, with: { (snapshot) in
-            if let snapShot = snapshot.value as? Dictionary<String, String> {
-                let url = snapShot["User Display Photo URL"]
-                self._userDisplayImageURL = url
-            }
-        })
+        self._commentID = ""
+        self._username = ""
+        self._userID = ""
+        self._comment = ""
+        self._userDisplayImage = UIImage()
+    }
+    
+    //Initiate a comment to be sent, no commentID yet, this is set when initiating a comment
+    init(id: String) {
+        self._commentID = ""
+        self._userID = id
         
-        DataService.ds.STORAGE_USER_IMAGE.child("\(userID).jpg").getData(maxSize: 1024 * 1024) { (data, error) in
-            if error != nil {
-                print("Comment(2): Error - \(error?.localizedDescription)")
-            } else {
-                let image = UIImage(data: data!)
-                self._userDisplayImage = image
-            }
-        }
     }
     
     //Download data
@@ -63,23 +55,6 @@ class Comment {
         self._comment = comment
         let username = commentData["Username"] as! String
         self._username = username
-    }
-    
-    init(commentID: String, userID: String, username: String, comment: String, userDisplayImageURL: String) {
-        self._commentID = commentID
-        self._userID = userID
-        self._username = username
-        self._comment = comment
-        self._userDisplayImageURL = userDisplayImageURL
-        let ref = Storage.storage().reference(forURL: userDisplayImageURL)
-        ref.getData(maxSize: 1024 * 1024) { (data, error) in
-            if error != nil {
-                print("Comment(3): Error - \(error?.localizedDescription)")
-            } else {
-                let image = UIImage(data: data!)
-                self._userDisplayImage = image
-            }
-        }
     }
     
     var commentID: String {
@@ -120,21 +95,6 @@ class Comment {
         }
         set {
             _comment = newValue
-        }
-    }
-    
-    var userDisplayImageURL: String {
-        get {
-            if _userDisplayImageURL != nil {
-                return _userDisplayImageURL!
-            } else {
-                _userDisplayImageURL = ""
-                return _userDisplayImageURL!
-            }
-            
-        }
-        set {
-            _userDisplayImageURL = newValue
         }
     }
     

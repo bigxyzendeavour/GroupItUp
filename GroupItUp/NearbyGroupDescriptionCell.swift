@@ -34,7 +34,7 @@ class NearbyGroupDescriptionCell: UITableViewCell {
         groupTitleLabel.text = groupDetail.groupTitle
         groupDetailDescriptionLabel.text = groupDetail.groupDetailDescription
         groupAttendingNumberLabel.text = "\(groupDetail.groupAttending)"
-        if groupDetail.groupHost != DataService.ds.uid {
+        if groupDetail.groupHost != currentUser.userID {
             
             let myLikeRef = DataService.ds.REF_USERS_CURRENT_LIKE
             myLikeRef.observeSingleEvent(of: .value, with: { (snapshot) in
@@ -52,6 +52,13 @@ class NearbyGroupDescriptionCell: UITableViewCell {
             joinBtn.isEnabled = false
             joinBtn.backgroundColor = UIColor.lightGray
             likeBtn.isHidden = true
+        }
+        
+        if group.groupDetail.groupStatus != "Planning" {
+            joinBtn.isEnabled = false
+            joinBtn.backgroundColor = UIColor.lightGray
+            likeBtn.isEnabled = false
+            
         }
     }
     
@@ -91,12 +98,12 @@ class NearbyGroupDescriptionCell: UITableViewCell {
                     self.joinBtn.setTitle("I'm Out!", for: .normal)
                     attending = attending + 1
                     DataService.ds.REF_USERS_CURRENT_ATTENDING.child(self.selectedGroup.groupID).setValue(true)
-                    DataService.ds.REF_GROUPS.child(self.selectedGroup.groupID).child("Group Detail").child("Attending Users").child(DataService.ds.uid!).setValue(true)
+                    DataService.ds.REF_GROUPS.child(self.selectedGroup.groupID).child("Group Detail").child("Attending Users").child(currentUser.userID).setValue(true)
                 } else {
                     self.joinBtn.setTitle("I'm In!", for: .normal)
                     attending = attending - 1
                     DataService.ds.REF_USERS_CURRENT_ATTENDING.child(self.selectedGroup.groupID).removeValue()
-                    DataService.ds.REF_GROUPS.child(self.selectedGroup.groupID).child("Group Detail").child("Attending Users").child(DataService.ds.uid!).removeValue()
+                    DataService.ds.REF_GROUPS.child(self.selectedGroup.groupID).child("Group Detail").child("Attending Users").child(currentUser.userID).removeValue()
                 }
                 self.groupAttendingNumberLabel.text = "\(attending!)"
                 let attendingData = ["Attending": attending!]

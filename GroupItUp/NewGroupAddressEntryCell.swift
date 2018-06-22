@@ -10,6 +10,8 @@ import UIKit
 
 protocol NewGroupAddressEntryCellDelegate {
     func setAddress(address: Address)
+    func setSelectedCountry(country: String)
+    func getSelectedProvinces() -> [String]
 }
 
 class NewGroupAddressEntryCell: UITableViewCell, UITextFieldDelegate {
@@ -25,6 +27,8 @@ class NewGroupAddressEntryCell: UITableViewCell, UITextFieldDelegate {
     var countries : [String]!
     var addressFields = ["Street", "City", "Province", "Postal Code", "Country"]
     var countryPicker: UIPickerView!
+    var provincePicker: UIPickerView!
+    var selectedProvinces: [String]!
     static var address = Address()
     
     override func awakeFromNib() {
@@ -35,25 +39,23 @@ class NewGroupAddressEntryCell: UITableViewCell, UITextFieldDelegate {
         provinceTextField.delegate = self
         postalTextField.delegate = self
         countryTextField.delegate = self
+        
+        
     }
-//
-//    func configureCell(address: Address) {
-//        if address.street != "" {
-//            streetTextField.text = address.street
-//        }
-//        if address.city != ""{
-//            cityTextField.text = address.city
-//        }
-//        if address.province != "" {
-//            provinceTextField.text = address.province
-//        }
-//        if address.postal != "" {
-//            postalTextField.text = address.postal
-//        }
-//        if address.country != "" {
-//            countryTextField.text = address.country
-//        }
-//    }
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        if textField.tag == 4 {
+            var row = 0
+            for i in 0..<countries.count {
+                if countries[i] == currentUser.region {
+                    row = i
+                    break
+                }
+            }
+            countryPicker.selectRow(row, inComponent: 0, animated: false)
+        }
+        return true
+    }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
         if let delegate = self.delegate {
@@ -74,11 +76,20 @@ class NewGroupAddressEntryCell: UITableViewCell, UITextFieldDelegate {
                 }
                 break
             case 2:
-                if let province = provinceTextField.text, province != "" {
-                    NewGroupAddressEntryCell.address.province = province
-                } else {
-                    NewGroupAddressEntryCell.address.province = ""
+                let selectedRow = provincePicker.selectedRow(inComponent: 0)
+                if !delegate.getSelectedProvinces().isEmpty {
+                    selectedProvinces = delegate.getSelectedProvinces()
+                    let selectedProvince = selectedProvinces[selectedRow]
+                    if selectedProvince != "" {
+                        provinceTextField.text = selectedProvince
+                        NewGroupAddressEntryCell.address.province = selectedProvince
+                        
+                    } else {
+                        NewGroupAddressEntryCell.address.province = ""
+                    }
+                    
                 }
+                
                 break
             case 3:
                 if let postal = postalTextField.text, postal != "" {
@@ -93,6 +104,7 @@ class NewGroupAddressEntryCell: UITableViewCell, UITextFieldDelegate {
                 if selectedCountry != "" {
                     countryTextField.text = selectedCountry
                     NewGroupAddressEntryCell.address.country = selectedCountry
+                    delegate.setSelectedCountry(country: selectedCountry)
                 } else {
                     countryTextField.text = ""
                     NewGroupAddressEntryCell.address.country = ""

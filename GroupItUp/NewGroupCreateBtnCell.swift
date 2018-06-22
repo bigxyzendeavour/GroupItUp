@@ -22,9 +22,14 @@ protocol NewGroupCreateBtnCellDelegate {
     func performSegue(withIdentifier: String, sender: Any?)
     func setSelectedGroup(group: Group)
     func getGroupAddressForGroup() -> Address
+    func startActivityIndicator()
+    func stopActivityIndicator()
 }
 
 class NewGroupCreateBtnCell: UITableViewCell {
+    
+    @IBOutlet weak var createGroupButton: UIButton!
+    
     
     var delegate: NewGroupCreateBtnCellDelegate?
 //    var groupDetail: Dictionary<String, Any>!
@@ -33,6 +38,7 @@ class NewGroupCreateBtnCell: UITableViewCell {
     var continueWithoutAccurateAddress: Bool = false
     var groupDetail: GroupDetail!
     var currentGroup: Group!
+    var groupCreationCompleted = false
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -41,23 +47,31 @@ class NewGroupCreateBtnCell: UITableViewCell {
 
     @IBAction func createGroupBtnPressed(_ sender: UIButton) {
         if let delegate = self.delegate {
+            
+            sender.isEnabled = false
+            self.getDelegate().startActivityIndicator()
             var currentDetailForFirebase = delegate.getGroupDetail()
             currentGroup = getCurrentGroup()
             groupDetail = GroupDetail(new: true)
 
             if currentDetailForFirebase.count != 6 {
                 delegate.sendAlertWithoutHandler(alertTitle: "Missing Information", alertMessage: "Something is missing. Please fill in all the information for the Detail section", actionTitle: ["Cancel"])
+                sender.isEnabled = true
+                self.getDelegate().stopActivityIndicator()
+                return
             } else {
                 groupDetail.groupCategory = currentDetailForFirebase["Category"] as! String
                 groupDetail.groupContact = currentDetailForFirebase["Contact"] as! String
                 groupDetail.groupContactEmail = currentDetailForFirebase["Email"] as! String
-                groupDetail.groupContactPhone = currentDetailForFirebase["Phone"] as! Int
+                groupDetail.groupContactPhone = currentDetailForFirebase["Phone"] as! String
                 groupDetail.groupMaxMembers = currentDetailForFirebase["Max Attending Members"] as! Int
                 groupDetail.groupMeetingTime = currentDetailForFirebase["Time"] as! String
             }
             
             if delegate.getGroupTitle() == "" {
                 delegate.sendAlertWithoutHandler(alertTitle: "Missing Title", alertMessage: "Please give a title to your group event", actionTitle: ["Cancel"])
+                sender.isEnabled = true
+                self.getDelegate().stopActivityIndicator()
                 return
             } else {
                 currentDetailForFirebase["Title"] = delegate.getGroupTitle()
@@ -66,6 +80,8 @@ class NewGroupCreateBtnCell: UITableViewCell {
             
             if delegate.getGroupDescription() == "" {
                 delegate.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Please give a description to your group event", actionTitle: ["Cancel"])
+                sender.isEnabled = true
+                self.getDelegate().stopActivityIndicator()
                 return
             } else {
                 currentDetailForFirebase["Detail Description"] = delegate.getGroupDescription()
@@ -74,17 +90,19 @@ class NewGroupCreateBtnCell: UITableViewCell {
             
             if delegate.getGroupMeetingAddress().isEmpty {
                 delegate.sendAlertWithoutHandler(alertTitle: "Incorrect Address", alertMessage: "Please provice an accurate address where the group members will meet up.", actionTitle: ["Cancel"])
+                sender.isEnabled = true
+                self.getDelegate().stopActivityIndicator()
                 return
             } else {
                 currentDetailForFirebase["Address"] = delegate.getGroupMeetingAddress()
                 groupDetail.groupMeetUpAddress = delegate.getGroupAddressForGroup()
             }
             
+            delegate.startActivityIndicator()
             //Local Group
             updateGroupDetail(detail: groupDetail)
             currentGroup.groupDetail = getCurrentDetail()
             updateCurrentGroup(group: currentGroup)
-            
             
             DataService.ds.REF_GROUPS.observeSingleEvent(of: .value, with: { (snapshot) -> Void in
                 if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
@@ -97,7 +115,7 @@ class NewGroupCreateBtnCell: UITableViewCell {
                     currentGroup.groupDetail.groupID = groupID
                     self.updateCurrentGroup(group: currentGroup)
                     self.processGroupPhotos(groupID: groupID, groupDetailForFirebase: groupDetailForFirebase)
-                    
+                    self.getDelegate().stopActivityIndicator()
                     
                 }
             })
@@ -115,18 +133,22 @@ class NewGroupCreateBtnCell: UITableViewCell {
     }
     
     func processGroupPhotos(groupID: String, groupDetailForFirebase: Dictionary<String, Any>) {
+        
         var groupData = [String: Any]()
         var detailForFirebase = groupDetailForFirebase
         let currentDetail = self.getCurrentDetail()
         if getDelegate().getGroupDisplayImage() == UIImage(named: "emptyImage") {
             let yesActionHandler = {(action: UIAlertAction) -> Void in
-                let imageID = "Display"
+                self.getDelegate().startActivityIndicator()
+                let imageID = "Display.jpg"
                 let imageData = UIImageJPEGRepresentation(self.getDelegate().getGroupDisplayImage(), 0.25)
                 let metadata = StorageMetadata()
                 metadata.contentType = "image/jpeg"
                 DataService.ds.STORAGE_GROUP_IMAGE.child(groupID).child(imageID).putData(imageData!, metadata: metadata, completion: { (metadata, error) in
                     if error != nil {
-                        self.getDelegate().sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription)", actionTitle: ["Cancel"])
+                        self.getDelegate().sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error!.localizedDescription)", actionTitle: ["Cancel"])
+                        self.createGroupButton.isEnabled = true
+                        self.getDelegate().stopActivityIndicator()
                     } else {
                         let url = metadata?.downloadURL()?.absoluteString
                         detailForFirebase["Group Display Photo URL"] = url
@@ -149,25 +171,26 @@ class NewGroupCreateBtnCell: UITableViewCell {
                         groupToBeDisplayed.groupPhotos = groupPreviousPhotos
                         self.getDelegate().setSelectedGroup(group: groupToBeDisplayed)
                         self.getDelegate().performSegue(withIdentifier: "NewGroupCreationCompletedVC", sender: nil)
+                        self.getDelegate().stopActivityIndicator()
                     }
                 })
-                
-               
-                
             }
             let cancelActionHandler = {(action: UIAlertAction) -> Void in
+                self.createGroupButton.isEnabled = true
+                self.getDelegate().stopActivityIndicator()
                 return
             }
             getDelegate().sendAlertWithHandler(alertTitle: "Missing Display Image", alertMessage: "The group event doesn't have a display image, are you sure to continue? You can add one later on.", actionTitle: ["Yes", "Cancel"], handlers: [yesActionHandler, cancelActionHandler])
         } else {
+            self.getDelegate().startActivityIndicator()
             let image = getDelegate().getGroupDisplayImage()
-            let imageID = "Display"
+            let imageID = "Display.jpg"
             let imageData = UIImageJPEGRepresentation(image, 0.5)
             let metadata = StorageMetadata()
             metadata.contentType = "image/jpeg"
             DataService.ds.STORAGE_GROUP_IMAGE.child(groupID).child(imageID).putData(imageData!, metadata: metadata, completion: { (metadata, error) in
                 if error != nil {
-                    self.getDelegate().sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription)", actionTitle: ["Cancel"])
+                    self.getDelegate().sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error!.localizedDescription)", actionTitle: ["Cancel"])
                 } else {
                     let url = metadata?.downloadURL()?.absoluteString
                     detailForFirebase["Group Display Photo URL"] = url
@@ -188,7 +211,7 @@ class NewGroupCreateBtnCell: UITableViewCell {
                     }
                     groupToBeDisplayed.groupPhotos = groupPreviousPhotos
                     self.getDelegate().setSelectedGroup(group: groupToBeDisplayed)
-                    self.getDelegate().performSegue(withIdentifier: "NewGroupCreationCompletedVC", sender: nil)
+                   
                 }
             })
             
@@ -215,14 +238,17 @@ class NewGroupCreateBtnCell: UITableViewCell {
                 
                 let metadata = StorageMetadata()
                 metadata.contentType = "image/jpeg"
-                DataService.ds.STORAGE_GROUP_IMAGE.child(groupID).child(imageUid).putData(imageData!, metadata: metadata, completion: { (metadata, error) in
+                DataService.ds.STORAGE_GROUP_IMAGE.child(groupID).child("\(imageUid).jpg").putData(imageData!, metadata: metadata, completion: { (metadata, error) in
                     if error != nil {
-                        self.getDelegate().sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription)", actionTitle: ["Cancel"])
+                        self.getDelegate().sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error!.localizedDescription)", actionTitle: ["Cancel"])
+                        
                     } else {
                         let url = metadata?.downloadURL()?.absoluteString
                         DataService.ds.REF_GROUPS.child(groupID).child("Previous Photos").child(imageUid).setValue(url)
                         let photo = Photo(photoID: imageUid, photoURL: url!)
                         currentGroupPhotos.append(photo)
+                        self.getDelegate().performSegue(withIdentifier: "NewGroupCreationCompletedVC", sender: nil)
+                        self.groupCreationCompleted = true
                     }
                 })
             }
@@ -235,11 +261,11 @@ class NewGroupCreateBtnCell: UITableViewCell {
     func addInitGroupDetail(currentDetail: Dictionary<String, Any>) -> Dictionary<String, Any> {
         var detail = currentDetail
         detail["Created"] = "\(NSDate().fullTimeCreated())"
-        detail["Host"] = DataService.ds.uid
+        detail["Host"] = currentUser.userID
         detail["Attending"] = 1
         detail["Likes"] = 0
         detail["Status"] = "Planning"
-        detail["Attending Users"] = [DataService.ds.uid!: true]
+        detail["Attending Users"] = [currentUser.userID: true]
         return detail
     }
     
@@ -272,34 +298,4 @@ class NewGroupCreateBtnCell: UITableViewCell {
     func updateCurrentGroup(group: Group) {
         currentGroup = group
     }
-    
 }
-
-
-//    func verifyAddress(address: String, delegate: NewGroupCreateBtnCellDelegate) {
-//        let geoCoder = CLGeocoder()
-//        if address != "" {
-//            geoCoder.geocodeAddressString(address, completionHandler: { (placemarks, error) in
-//                if error != nil {
-//                    let yesActionHandler = {(action: UIAlertAction) -> Void in
-//                        self.continueWithoutAccurateAddress = true
-//                    }
-//                    let cancelActionHandler = {(action: UIAlertAction) -> Void in
-//                        self.continueWithoutAccurateAddress = false
-//                    }
-//                    delegate.sendAlertWithHandler(alertTitle: "Error", alertMessage: "Address cannot be located or incorrect, do you want to continue?", actionTitle: ["Yes", "Cancel"], handlers: [yesActionHandler, cancelActionHandler])
-//                } else {
-//                    if let placemark = placemarks?.first {
-//                        let location = placemark.location!
-//                        LocationServices.shared.getAddressDetail(address: location, completion: { (address, error) in
-//                            if let a = address {
-//                                print(a)
-//                                //                                    if let street = a["Street"],
-//                            }
-//
-//                        })
-//                    }
-//                }
-//            })
-//        }
-//    }

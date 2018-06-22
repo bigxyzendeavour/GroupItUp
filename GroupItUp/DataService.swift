@@ -22,6 +22,8 @@ class DataService {
     private var _REF_BASE = DB_BASE
     private var _REF_USERS = DB_BASE.child("Users")
     private var _REF_GROUPS = DB_BASE.child("Groups")
+    private var _REF_FEEDBACKS = DB_BASE.child("Feedbacks")
+    private var _REF_DEFECTS = DB_BASE.child("Defects")
     
     //STORAGE references
     private var _STORAGE_USER_IMAGE = STORAGE_BASE.child("Users")
@@ -68,6 +70,14 @@ class DataService {
         return REF_USERS_CURRENT.child("Hosted")
     }
     
+    var REF_FEEDBACKS: DatabaseReference {
+        return _REF_FEEDBACKS
+    }
+    
+    var REF_DEFECTS: DatabaseReference {
+        return _REF_DEFECTS
+    }
+    
     var STORAGE_USER_IMAGE: StorageReference {
         return _STORAGE_USER_IMAGE
     }
@@ -82,7 +92,6 @@ class DataService {
     
     func createFirebaseDBUser(uid: String, userData: Dictionary<String, Any>) {
         REF_USERS.child(uid).updateChildValues(userData)
-        
         
     }
     

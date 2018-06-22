@@ -14,12 +14,16 @@ class User {
     private var _userDisplayImageURL: String!
     private var _userDisplayImage: UIImage!
     private var _username: String!
+    private var _gender: String!
+    private var _region: String!
     
     init() {
         _userID = ""
         _username = ""
         _userDisplayImageURL = ""
         _userDisplayImage = UIImage()
+        _gender = ""
+        _region = ""
     }
     
     var userID: String {
@@ -68,5 +72,38 @@ class User {
         set {
             _userDisplayImage = newValue
         }
+    }
+    
+    var gender: String {
+        get {
+            if _gender == nil {
+                _gender = ""
+            }
+            return _gender
+        }
+        set {
+            _gender = newValue
+        }
+    }
+    
+    var region: String {
+        get {
+            if _region == nil {
+                _region = ""
+            }
+            return _region
+        }
+        set {
+            _region = newValue
+        }
+    }
+    
+    func reset() {
+        _userID = ""
+        _username = ""
+        _userDisplayImageURL = ""
+        _userDisplayImage = UIImage()
+        _gender = ""
+        _region = ""
     }
 }

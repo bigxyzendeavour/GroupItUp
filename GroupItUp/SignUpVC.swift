@@ -18,6 +18,13 @@ class SignUpVC: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var signUpButton: UIButton!
     @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    var isRefreshing: Bool!
+    var termsOfServices = ""
+    var isTermsOfServices: Bool!
+    var privacyPolicy = ""
+    var isPrivacyPolicy: Bool!
     
     @IBAction func signUpBtnPressed(_ sender: UIButton) {
         guard let username = usernameTextField.text, username != "" else {
@@ -54,7 +61,28 @@ class SignUpVC: UIViewController {
         self.configureTextFieldWithImage(textFields: allTextFields as! [UITextField])
         signUpButton.heightCircleView()
         loginButton.heightCircleView()
+        
+        processFile()
     }
+    
+    func processFile() {
+        let termsOfServicesURL = Bundle.main.path(forResource: "TermsOfServices", ofType: "txt")
+        
+        do {
+            termsOfServices = try String(contentsOfFile: termsOfServicesURL!, encoding: String.Encoding.utf8)
+        } catch let error as NSError {
+            print("\(error)")
+        }
+        
+        let privacyPolicyURL = Bundle.main.path(forResource: "PrivacyPolicy", ofType: "txt")
+        
+        do {
+            privacyPolicy = try String(contentsOfFile: privacyPolicyURL!, encoding: String.Encoding.utf8)
+        } catch let error as NSError {
+            print("\(error)")
+        }
+    }
+
 
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         UIApplication.shared.open(URL, options: [:])
@@ -62,10 +90,6 @@ class SignUpVC: UIViewController {
     }
     
     @IBAction func loginBtnPressed(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
-    @IBAction func xBtnPressed(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
     }
 
@@ -97,6 +121,18 @@ class SignUpVC: UIViewController {
     }
     
     func processSignUp(username: String, email: String, password: String) {
+        activityIndicator.startAnimating()
+        self.view.isUserInteractionEnabled = false
+        self.isRefreshing = true
+        Timer.scheduledTimer(withTimeInterval: 20, repeats: false, block: { (timer) in
+            if self.isRefreshing == true {
+                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please refresh", actionTitle: ["Cancel"])
+                self.isRefreshing = false
+                self.activityIndicator.stopAnimating()
+                self.view.isUserInteractionEnabled = true
+                return
+            }
+        })
         DataService.ds.REF_USERS.observeSingleEvent(of: .value, with: { (snapshot) in
             var usernameExisted: Bool
             if let snapshot = snapshot.children.allObjects as? [DataSnapshot] {
@@ -108,19 +144,44 @@ class SignUpVC: UIViewController {
                     Auth.auth().createUser(withEmail: email, password: password, completion: { (user, error) in
                         if let error = error {
                             self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: error.localizedDescription, actionTitle: ["OK"])
+                            let user = user
+                            user?.delete(completion: { (error) in
+                                self.sendAlertWithoutHandler(alertTitle: "Sign up unsuccessful", alertMessage: "Please re-sign up", actionTitle: ["Cancel"])
+                            })
+                            self.activityIndicator.stopAnimating()
+                            self.isRefreshing = false
+                            self.view.isUserInteractionEnabled = true
                         } else {
-                            print("Grandon: successfully create a new user")
-                            KeychainWrapper.standard.set(username, forKey: CURRENT_USERNAME)
-                            KeychainWrapper.standard.set(EMPTY_IMAGE_URL, forKey: CURRENT_USER_PROFILE_IMAGE_URL)
                             if let user = user {
                                 var userData = [String: Any]()
-                                userData = ["Username": username, "User Display Photo URL": EMPTY_IMAGE_URL]
-                                self.completeSignIn(id: user.uid, userData: userData)
-                                Auth.auth().currentUser?.sendEmailVerification(completion: { (error) in
-                                    if error == nil {
-                                        print("Grandon: sent email verification")
+                                let image = UIImage(named: "emptyImage")
+                                let imageData = UIImageJPEGRepresentation(image!, 0.5)
+                                let metadata = StorageMetadata()
+                                metadata.contentType = "image/jpeg"
+                                DataService.ds.STORAGE_USER_IMAGE.child("\(user.uid).jpg").putData(imageData!, metadata: metadata, completion: { (metadata, error) in
+                                    if error != nil {
+                                        print("Something")
                                     } else {
-                                        self.sendAlertWithoutHandler(alertTitle: "Not able to send email verification", alertMessage: (error?.localizedDescription)!, actionTitle: ["OK"])
+                                        let imageURL = metadata?.downloadURL()?.absoluteString
+                                        userData = ["Username": username, "User Display Photo URL": imageURL!]
+                                        let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
+                                        changeRequest?.displayName = self.usernameTextField.text!
+                                        changeRequest?.photoURL = URL(string: imageURL!)
+                                        changeRequest?.commitChanges(completion: { (error) in
+                                            if error != nil {
+                                                print("Error: \(error?.localizedDescription)")
+                                            }
+                                            self.completeSignIn(id: user.uid, userData: userData)
+                                        })
+                                        
+                                        Auth.auth().currentUser?.sendEmailVerification(completion: { (error) in
+                                            if error == nil {
+                                                print("Grandon: sent email verification")
+                                                
+                                            } else {
+                                                self.sendAlertWithoutHandler(alertTitle: "Not able to send email verification", alertMessage: (error?.localizedDescription)!, actionTitle: ["OK"])
+                                            }
+                                        })
                                     }
                                 })
                             }
@@ -133,6 +194,41 @@ class SignUpVC: UIViewController {
     
     func completeSignIn(id: String, userData: Dictionary<String, Any>) {
         DataService.ds.createFirebaseDBUser(uid: id, userData: userData)
-        performSegue(withIdentifier: "NearbyVC", sender: nil)
+        currentUser.userID = id
+        currentUser.username = (Auth.auth().currentUser?.displayName)!
+        currentUser.userDisplayImageURL = (Auth.auth().currentUser?.photoURL?.absoluteString)!
+        Storage.storage().reference(forURL: currentUser.userDisplayImageURL).getData(maxSize: 1024 * 1024) { (data, error) in
+            if error != nil {
+                print("SignUpVC: completeSignIn - \(error?.localizedDescription)")
+            } else {
+                let image = UIImage(data: data!)
+                currentUser.userDisplayImage = image!
+                self.performSegue(withIdentifier: "NearbyVC", sender: nil)
+            }
+        }
+        
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segue.destination as? TermsAndPrivacyVC {
+            if isTermsOfServices == true {
+                destination.displayText = termsOfServices
+            } else if isPrivacyPolicy == true {
+                destination.displayText = privacyPolicy
+            }
+        }
+    }
+    
+    @IBAction func termsOfServicesSelected(_ sender: Any) {
+        isTermsOfServices = true
+        isPrivacyPolicy = false
+        performSegue(withIdentifier: "TermsAndPrivacyVC", sender: nil)
+    }
+    
+    @IBAction func privacyPolicySselected(_ sender: Any) {
+        isPrivacyPolicy = true
+        isTermsOfServices = false
+        performSegue(withIdentifier: "TermsAndPrivacyVC", sender: nil)
+    }
+    
 }

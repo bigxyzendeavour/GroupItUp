@@ -10,7 +10,6 @@ import UIKit
 
 class SearchVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     
     let locationSearchOptions = ["Country", "Province", "City"]
