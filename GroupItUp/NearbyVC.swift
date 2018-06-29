@@ -51,7 +51,6 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
         
         initialize()
         
-        print(currentUser)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -207,7 +206,7 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
         nearbyGroups.removeAll()
         var tempGroups = [Group]()
         self.startRefreshing()
-        Timer.scheduledTimer(withTimeInterval: 20, repeats: false, block: { (timer) in
+        Timer.scheduledTimer(withTimeInterval: 30, repeats: false, block: { (timer) in
             if self.isRefreshing == true {
                 self.endRefrenshing()
                 self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please refresh", actionTitle: ["Cancel"])

@@ -11,7 +11,7 @@ import OpalImagePicker
 import Firebase
 import IQKeyboardManagerSwift
 
-class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NewGroupDescriptionCellDelegate, NewGroupCreateBtnCellDelegate, NewGroupDetailCellDelegate, OpalImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, NewGroupPreviousPhotoCellDelegate, NewGroupAddressEntryCellDelegate {
+class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NewGroupDescriptionCellDelegate, NewGroupCreateBtnCellDelegate, NewGroupDetailCellDelegate, OpalImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, NewGroupPreviousPhotoCellDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -28,10 +28,8 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
     var previousPhotos = [UIImage]()
     var groupMeetingAddress: Address!
     var groupDetailForGroup: GroupDetail!
-    var newGroup: Group!
     var isRefreshing: Bool!
-    var selectedProvinces: [String]!
-    var selectedCountry: String!
+
     
     override func viewWillAppear(_ animated: Bool) {
 //        reloadSection(tableView: self.tableView, indexSection: 4)
@@ -55,8 +53,42 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     @IBAction func nextBtnPressed(_ sender: UIButton) {
-        performSegue(withIdentifier: "NewGroupDetailVC", sender: nil)
+        if newGroup.groupDetail.groupTitle == "" {
+            sendAlertWithoutHandler(alertTitle: "Missing Title", alertMessage: "Please give a title to your group event", actionTitle: ["Cancel"])
+            return
+        } else {
+            newGroupDetailForFirebase["Title"] = newGroup.groupDetail.groupTitle
+        }
+        
+        if newGroup.groupDetail.groupDetailDescription == "" {
+            sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Please give a description to your group event", actionTitle: ["Cancel"])
+            return
+        } else {
+            newGroupDetailForFirebase["Detail Description"] = newGroup.groupDetail.groupDetailDescription
+        }
+        
+        if selectedImage == UIImage(named: "emptyImage") || selectedImage == nil {
+            self.selectedImage = UIImage(named: "emptyImage")
+            let yesActionHandler = {(action: UIAlertAction) -> Void in
+                newGroup.groupDetail.groupDisplayImage = self.selectedImage!
+                self.performSegue(withIdentifier: "NewGroupDetailVC", sender: nil)
+            }
+            let cancelActionHandler = {(action: UIAlertAction) -> Void in
+                return
+            }
+            sendAlertWithHandler(alertTitle: "Missing Display Image", alertMessage: "The group event doesn't have a display image, are you sure to continue? You can add one later on.", actionTitle: ["Yes", "Cancel"], handlers: [yesActionHandler, cancelActionHandler])
+        } else {
+            newGroup.groupDetail.groupDisplayImage = self.selectedImage!
+            performSegue(withIdentifier: "NewGroupDetailVC", sender: nil)
+        }
     }
+    
+    @IBAction func deleteBtnPressed(_ sender: UIButton) {
+        selectedImage = UIImage(named: "emptyImage")
+        newGroup.groupDetail.groupDisplayImage = UIImage(named: "emptyImage")!
+        reloadSection(tableView: self.tableView, indexSection: 0)
+    }
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
@@ -95,8 +127,8 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 //        if indexPath.section == 3 {
-//            let opalImagePicker = OpalImagePickerController()
-//            opalImagePicker.imagePickerDelegate = self
+            let opalImagePicker = OpalImagePickerController()
+            opalImagePicker.imagePickerDelegate = self
 //            opalImagePicker.maximumSelectionsAllowed = 10
 //            self.present(opalImagePicker, animated: true, completion: nil)
 //        }
@@ -150,6 +182,7 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
 //        loadingView.show()
         //        activityIndicator.startAnimating()
         selectedImage = (info[UIImagePickerControllerEditedImage] as! UIImage)
+        newGroup.groupDetail.groupDisplayImage = selectedImage!
         reloadSection(tableView: self.tableView, indexSection: selectedIndex)
         imagePicker.dismiss(animated: true, completion: nil)
         
@@ -286,10 +319,7 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destination = segue.destination as? NewGroupCreationCompletedVC {
-            destination.selectedGroup = newGroup
-            destination.newCreatedGroup = true
-        }
+        
     }
     
     func startActivityIndicator() {
@@ -311,14 +341,14 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
         isRefreshing = false
     }
     
-    func setSelectedCountry(country: String) {
-        selectedCountry = country
-    }
-    
-    func getSelectedProvinces() -> [String] {
-        if selectedProvinces == nil {
-            selectedProvinces = [String]()
-        }
-        return selectedProvinces
-    }
+//    func setSelectedCountry(country: String) {
+//        selectedCountry = country
+//    }
+//    
+//    func getSelectedProvinces() -> [String] {
+//        if selectedProvinces == nil {
+//            selectedProvinces = [String]()
+//        }
+//        return selectedProvinces
+//    }
 }

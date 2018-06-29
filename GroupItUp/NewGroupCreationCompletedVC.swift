@@ -14,7 +14,6 @@ class NewGroupCreationCompletedVC: UIViewController, UITableViewDelegate, UITabl
     @IBOutlet weak var tableview: UITableView!
     
     var newCreatedGroup: Bool = false
-    var selectedGroup: Group!
     static var imageCache: NSCache<NSString, UIImage> = NSCache()
     
     override func viewDidLoad() {
@@ -32,8 +31,8 @@ class NewGroupCreationCompletedVC: UIViewController, UITableViewDelegate, UITabl
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if selectedGroup.groupPhotos.count > 0 {
-            return selectedGroup.groupPhotos.count
+        if newGroup.groupPhotos.count > 0 {
+            return newGroup.groupPhotos.count
         } else {
             return 1
         }
@@ -42,7 +41,7 @@ class NewGroupCreationCompletedVC: UIViewController, UITableViewDelegate, UITabl
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NearbyGroupDetailPreviousMeetPhotoCollectionCell", for: indexPath) as? NearbyGroupDetailPreviousMeetPhotoCollectionCell {
-            let photo = selectedGroup.groupPhotos[indexPath.row]
+            let photo = newGroup.groupPhotos[indexPath.row]
             cell.configureCell(image: photo.photo)
             cell.groupPhotoImage.isUserInteractionEnabled = true
             return cell
@@ -56,7 +55,7 @@ class NewGroupCreationCompletedVC: UIViewController, UITableViewDelegate, UITabl
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? PreviousPhotoOpenVC {
-            destination.selectedGroup = selectedGroup
+            destination.selectedGroup = newGroup
         }
         if let destination = segue.destination as? MeVC {
             destination.fromNewGroupCreationCompleteVC = true
@@ -69,7 +68,7 @@ class NewGroupCreationCompletedVC: UIViewController, UITableViewDelegate, UITabl
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 3 {
-            if selectedGroup.groupPhotos.count > 0 {
+            if newGroup.groupPhotos.count > 0 {
                 return 1
             } else {
                 return 0
@@ -82,15 +81,15 @@ class NewGroupCreationCompletedVC: UIViewController, UITableViewDelegate, UITabl
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDisplayPhotoCell") as! NearbyGroupDisplayPhotoCell
-            cell.configureNewGroupCell(image: selectedGroup.groupDetail.groupDisplayImage)
+            cell.configureNewGroupCell(image: newGroup.groupDetail.groupDisplayImage)
             return cell
         } else if indexPath.section == 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDescriptionCell") as! NearbyGroupDescriptionCell
-            cell.configureNewGroupCell(group: selectedGroup)
+            cell.configureNewGroupCell(group: newGroup)
             return cell
         } else if indexPath.section == 2 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDetailCell") as! NearbyGroupDetailCell
-            cell.configureNewGroupCell(group: selectedGroup)
+            cell.configureNewGroupCell(group: newGroup)
             return cell
         } else if indexPath.section == 3 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupPreviousPhotoCell") as! NearbyGroupPreviousPhotoCell
@@ -108,7 +107,7 @@ class NewGroupCreationCompletedVC: UIViewController, UITableViewDelegate, UITabl
             //return nothing
             return CGFloat.leastNormalMagnitude
         } else if section == 3 {
-            if selectedGroup.groupPhotos.count > 0 {
+            if newGroup.groupPhotos.count > 0 {
                 return 25
             }
             return CGFloat.leastNormalMagnitude
@@ -119,7 +118,7 @@ class NewGroupCreationCompletedVC: UIViewController, UITableViewDelegate, UITabl
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 3 {
-            if selectedGroup.groupPhotos.count > 0 {
+            if newGroup.groupPhotos.count > 0 {
                 return "Previous Photos"
             }
             return ""

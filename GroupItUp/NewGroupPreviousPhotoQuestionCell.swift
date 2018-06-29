@@ -14,5 +14,7 @@ class NewGroupPreviousPhotoQuestionCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
+    
+    //May not need it
 
 }

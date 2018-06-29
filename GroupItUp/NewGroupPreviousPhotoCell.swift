@@ -12,6 +12,8 @@ protocol NewGroupPreviousPhotoCellDelegate {
     func resetPreviousPhotos()
 }
 
+//May not need it
+
 class NewGroupPreviousPhotoCell: UITableViewCell {
     
     @IBOutlet weak var newGroupPreviousPhotoCollectionView: UICollectionView!

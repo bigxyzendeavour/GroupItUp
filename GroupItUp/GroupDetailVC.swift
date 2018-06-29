@@ -76,7 +76,8 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                             self.selectedGroup.groupPhotos[indexPath.row].photo = image!
                         }
                     }
-                }            }
+                }
+            }
             cell.groupPhotoImage.isUserInteractionEnabled = true
             return cell
         }

@@ -57,7 +57,7 @@ class NearbyGroupDescriptionCell: UITableViewCell {
         if group.groupDetail.groupStatus != "Planning" {
             joinBtn.isEnabled = false
             joinBtn.backgroundColor = UIColor.lightGray
-            likeBtn.isEnabled = false
+            
             
         }
     }

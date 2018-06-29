@@ -28,30 +28,38 @@ class NewGroupDescriptionCell: UITableViewCell, UITextFieldDelegate, UITextViewD
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
-        let delegate = self.delegate
+//        let delegate = self.delegate
         
         if let groupDescription = groupDescriptionTextView.text, groupDescription != "" {
-            delegate?.setGroupDescription(description: groupDescription)
+//            delegate?.setGroupDescription(description: groupDescription)
+            newGroup.groupDetail.groupDetailDescription = groupDescription
+            newGroupDetailForFirebase["Detail Description"] = groupDescription
         } else {
-            delegate?.setGroupDescription(description: "")
+//            delegate?.setGroupDescription(description: "")
+            newGroup.groupDetail.groupDetailDescription = ""
+            newGroupDetailForFirebase["Detail Description"] = nil
         }
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        let delegate = self.delegate
+//        let delegate = self.delegate
         if let groupTitle = groupTitleTextField.text, groupTitle != "" {
-            delegate?.setGroupTitle(title: groupTitle)
+//            delegate?.setGroupTitle(title: groupTitle)
+            newGroup.groupDetail.groupTitle = groupTitle
+            newGroupDetailForFirebase["Title"] = groupTitle
         } else {
-            delegate?.setGroupTitle(title: "")
+//            delegate?.setGroupTitle(title: "")
+            newGroup.groupDetail.groupTitle = ""
+            newGroupDetailForFirebase["Title"] = nil
         }
         
     }
     
-    func getGroupDescription() -> String {
-        if groupDescriptionTextView.text != "" {
-            return groupDescriptionTextView.text
-        }
-        return ""
-    }
+//    func getGroupDescription() -> String {
+//        if groupDescriptionTextView.text != "" {
+//            return groupDescriptionTextView.text
+//        }
+//        return ""
+//    }
 
 }

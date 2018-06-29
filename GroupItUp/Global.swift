@@ -15,6 +15,10 @@ var currentUser = User()
 var countries = [String]()
 var countries_provinces = [String: Any]()
 var provinces = [String]()
+var newGroup = Group()
+var newGroupForFirebase = [String: Any]()
+var newGroupDetailForFirebase = [String: Any]()
+var newGroupAddressForFirebase = [String: Any]()
 
 extension UIView {
     func widthCircleView() {

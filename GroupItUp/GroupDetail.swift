@@ -45,10 +45,10 @@ class GroupDetail {
         self._groupMeetUpAddress = nil
         self._groupLikes = 0
         self._groupAttending = 1
-        self._groupAttendingUsers = [String: Bool]()
         self._groupCreationDate = ""
-        self._groupStatus = ""
-        self._groupHost = ""
+        self._groupStatus = "Planning"
+        self._groupHost = currentUser.userID
+        self._groupAttendingUsers = [_groupHost: true]
         self._groupMaxReached = false
     }
     
@@ -206,6 +206,9 @@ class GroupDetail {
     
     var groupTitle: String {
         get {
+            if _groupTitle == nil {
+                _groupTitle = ""
+            }
             return _groupTitle
         }
         set {
@@ -215,6 +218,9 @@ class GroupDetail {
     
     var groupDetailDescription: String {
         get {
+            if _groupDetailDescription == nil {
+                _groupDetailDescription = ""
+            }
             return _groupDetailDescription
         }
         set {
@@ -224,6 +230,9 @@ class GroupDetail {
     
     var groupCategory: String {
         get {
+            if _groupCategory == nil {
+                _groupCategory = ""
+            }
             return _groupCategory
         }
         set {
@@ -233,6 +242,9 @@ class GroupDetail {
     
     var groupContact: String {
         get {
+            if _groupContact == nil {
+                _groupContact = ""
+            }
             return _groupContact
         }
         set {
@@ -242,6 +254,9 @@ class GroupDetail {
     
     var groupContactEmail: String {
         get {
+            if _groupContactEmail == nil {
+                _groupContactEmail = ""
+            }
             return _groupContactEmail
         }
         set {
@@ -251,6 +266,9 @@ class GroupDetail {
     
     var groupContactPhone: String {
         get {
+            if _groupContactPhone == nil {
+                _groupContactPhone = ""
+            }
             return _groupContactPhone
         }
         set {
@@ -296,6 +314,9 @@ class GroupDetail {
     
     var groupMeetingTime: String {
         get {
+            if _groupMeetingTime == nil {
+                _groupMeetingTime = ""
+            }
             return _groupMeetingTime
         }
         set {
@@ -305,6 +326,9 @@ class GroupDetail {
     
     var groupMeetUpAddress: Address {
         get {
+            if _groupMeetUpAddress == nil {
+                _groupMeetUpAddress = Address()
+            }
             return _groupMeetUpAddress
         }
         set {
@@ -314,6 +338,9 @@ class GroupDetail {
     
     var groupCreationDate: String {
         get {
+            if _groupCreationDate == nil {
+                _groupCreationDate = ""
+            }
             return _groupCreationDate
         }
         set {
@@ -323,6 +350,9 @@ class GroupDetail {
     
     var groupStatus: String {
         get {
+            if _groupStatus == nil {
+                _groupStatus = ""
+            }
             return _groupStatus
         }
         set {
@@ -332,6 +362,9 @@ class GroupDetail {
     
     var groupHost: String {
         get {
+            if _groupHost == nil {
+                _groupHost = ""
+            }
             return _groupHost
         }
         set {

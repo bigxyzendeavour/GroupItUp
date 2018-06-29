@@ -98,6 +98,8 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     @IBAction func addBtnPressed(_ sender: UIBarButtonItem) {
+        newGroup = Group()
+        newGroupForFirebase = [String: Any]()
         performSegue(withIdentifier: "NewGroupCreationVC", sender: nil)
     }
     
