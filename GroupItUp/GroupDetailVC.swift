@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, NearbyGroupCommentEntryCellDelegate, NearbyGroupDetailCellDelegate, SettingVCDelegate {
+class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, NearbyGroupCommentEntryCellDelegate, NearbyGroupDetailCellDelegate, SettingVCDelegate, NearbyGroupDetailHostCellDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var actionBtn: UIBarButtonItem!
@@ -19,6 +19,8 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     var selectedGroup: Group!
     static var imageCache: NSCache<NSString, UIImage> = NSCache()
     var groupDisplay: UIImage!
+    var hostDisplayImage: UIImage!
+    var hostName: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,13 +36,12 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         }
         
         if selectedGroup.groupDetail.groupHost != currentUser.userID {
-            self.actionBtn.isEnabled = false
+            actionBtn.isEnabled = false
         }
         
         if selectedGroup.groupDetail.groupStatus != "Planning" {
             sendAlertWithoutHandler(alertTitle: "Inactive", alertMessage: "This group has been closed!", actionTitle: ["Cancel"])
         }
-        
         
         
     }
@@ -81,14 +82,6 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             cell.groupPhotoImage.isUserInteractionEnabled = true
             return cell
         }
-//        else if let cell = photoOpenCollectionView.dequeueReusableCell(withReuseIdentifier: "NearbyGroupPreviousPhotoOpenCollectionCell", for: indexPath) as? NearbyGroupPreviousPhotoOpenCollectionCell {
-//            let photo = selectedGroup.groupPhotos[indexPath.row]
-//            cell.configureCell(image: photo.photo)
-//            return cell
-//        }
-//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
-//        tapGesture.numberOfTapsRequired = 1
-//        cell.groupPhotoImage.addGestureRecognizer(tapGesture)
         
         return UICollectionViewCell()
     }
@@ -105,21 +98,28 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             destination.currentGroup = selectedGroup
             destination.delegate = self
         }
+        if let destination = segue.destination as? HostVC {
+            let host = Host()
+            host.userID = selectedGroup.groupDetail.groupHost
+            host.username = hostName
+            host.userDisplayImage = hostDisplayImage
+            destination.host = host
+        }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 6
+        return 7
     }
    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 3 {
+        if section == 4 {
             if selectedGroup.groupPhotos.count > 0 {
                 return 1
             } else {
                 return 0
             }
         }
-        if section == 4 {
+        if section == 5 {
             if selectedGroup.groupComments.count > 0 {
                 return selectedGroup.groupComments.count
             } else {
@@ -148,15 +148,20 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             cell.configureCell(group: selectedGroup)
             return cell
         } else if indexPath.section == 2 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDetailHostCell") as! NearbyGroupDetailHostCell
+            cell.delegate =  self
+            cell.configureCell(group: selectedGroup)
+            return cell
+        } else if indexPath.section == 3 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDetailCell") as! NearbyGroupDetailCell
             cell.delegate = self
             cell.configureCell(group: selectedGroup)
             return cell
-        } else if indexPath.section == 3 {
+        } else if indexPath.section == 4 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupPreviousPhotoCell") as! NearbyGroupPreviousPhotoCell
             cell.setCollectionViewDataSourceDelegate(dataSourceDelegate: self, forRow: indexPath.row)
             return cell
-        } else if indexPath.section == 4 {
+        } else if indexPath.section == 5 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupDetailCommentCell") as! NearbyGroupDetailCommentCell
             if selectedGroup.groupComments.count > 0 {
                 let comment = selectedGroup.groupComments[indexPath.row]
@@ -171,17 +176,35 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             return cell
         }
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == 2 {
+            if selectedGroup.groupDetail.groupHost == currentUser.userID {
+                performSegue(withIdentifier: "MeVC", sender: nil)
+            } else {
+                performSegue(withIdentifier: "HostVC", sender: nil)
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 2 {
+            return 130
+        } else {
+            return tableView.rowHeight
+        }
+    }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section <= 2 {
+        if section <= 3 {
             //return nothing
             return CGFloat.leastNormalMagnitude
-        } else if section == 3 {
+        } else if section == 4 {
             if selectedGroup.groupPhotos.count > 0 {
                 return 25
             }
             return CGFloat.leastNormalMagnitude
-        } else if section == 4 {
+        } else if section == 5 {
             return 25
         } else {
             return CGFloat.leastNormalMagnitude
@@ -189,12 +212,12 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 3 {
+        if section == 4 {
             if selectedGroup.groupPhotos.count > 0 {
                 return "Previous Photos"
             }
             return ""
-        } else if section == 4 {
+        } else if section == 5 {
             return "Comments"
         } else {
             return ""
@@ -217,7 +240,7 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     }
     
     @IBAction func actionBtnPressed(_ sender: UIBarButtonItem) {
-        if selectedGroup.groupDetail.groupStatus == "Completed" {
+        if selectedGroup.groupDetail.groupStatus == "Completed" && selectedGroup.groupDetail.groupHost == currentUser.userID {
             sendAlertWithoutHandler(alertTitle: "Group Event Completed", alertMessage: "The group event has been completed. Please leave a comment if necessary. Sorry for inconvenience.", actionTitle: ["OK"])
         } else {
             performSegue(withIdentifier: "SettingVC", sender: nil)
@@ -277,5 +300,13 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                 }
             })
         }
+    }
+    
+    func setHostImage(hostDisplay: UIImage) {
+        hostDisplayImage = hostDisplay
+    }
+    
+    func setHostName(hostName: String) {
+        self.hostName = hostName
     }
 }

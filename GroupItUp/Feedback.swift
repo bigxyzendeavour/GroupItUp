@@ -15,7 +15,7 @@ class Feedback {
     private var _userID: String!
     private var _username: String!
     private var _feedbackTitle: String!
-    private var _feedback: String!
+    private var _feedbackContent: String!
     private var _created: String!
     
     init() {
@@ -23,15 +23,18 @@ class Feedback {
         self._username = ""
         self._userID = ""
         self._feedbackTitle = ""
-        self._feedback = ""
+        self._feedbackContent = ""
         self._created = ""
     }
     
     //Initiate a feedback to be sent, no ID yet, this is set when initiating a comment
-    init(userID: String) {
-        self._feedbackID = ""
-        self._userID = userID
-        
+    init(feedbackID: String, feedbackTitle: String, feedbackContent: String) {
+        self._feedbackID = feedbackID
+        self._userID = currentUser.userID
+        self._username = currentUser.username
+        self._feedbackTitle = feedbackTitle
+        self._feedbackContent = feedbackContent
+        self._created = "\(NSDate().fullTimeCreated())"
     }
     
     //Download data
@@ -44,8 +47,8 @@ class Feedback {
         let feedbackTitle = feedbackData["Title"] as! String
         self._feedbackTitle = feedbackTitle
         
-        let feedbackDescription = feedbackData["Feedback Description"] as! String
-        self._feedback = feedbackDescription
+        let feedbackContent = feedbackData["Feedback Description"] as! String
+        self._feedbackContent = feedbackContent
         
         let username = feedbackData["Username"] as! String
         self._username = username
@@ -102,15 +105,15 @@ class Feedback {
         }
     }
     
-    var feedback: String {
+    var feedbackContent: String {
         get {
-            if _feedback == nil {
-                _feedback = ""
+            if _feedbackContent == nil {
+                _feedbackContent = ""
             }
-            return _feedback
+            return _feedbackContent
         }
         set {
-            _feedback = newValue
+            _feedbackContent = newValue
         }
     }
     

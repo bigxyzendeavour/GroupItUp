@@ -41,12 +41,18 @@ class LocationSearchVC: UIViewController, UITextFieldDelegate, UIPickerViewDeleg
         case "Province":
             provinceTextField.isHidden = false
             provinceSpliterView.isHidden = false
+            provinceTextField.isEnabled = false
+            provinceTextField.backgroundColor = UIColor.lightGray
             break
         case "City":
             provinceTextField.isHidden = false
             provinceSpliterView.isHidden = false
+            provinceTextField.isEnabled = false
+            provinceTextField.backgroundColor = UIColor.lightGray
             cityTextField.isHidden = false
             citySpliterView.isHidden = false
+            cityTextField.isEnabled = false
+            cityTextField.backgroundColor = UIColor.lightGray
             break
         default:
             break
@@ -65,7 +71,6 @@ class LocationSearchVC: UIViewController, UITextFieldDelegate, UIPickerViewDeleg
         let tag = textField.tag
         switch tag {
         case 0:
-            
             var row = 0
             for i in 0..<countries.count {
                 if countries[i] == currentUser.region {
@@ -75,7 +80,6 @@ class LocationSearchVC: UIViewController, UITextFieldDelegate, UIPickerViewDeleg
                 }
             }
             countryPicker.selectRow(row, inComponent: 0, animated: false)
-            countryTextField.text = selectedCountry
             countryTextField.inputView = countryPicker
             
             break
@@ -94,20 +98,33 @@ class LocationSearchVC: UIViewController, UITextFieldDelegate, UIPickerViewDeleg
         let tag = textField.tag
         switch tag {
         case 0:
-            var row = 0
-            for i in 0..<countries.count {
-                if countries[i] == currentUser.region {
-                    row = i
-                    break
-                }
+            let selectedRow = countryPicker.selectedRow(inComponent: 0)
+            selectedCountry = countries[selectedRow]
+            if selectedCountry != "" {
+                countryTextField.text = selectedCountry
+                provinceTextField.text = ""
+                provinceTextField.isEnabled = true
+                provinceTextField.backgroundColor = UIColor.clear
+                cityTextField.text = ""
+                cityTextField.isEnabled = true
+                cityTextField.backgroundColor = UIColor.clear
+            } else {
+                countryTextField.text = ""
+                provinceTextField.text = ""
+                provinceTextField.isEnabled = false
+                provinceTextField.backgroundColor = UIColor.lightGray
+                cityTextField.text = ""
+                cityTextField.isEnabled = false
+                cityTextField.backgroundColor = UIColor.lightGray
             }
-            countryPicker.selectRow(row, inComponent: 0, animated: false)
-            countryTextField.inputView = countryPicker
+            
             break
         case 1:
-            
-            
-            provinceTextField.inputView = provincePicker
+            let selectedRow = provincePicker.selectedRow(inComponent: 0)
+            if selectedProvinces.count > 0 {
+                let selectedProvince = selectedProvinces[selectedRow]
+                provinceTextField.text = selectedProvince
+            }
             break
             
         default:
@@ -154,19 +171,28 @@ class LocationSearchVC: UIViewController, UITextFieldDelegate, UIPickerViewDeleg
             let selectedCountry = countries[selectedRow]
             if selectedCountry != "" {
                 countryTextField.text = selectedCountry
+                provinceTextField.text = ""
+                provinceTextField.isEnabled = true
+                provinceTextField.backgroundColor = UIColor.clear
+                cityTextField.text = ""
+                cityTextField.isEnabled = true
+                cityTextField.backgroundColor = UIColor.clear
             } else {
                 countryTextField.text = ""
+                provinceTextField.text = ""
+                provinceTextField.isEnabled = false
+                provinceTextField.backgroundColor = UIColor.lightGray
+                cityTextField.text = ""
+                cityTextField.isEnabled = false
+                cityTextField.backgroundColor = UIColor.lightGray
             }
-            provinceTextField.text = ""
         } else {
             let selectedRow = provincePicker.selectedRow(inComponent: 0)
             if selectedProvinces.count > 0 {
                 let selectedProvince = selectedProvinces[selectedRow]
                 provinceTextField.text = selectedProvince
             }
-            
         }
-        
     }
 
     @IBAction func searchBtnPressed(_ sender: UIButton) {
@@ -211,6 +237,7 @@ class LocationSearchVC: UIViewController, UITextFieldDelegate, UIPickerViewDeleg
         if let destination = segue.destination as? SearchResultVC {
             destination.selectedOption = selectedOption
             destination.locationValue = locationValue
+            
         }
     }
 }

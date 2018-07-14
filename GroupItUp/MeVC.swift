@@ -15,6 +15,9 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var userDisplayImageView: UIImageView!
     @IBOutlet weak var userCollectionView: UICollectionView!
+    @IBOutlet weak var fansNumberLabel: UILabel!
+    @IBOutlet weak var editProfileButton: UIButton!
+    @IBOutlet weak var previousHostedGroupDisplayImage: UIImageView!
     
     let savedCategory = ["Likes", "Follow", "Attending", "Joined", "Hosting", "Hosted"]
     var selectedSavedOption: String!
@@ -31,11 +34,9 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
         let layout = userCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
         layout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0)
         layout.minimumInteritemSpacing = 0
-        layout.itemSize = CGSize(width: (self.view.frame.width - 20)/2, height: (self.userCollectionView.frame.height - 20)/3)
+        layout.itemSize = CGSize(width: (self.view.frame.width - 20)/3, height: (self.view.frame.width - 20)/3)
         
         initialize()
-        
-        
         
     }
     
@@ -52,15 +53,102 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
         usernameLabel.text = currentUser.username
         userDisplayImageView.image = currentUser.userDisplayImage
         
+        DataService.ds.REF_USERS_CURRENT.child("Hosted").observeSingleEvent(of: .value, with: { (snapshot) in
+            if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
+                let snapCount = snapShot.count
+                if snapCount > 0 {
+                    let previousHostedGroupID = snapShot[snapCount - 1].key
+                    DataService.ds.REF_GROUPS.child(previousHostedGroupID).child("Group Detail").child("Group Display Photo URL").observeSingleEvent(of: .value, with: { (snapshot) in
+                        if let displayURL = snapshot.value as? String {
+                            Storage.storage().reference(forURL: displayURL).getData(maxSize: 1024 * 1024, completion: { (data, error) in
+                                if error != nil {
+                                    self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription)", actionTitle: ["Cancel"])
+                                    return
+                                } else {
+                                    let image = UIImage(data: data!)
+                                    self.previousHostedGroupDisplayImage.image = image!
+                                }
+                            })
+                        }
+                    })
+                }
+                
+            }
+            
+        })
         
-//        Storage.storage().reference(forURL: CURRENT_USER_PROFILE_IMAGE_URL).getData(maxSize: 1024 * 1024) { (data, error) in
-//                if error != nil {
-//                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription)", actionTitle: ["Cancel"])
-//            } else {
-//                let image = UIImage(data: data!)
-//                self.userDisplayImageView.image = image
-//            }
-//        }
+        DataService.ds.REF_USERS_CURRENT.child("Fans").observeSingleEvent(of: .value, with: { (snapshot) in
+            let snapCount = snapshot.childrenCount
+            self.fansNumberLabel.text = "\(snapCount)"
+        })
+        
+        /*
+        DataService.ds.REF_USERS_CURRENT.child("Hosted").observeSingleEvent(of: .value, with: { (snapshot) in
+            if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
+                let snapCount = snapShot.count
+                let previousGroupID = snapShot[snapCount - 1].key
+                DataService.ds.REF_GROUPS.child(previousGroupID).observeSingleEvent(of: .value, with: { (snapshot) in
+                    if let groupSnapShot = snapshot.value as? Dictionary<String, Any> {
+                        let group = Group()
+                        group.groupID = previousGroupID
+                        group.groupDetail.groupID = previousGroupID
+                        var comments = [Comment]()
+                        var photos = [Photo]()
+                        let groupDetailData = groupSnapShot["Group Detail"] as! Dictionary<String, Any>
+                        if let commentData = groupSnapShot["Comments"] as? Dictionary<String, Any> {
+                            for eachComment in commentData {
+                                let commentID = eachComment.key
+                                let commentDetail = eachComment.value as! Dictionary<String, Any>
+                                let comment = Comment(commentID: commentID, commentData: commentDetail)
+                                comments.append(comment)
+                            }
+                            group.groupComments = self.orderCommentsByID(comments: comments)
+                        }
+                        
+                        if let previousPhotoData = groupSnapShot["Previous Photos"] as? Dictionary<String, String> {
+                            for eachPhoto in previousPhotoData {
+                                let photoID = eachPhoto.key
+                                let photoURL = eachPhoto.value
+                                let photo = Photo(photoID: photoID, photoURL: photoURL)
+                                photos.append(photo)
+                            }
+                            group.groupPhotos = self.orderPhotosByID(photos: photos)
+                        }
+                        
+                        let details = GroupDetail(groupID: previousGroupID, groupDetailData: groupDetailData)
+                        group.groupDetail = details
+                        
+                        var photoURLs = [String]()
+                        let displayURL = group.groupDetail.groupDisplayImageURL
+                        photoURLs.append(displayURL)
+                        for photo in group.groupPhotos {
+                            let url = photo.photoURL
+                            photoURLs.append(url)
+                        }
+                        
+                        for i in 0..<photoURLs.count {
+                            let url = photoURLs[i]
+                            Storage.storage().reference(forURL: url).getData(maxSize: 1024 * 1024, completion: { (data, error) in
+                                if error != nil {
+                                    self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription)", actionTitle: ["Cancel"])
+                                    return
+                                } else {
+                                    let image = UIImage(data: data!)
+                                    if i == 0 {
+                                        group.groupDetail.groupDisplayImage = image!
+                                        self.previousHostedGroupDisplayImage.image = image!
+                                    } else {
+                                        group.groupPhotos[i - 1].photo = image!
+                                    }
+                                }
+                            })
+                        }
+                    }
+                })
+            }
+        })
+ */
+        
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -74,9 +162,6 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let category = savedCategory[indexPath.item]
         let cell = userCollectionView.dequeueReusableCell(withReuseIdentifier: "UserSavedGroupCollectionCell", for: indexPath) as! UserSavedGroupCollectionCell
-//        cell.frame.size.width = (userCollectionView.frame.width / 2) * 2/3
-//        cell.frame.size.height = cell.frame.size.width
-//        cell.savedCategoryImageView.frame.size.height = cell.frame.size.height * 2/3
         cell.configureCell(category: category)
         return cell
     }

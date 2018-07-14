@@ -60,6 +60,9 @@
 		C15F210F20802D5B004BF1FB /* MeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C15F210E20802D5B004BF1FB /* MeVC.swift */; };
 		C15F211120802D69004BF1FB /* MoreVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C15F211020802D69004BF1FB /* MoreVC.swift */; };
 		C15F211320802DAC004BF1FB /* SignUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C15F211220802DAC004BF1FB /* SignUpVC.swift */; };
+		C16B0C5220EB984E00AA9409 /* FeedbackDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16B0C5120EB984E00AA9409 /* FeedbackDetailVC.swift */; };
+		C16B0C5420EB987A00AA9409 /* FeedbackCreationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16B0C5320EB987A00AA9409 /* FeedbackCreationVC.swift */; };
+		C16B0C5620F23D5600AA9409 /* FeedbackDetailCommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16B0C5520F23D5600AA9409 /* FeedbackDetailCommentCell.swift */; };
 		C1783E4620C016BE00C26924 /* ProfileDetailEditVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1783E4520C016BE00C26924 /* ProfileDetailEditVC.swift */; };
 		C1783E4A20C4DD8800C26924 /* countries_provinces.csv in Resources */ = {isa = PBXBuildFile; fileRef = C1783E4920C4DD8800C26924 /* countries_provinces.csv */; };
 		C1783E4E20C760B200C26924 /* MoreOptionsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1783E4D20C760B200C26924 /* MoreOptionsCell.swift */; };
@@ -80,6 +83,10 @@
 		C1D9A32620BEC6700057AEBE /* EditProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D9A32520BEC6700057AEBE /* EditProfileVC.swift */; };
 		C1D9A32820BEC9DD0057AEBE /* EditProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D9A32720BEC9DD0057AEBE /* EditProfileCell.swift */; };
 		C1D9A32A20BF57D60057AEBE /* ProfileDisplayUpdateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D9A32920BF57D60057AEBE /* ProfileDisplayUpdateCell.swift */; };
+		C1ECA5EF20F5A83F006E745B /* NearbyGroupDetailHostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1ECA5EE20F5A83F006E745B /* NearbyGroupDetailHostCell.swift */; };
+		C1ECA5F120F5ACA6006E745B /* HostVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1ECA5F020F5ACA6006E745B /* HostVC.swift */; };
+		C1ECA5F320F5C740006E745B /* HostVCHostInformationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1ECA5F220F5C740006E745B /* HostVCHostInformationCell.swift */; };
+		C1ECA5F520F5C8A4006E745B /* Host.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1ECA5F420F5C8A4006E745B /* Host.swift */; };
 		C1FB2BE920AA69DB004857A0 /* NewGroupAddressEntryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1FB2BE820AA69DB004857A0 /* NewGroupAddressEntryCell.swift */; };
 		C1FB2BEB20AA6A72004857A0 /* csv.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1FB2BEA20AA6A72004857A0 /* csv.swift */; };
 		C1FB2BF220AA8133004857A0 /* countries.csv in Resources */ = {isa = PBXBuildFile; fileRef = C1FB2BF120AA8133004857A0 /* countries.csv */; };
@@ -145,6 +152,9 @@
 		C15F210E20802D5B004BF1FB /* MeVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeVC.swift; sourceTree = "<group>"; };
 		C15F211020802D69004BF1FB /* MoreVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoreVC.swift; sourceTree = "<group>"; };
 		C15F211220802DAC004BF1FB /* SignUpVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpVC.swift; sourceTree = "<group>"; };
+		C16B0C5120EB984E00AA9409 /* FeedbackDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackDetailVC.swift; sourceTree = "<group>"; };
+		C16B0C5320EB987A00AA9409 /* FeedbackCreationVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackCreationVC.swift; sourceTree = "<group>"; };
+		C16B0C5520F23D5600AA9409 /* FeedbackDetailCommentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackDetailCommentCell.swift; sourceTree = "<group>"; };
 		C1783E4520C016BE00C26924 /* ProfileDetailEditVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileDetailEditVC.swift; sourceTree = "<group>"; };
 		C1783E4920C4DD8800C26924 /* countries_provinces.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = countries_provinces.csv; sourceTree = "<group>"; };
 		C1783E4D20C760B200C26924 /* MoreOptionsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoreOptionsCell.swift; sourceTree = "<group>"; };
@@ -165,6 +175,10 @@
 		C1D9A32520BEC6700057AEBE /* EditProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileVC.swift; sourceTree = "<group>"; };
 		C1D9A32720BEC9DD0057AEBE /* EditProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileCell.swift; sourceTree = "<group>"; };
 		C1D9A32920BF57D60057AEBE /* ProfileDisplayUpdateCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileDisplayUpdateCell.swift; sourceTree = "<group>"; };
+		C1ECA5EE20F5A83F006E745B /* NearbyGroupDetailHostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyGroupDetailHostCell.swift; sourceTree = "<group>"; };
+		C1ECA5F020F5ACA6006E745B /* HostVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HostVC.swift; sourceTree = "<group>"; };
+		C1ECA5F220F5C740006E745B /* HostVCHostInformationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HostVCHostInformationCell.swift; sourceTree = "<group>"; };
+		C1ECA5F420F5C8A4006E745B /* Host.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
 		C1FB2BE820AA69DB004857A0 /* NewGroupAddressEntryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewGroupAddressEntryCell.swift; sourceTree = "<group>"; };
 		C1FB2BEA20AA6A72004857A0 /* csv.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = csv.swift; sourceTree = "<group>"; };
 		C1FB2BF120AA8133004857A0 /* countries.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = countries.csv; sourceTree = "<group>"; };
@@ -221,6 +235,7 @@
 				C1D5071F20AE22A4000D5ACB /* DisplayPhotoUpdateVC.swift */,
 				C1D5072520B75D92000D5ACB /* GroupDetailUpdateVC.swift */,
 				C1D5071D20AE226F000D5ACB /* DetailSettingVC.swift */,
+				C1ECA5F020F5ACA6006E745B /* HostVC.swift */,
 			);
 			name = Nearby;
 			sourceTree = "<group>";
@@ -247,6 +262,7 @@
 				C144651A2083C1FE002D219D /* NearbyGroupCell.swift */,
 				C144653C208FF230002D219D /* NearbyGroupDisplayPhotoCell.swift */,
 				C1446536208C2C4A002D219D /* NearbyGroupDescriptionCell.swift */,
+				C1ECA5EE20F5A83F006E745B /* NearbyGroupDetailHostCell.swift */,
 				C144653A208FD0A5002D219D /* NearbyGroupDetailCell.swift */,
 				C14465242085A15D002D219D /* NearbyGroupPreviousPhotoCell.swift */,
 				C144652220859775002D219D /* NearGroupDetailPreviousMeetPhotoCollectionCell.swift */,
@@ -258,6 +274,7 @@
 				C1D5072720B7625C000D5ACB /* GroupDetailUpdateCell.swift */,
 				C1D5072920B76277000D5ACB /* GroupAddressUpdateCell.swift */,
 				C1D5072B20B76290000D5ACB /* GroupTitleDescriptionCell.swift */,
+				C1ECA5F220F5C740006E745B /* HostVCHostInformationCell.swift */,
 			);
 			name = NearbyViews;
 			sourceTree = "<group>";
@@ -360,6 +377,7 @@
 				C1446534208A8954002D219D /* Address.swift */,
 				C1D5072120AF5DDF000D5ACB /* User.swift */,
 				C150275220D3168200EE1110 /* Feedback.swift */,
+				C1ECA5F420F5C8A4006E745B /* Host.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -381,6 +399,8 @@
 				C15F211020802D69004BF1FB /* MoreVC.swift */,
 				C1783E4F20C9486D00C26924 /* TermsAndPrivacyVC.swift */,
 				C150274E20D0B9FB00EE1110 /* FeedbackVC.swift */,
+				C16B0C5120EB984E00AA9409 /* FeedbackDetailVC.swift */,
+				C16B0C5320EB987A00AA9409 /* FeedbackCreationVC.swift */,
 			);
 			name = More;
 			sourceTree = "<group>";
@@ -390,6 +410,7 @@
 			children = (
 				C1783E4D20C760B200C26924 /* MoreOptionsCell.swift */,
 				C150275020D315C900EE1110 /* FeedbackTableCell.swift */,
+				C16B0C5520F23D5600AA9409 /* FeedbackDetailCommentCell.swift */,
 			);
 			name = MoreViews;
 			sourceTree = "<group>";
@@ -554,9 +575,12 @@
 				C1446539208C3418002D219D /* GroupDetailCommentCell.swift in Sources */,
 				C144652320859775002D219D /* NearGroupDetailPreviousMeetPhotoCollectionCell.swift in Sources */,
 				C1FB2BEB20AA6A72004857A0 /* csv.swift in Sources */,
+				C1ECA5F520F5C8A4006E745B /* Host.swift in Sources */,
 				C1D5072820B7625C000D5ACB /* GroupDetailUpdateCell.swift in Sources */,
 				C12407FF209FE31F006DBC4E /* NewGroupDescriptionCell.swift in Sources */,
 				C1446535208A8954002D219D /* Address.swift in Sources */,
+				C1ECA5F120F5ACA6006E745B /* HostVC.swift in Sources */,
+				C16B0C5220EB984E00AA9409 /* FeedbackDetailVC.swift in Sources */,
 				C12407F02099D83C006DBC4E /* UserSavedGroupCollectionCell.swift in Sources */,
 				C1FB2BE920AA69DB004857A0 /* NewGroupAddressEntryCell.swift in Sources */,
 				C1D5072A20B76277000D5ACB /* GroupAddressUpdateCell.swift in Sources */,
@@ -572,6 +596,7 @@
 				C14465192083C090002D219D /* GroupDetailVC.swift in Sources */,
 				C1D5071C20AE1FCF000D5ACB /* SettingCell.swift in Sources */,
 				C15F20F1207EE571004BF1FB /* AppDelegate.swift in Sources */,
+				C16B0C5420EB987A00AA9409 /* FeedbackCreationVC.swift in Sources */,
 				C144653D208FF230002D219D /* NearbyGroupDisplayPhotoCell.swift in Sources */,
 				C1240803209FEB16006DBC4E /* NewGroupCreateBtnCell.swift in Sources */,
 				C1D5071E20AE226F000D5ACB /* DetailSettingVC.swift in Sources */,
@@ -596,7 +621,9 @@
 				C12407E520957B2E006DBC4E /* LocationSearchVC.swift in Sources */,
 				C15F2109207F006B004BF1FB /* Global.swift in Sources */,
 				C12407F8209EAEED006DBC4E /* NewGroupCreationCompletedVC.swift in Sources */,
+				C16B0C5620F23D5600AA9409 /* FeedbackDetailCommentCell.swift in Sources */,
 				C15F210F20802D5B004BF1FB /* MeVC.swift in Sources */,
+				C1ECA5EF20F5A83F006E745B /* NearbyGroupDetailHostCell.swift in Sources */,
 				C150275120D315C900EE1110 /* FeedbackTableCell.swift in Sources */,
 				C1D9A32620BEC6700057AEBE /* EditProfileVC.swift in Sources */,
 				C12407F4209BB08F006DBC4E /* SavedCategoryCell.swift in Sources */,
@@ -605,6 +632,7 @@
 				C144652F208A8640002D219D /* GroupDetail.swift in Sources */,
 				C1240805209FF0BD006DBC4E /* NewGroupPreviousPhotoQuestionCell.swift in Sources */,
 				C1D9A32A20BF57D60057AEBE /* ProfileDisplayUpdateCell.swift in Sources */,
+				C1ECA5F320F5C740006E745B /* HostVCHostInformationCell.swift in Sources */,
 				C15F210B20802D21004BF1FB /* NearbyVC.swift in Sources */,
 				C150275920D89E5800EE1110 /* NewGroupPreviousPhotosVC.swift in Sources */,
 				C1446537208C2C4A002D219D /* NearbyGroupDescriptionCell.swift in Sources */,

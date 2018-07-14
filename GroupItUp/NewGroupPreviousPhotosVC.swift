@@ -15,6 +15,7 @@ class NewGroupPreviousPhotosVC: UIViewController, UICollectionViewDelegate, UICo
     @IBOutlet weak var selectedPhotoImageView: UIImageView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var createButton: UIButton!
 
     var previousPhotos = [Photo]()
     var isRefreshing = false
@@ -95,14 +96,21 @@ class NewGroupPreviousPhotosVC: UIViewController, UICollectionViewDelegate, UICo
         }
     }
     
+    @IBAction func deleteBtnPressed(_ sender: UIButton) {
+        previousPhotos.removeAll()
+        selectedPhotoImageView.image = UIImage(named: "emptyImage")
+        collectionView.reloadData()
+    }
+    
     @IBAction func createBtnPressed(_ sender: UIButton) {
         startRefreshing()
         createPost()
         
-        endRefrenshing()
+        
     }
     
     func createPost() {
+        createButton.isEnabled = false
         DataService.ds.REF_GROUPS.observeSingleEvent(of: .value, with: { (snapshot) -> Void in
             if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
                 var groupID: String
@@ -148,13 +156,17 @@ class NewGroupPreviousPhotosVC: UIViewController, UICollectionViewDelegate, UICo
                                 let url = metadata?.downloadURL()?.absoluteString
                                 photo.photoURL = url!
                                 DataService.ds.REF_GROUPS.child(groupID).child("Previous Photos").child(imageUid).setValue(url)
-                                self.performSegue(withIdentifier: "NewGroupCreationCompletedVC", sender: nil)
                             }
+                            
                         })
                     }
-                } else {
-                    self.performSegue(withIdentifier: "NewGroupCreationCompletedVC", sender: nil)
+                    
                 }
+                DataService.ds.REF_USERS_CURRENT.child("Attending").child(groupID).setValue(true)
+                DataService.ds.REF_USERS_CURRENT.child("Hosting").child(groupID).setValue(true)
+                self.createButton.isEnabled = true
+                self.endRefrenshing()
+                self.performSegue(withIdentifier: "NewGroupCreationCompletedVC", sender: nil)
             }
         })
     }

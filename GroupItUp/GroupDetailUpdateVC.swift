@@ -17,14 +17,16 @@ class GroupDetailUpdateVC: UIViewController, UITableViewDelegate, UITableViewDat
 
     @IBOutlet weak var tableView: UITableView!
     
-    let categoryArray = ["", "Sport", "Entertainment", "Travel", "Food", "Study"]
-    var countries: [String] = []
+    let categoryArray = ["", "Sport", "Entertainment", "Travel", "Food", "Study", "Other"]
     var countryPicker: UIPickerView!
+    var provincePicker: UIPickerView!
     var pickerView: UIPickerView!
     var groupMeetingAddress: Address!
-    var groupDetail: Dictionary<String, Any>!
+    var groupDetail: Dictionary<String, String>!
     var currentGroup: Group!
     var delegate: GroupDetailUpdateVCDelegate?
+    var selectedCountry: String?
+    var selectedProvinces: [String]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +40,10 @@ class GroupDetailUpdateVC: UIViewController, UITableViewDelegate, UITableViewDat
         countryPicker.delegate = self
         countryPicker.dataSource = self
         
+        provincePicker = UIPickerView()
+        provincePicker.delegate = self
+        provincePicker.dataSource = self
+        
         pickerView = UIPickerView()
         pickerView.delegate = self
         pickerView.dataSource = self
@@ -45,23 +51,8 @@ class GroupDetailUpdateVC: UIViewController, UITableViewDelegate, UITableViewDat
 //        parseCountriesCSV()
     }
     
-//    func parseCountriesCSV() {
-//        let path = Bundle.main.path(forResource: "countries", ofType: "csv")!
-//        
-//        do {
-//            let csv = try CSV(contentsOfURL: path)
-//            let rows = csv.rows
-//            
-//            for row in rows {
-//                let country = row["country"]!
-//                countries.append(country)
-//            }
-//            
-//        } catch let err as NSError {
-//            
-//            print(err.debugDescription)
-//        }
-//    }
+    override func viewWillDisappear(_ animated: Bool) {
+    }
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
@@ -91,10 +82,8 @@ class GroupDetailUpdateVC: UIViewController, UITableViewDelegate, UITableViewDat
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "GroupAddressUpdateCell") as! GroupAddressUpdateCell
-            
-            cell.countryTextField.inputView = countryPicker
             cell.countryPicker = countryPicker
-            cell.countries = countries
+            cell.provincePicker = provincePicker
             cell.delegate = self
             cell.setCurrentGroup(group: currentGroup)
             cell.configureCell(group: currentGroup)
@@ -126,6 +115,16 @@ class GroupDetailUpdateVC: UIViewController, UITableViewDelegate, UITableViewDat
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         if pickerView.isEqual(countryPicker) {
             return countries.count
+        } else if pickerView.isEqual(provincePicker) {
+            if selectedCountry != nil && selectedCountry != "" {
+                for country in countries_provinces.keys {
+                    if country == selectedCountry {
+                        selectedProvinces = countries_provinces[country] as! [String]
+                        break
+                    }
+                }
+                return selectedProvinces.count
+            }
         }
         return categoryArray.count
     }
@@ -133,6 +132,10 @@ class GroupDetailUpdateVC: UIViewController, UITableViewDelegate, UITableViewDat
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if pickerView.isEqual(countryPicker) {
             return countries[row]
+        } else if pickerView.isEqual(provincePicker) {
+            if selectedProvinces != nil && !selectedProvinces.isEmpty {
+                return selectedProvinces[row]
+            }
         }
         return categoryArray[row]
     }
@@ -140,7 +143,12 @@ class GroupDetailUpdateVC: UIViewController, UITableViewDelegate, UITableViewDat
     //From GroupAddressUpdateCell
     func updateGroupAddressForFirebase(address: Dictionary<String, String>) {
         for (key, value) in address {
-            DataService.ds.REF_GROUPS.child(currentGroup.groupID).child("Group Detail").child("Address").child(key).setValue(value)
+            if value != "" {
+                DataService.ds.REF_GROUPS.child(currentGroup.groupID).child("Group Detail").child("Address").child(key).setValue(value)
+            } else {
+                DataService.ds.REF_GROUPS.child(currentGroup.groupID).child("Group Detail").child("Address").child(key).removeValue()
+            }
+            
         }
         
     }
@@ -153,10 +161,15 @@ class GroupDetailUpdateVC: UIViewController, UITableViewDelegate, UITableViewDat
     
     
     // From GroupDetailUpdateCell
-    func updateGroupDetailForFirebase(detail: Dictionary<String, Any>) {
-        groupDetail = detail as Dictionary<String, Any>
+    func updateGroupDetailForFirebase(detail: Dictionary<String, String>) {
+        groupDetail = detail as Dictionary<String, String>
         for (key, value) in groupDetail {
-            DataService.ds.REF_GROUPS.child(currentGroup.groupID).child("Group Detail").child(key).setValue(value)
+            if value != "" {
+                DataService.ds.REF_GROUPS.child(currentGroup.groupID).child("Group Detail").child(key).setValue(value)
+            } else {
+                DataService.ds.REF_GROUPS.child(currentGroup.groupID).child("Group Detail").child(key).removeValue()
+            }
+            
         }
     }
     
@@ -165,5 +178,13 @@ class GroupDetailUpdateVC: UIViewController, UITableViewDelegate, UITableViewDat
         if let delegate = self.delegate {
             delegate.updateGroupDetailFromGroupDetailUpdateVC(detail: currentGroup.groupDetail)
         }
+    }
+    
+    func updateSelectedCountry(country: String) {
+        selectedCountry = country
+    }
+    
+    func getSelectedProvinces() -> [String] {
+        return selectedProvinces
     }
 }

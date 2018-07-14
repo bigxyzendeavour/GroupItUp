@@ -15,15 +15,19 @@ class NewGroupAddressEntryVC: UIViewController, UIPickerViewDelegate, UIPickerVi
     @IBOutlet weak var cityTextField: UITextField!
     @IBOutlet weak var provinceTextField: UITextField!
     @IBOutlet weak var postalTextField: UITextField!
+    @IBOutlet weak var specifyAddressSwitch: UISwitch!
     
     var countryPicker: UIPickerView!
     var provincePicker: UIPickerView!
     var selectedCountry: String!
     var selectedProvinces: [String]!
     var textFields: [UITextField]!
+    var setAddressNow: Bool = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        textFields = [self.countryTextField, self.streetTextField, self.cityTextField, self.provinceTextField, self.postalTextField]
         
         countryPicker = UIPickerView()
         countryPicker.delegate = self
@@ -44,28 +48,36 @@ class NewGroupAddressEntryVC: UIViewController, UIPickerViewDelegate, UIPickerVi
         
         initialize()
         
-        if countryTextField.text == nil || countryTextField.text == "" {
-            streetTextField.isEnabled = false
-            streetTextField.backgroundColor = UIColor.lightGray
-            cityTextField.isEnabled = false
-            cityTextField.backgroundColor = UIColor.lightGray
-            provinceTextField.isEnabled = false
-            provinceTextField.backgroundColor = UIColor.lightGray
-            postalTextField.isEnabled = false
-            postalTextField.backgroundColor = UIColor.lightGray
-        }
-        
-        textFields = [self.countryTextField, self.streetTextField, self.cityTextField, self.provinceTextField, self.postalTextField]
         
         
     }
     
     func initialize() {
-        streetTextField.text = newGroup.groupDetail.groupMeetUpAddress.street
-        cityTextField.text = newGroup.groupDetail.groupMeetUpAddress.city
-        provinceTextField.text = newGroup.groupDetail.groupMeetUpAddress.province
-        postalTextField.text = newGroup.groupDetail.groupMeetUpAddress.postal
-        countryTextField.text = newGroup.groupDetail.groupMeetUpAddress.country
+        if setAddressNow == true {
+            if newGroup.groupDetail.groupMeetUpAddress.country == "" {
+                streetTextField.isEnabled = false
+                streetTextField.backgroundColor = UIColor.lightGray
+                cityTextField.isEnabled = false
+                cityTextField.backgroundColor = UIColor.lightGray
+                provinceTextField.isEnabled = false
+                provinceTextField.backgroundColor = UIColor.lightGray
+                postalTextField.isEnabled = false
+                postalTextField.backgroundColor = UIColor.lightGray
+            } else {
+                streetTextField.text = newGroup.groupDetail.groupMeetUpAddress.street
+                cityTextField.text = newGroup.groupDetail.groupMeetUpAddress.city
+                provinceTextField.text = newGroup.groupDetail.groupMeetUpAddress.province
+                postalTextField.text = newGroup.groupDetail.groupMeetUpAddress.postal
+                countryTextField.text = newGroup.groupDetail.groupMeetUpAddress.country
+                selectedCountry = newGroup.groupDetail.groupMeetUpAddress.country
+            }
+        } else {
+            for textField in textFields {
+                textField.isEnabled = false
+                textField.backgroundColor = UIColor.lightGray
+            }
+        }
+        
     }
 
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -163,10 +175,9 @@ class NewGroupAddressEntryVC: UIViewController, UIPickerViewDelegate, UIPickerVi
             break
         case 4:
             let selectedRow = countryPicker.selectedRow(inComponent: 0)
-            let selectedCountry = countries[selectedRow]
+            selectedCountry = countries[selectedRow]
             if selectedCountry != "" {
                 countryTextField.text = selectedCountry
-                self.selectedCountry = selectedCountry
                 streetTextField.isEnabled = true
                 streetTextField.backgroundColor = UIColor.white
                 cityTextField.isEnabled = true
@@ -222,8 +233,6 @@ class NewGroupAddressEntryVC: UIViewController, UIPickerViewDelegate, UIPickerVi
         } else {
             newGroup.groupDetail.groupMeetUpAddress.address = ""
         }
-        
-
     }
     
     func performValidation() {
@@ -232,11 +241,36 @@ class NewGroupAddressEntryVC: UIViewController, UIPickerViewDelegate, UIPickerVi
                 sendAlertWithoutHandler(alertTitle: "Missing Information", alertMessage: "Please specify the \(textField.placeholder!)", actionTitle: ["OK"])
             }
         }
+        
     }
     
     @IBAction func nextBtnPressed(_ sender: UIButton) {
-        performValidation()
+        if setAddressNow == true {
+         performValidation()   
+        }
         performSegue(withIdentifier: "NewGroupPreviousPhotosVC", sender: nil)
     }
     
+    @IBAction func switchPressed(_ sender: UISwitch) {
+        if specifyAddressSwitch.isOn {
+            setAddressNow = true
+            countryTextField.isEnabled = true
+            countryTextField.backgroundColor = UIColor.clear
+            
+        } else {
+            setAddressNow = false
+            for textField in textFields {
+                textField.text = ""
+                textField.isEnabled = false
+                textField.backgroundColor = UIColor.lightGray
+                
+            }
+            resetAddress()
+        }
+    }
+    
+    func resetAddress() {
+        newGroup.groupDetail.groupMeetUpAddress = Address()
+        newGroupAddressForFirebase.removeAll()
+    }
 }

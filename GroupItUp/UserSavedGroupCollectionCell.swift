@@ -16,6 +16,7 @@ class UserSavedGroupCollectionCell: UICollectionViewCell {
     @IBOutlet weak var savedCategoryLabel: UILabel!
     
     func configureCell(category: String) {
+        savedCategoryImageView.heightCircleView()
         savedCategoryLabel.text = category
         savedCategoryImageView.image = UIImage(named: category)
     }

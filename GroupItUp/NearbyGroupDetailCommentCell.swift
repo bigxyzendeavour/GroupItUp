@@ -22,7 +22,12 @@ class NearbyGroupDetailCommentCell: UITableViewCell {
     
     func configureCell(comment: Comment) {
         userDisplayImage.image = comment.userDisplayImage
-        usernameLabel.text = comment.username
+        if comment.userID == currentUser.userID {
+            usernameLabel.text = "\(comment.username)(Group host)"
+        } else {
+            usernameLabel.text = "\(comment.username)"
+        }
+        
         userCommentLabel.text = comment.comment        
     }
 

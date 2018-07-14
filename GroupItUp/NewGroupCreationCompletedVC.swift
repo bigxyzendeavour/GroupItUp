@@ -131,5 +131,7 @@ class NewGroupCreationCompletedVC: UIViewController, UITableViewDelegate, UITabl
         self.performSegue(withIdentifier: "MeVC", sender: nil)
     }
     
+    @IBAction func directionBtnPressed(_ sender: UIButton) {
+    }
     
 }

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class SearchVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -20,11 +21,12 @@ class SearchVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     
     let locationSearchOptions = ["Country", "Province", "City"]
-    let categorySearchOptions = ["Sport", "Entertainment", "Travel", "Food", "Study"]
+    let categorySearchOptions = ["All", "Sport", "Entertainment", "Travel", "Food", "Study", "Other"]
     var locationselected: Bool = true
     var locationOption: String!
     var categoryValue: String!
     var searchButtons: [UIButton]!
+    var isSearchByKeyword: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +35,8 @@ class SearchVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         tableView.dataSource = self
         
         tableView.reloadData()
+        
+        hideKeyboardWhenTappedAround()
         
         initialize()
     }
@@ -119,11 +123,25 @@ class SearchVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
             destination.selectedOption = locationOption
         }
         if let destination = segue.destination as? SearchResultVC {
-            destination.selectedOption = categoryValue
+            if isSearchByKeyword == true {
+                destination.keyword = searchBar.text
+                searchBar.text = nil
+                isSearchByKeyword = false
+            } else {
+                destination.selectedOption = categoryValue
+            }
         }
     }
     
     @IBAction func searchBtnPressed(_ sender: UIButton) {
+        if searchBar.text == nil || searchBar.text == "" {
+            self.sendAlertWithoutHandler(alertTitle: "Missing Keyword", alertMessage: "Please fill in the keyword for your search", actionTitle: ["OK"])
+        } else {
+            isSearchByKeyword = true
+            performSegue(withIdentifier: "SearchResultVC", sender: nil)
+        }
+        
+        
     }
     
     @IBAction func searchOptionSelected(_ sender: UIButton) {

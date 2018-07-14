@@ -24,6 +24,14 @@ class Photo {
     init(photoID: String, photoURL: String) {
         self._photoID = photoID
         self._photoURL = photoURL
+        Storage.storage().reference(forURL: self._photoURL).getData(maxSize: 1024 * 1024) { (data, error) in
+            if error != nil {
+                print("\(error?.localizedDescription)")
+            } else {
+                let image = UIImage(data: data!)
+                self._photo = image!
+            }
+        }
     }
     
     var photoID: String {

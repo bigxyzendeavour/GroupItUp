@@ -25,6 +25,7 @@ class NearbyGroupDetailCell: UITableViewCell {
     @IBOutlet weak var groupContactPhoneLabel: UILabel!
     @IBOutlet weak var groupContactEmailLabel: UILabel!
     @IBOutlet weak var groupMeetUpAddressLabel: UILabel!
+    @IBOutlet weak var directionButton: UIButton!
     
     var delegate: NearbyGroupDetailCellDelegate?
     
@@ -37,9 +38,9 @@ class NearbyGroupDetailCell: UITableViewCell {
         let groupDetail = group.groupDetail
         groupStatusLabel.text = groupDetail.groupStatus
         if groupDetail.groupStatus == "Cancelled" || groupDetail.groupStatus == "Completed" {
-            groupStatusLabel.backgroundColor = UIColor.red
+            groupStatusLabel.textColor = UIColor.red
         } else {
-            groupStatusLabel.backgroundColor = UIColor.clear
+            groupStatusLabel.textColor = UIColor.black
         }
         groupMaxMembersLabel.text = "\(groupDetail.groupMaxMembers)"
         groupCategoryLabel.text = groupDetail.groupCategory
@@ -47,7 +48,18 @@ class NearbyGroupDetailCell: UITableViewCell {
         groupContactPersonLabel.text = groupDetail.groupContact
         groupContactPhoneLabel.text = groupDetail.groupContactPhone
         groupContactEmailLabel.text = groupDetail.groupContactEmail
-        groupMeetUpAddressLabel.text = groupDetail.groupMeetUpAddress.address
+        if !groupDetail.groupMeetUpAddress.isEmpty() {
+            groupMeetUpAddressLabel.text = groupDetail.groupMeetUpAddress.address
+        } else {
+            groupMeetUpAddressLabel.text = "TBD"
+        }
+        if group.groupDetail.groupMeetUpAddress.isEmpty() {
+            directionButton.isEnabled = false
+            directionButton.backgroundColor = UIColor.lightGray
+        } else {
+            directionButton.isEnabled = true
+            directionButton.backgroundColor = UIColor(red: 225, green: 166, blue: 51, alpha: 1)
+        }
     }
     
     func configureNewGroupCell(group: Group) {
@@ -58,7 +70,12 @@ class NearbyGroupDetailCell: UITableViewCell {
         groupContactPersonLabel.text = group.groupDetail.groupContact
         groupContactPhoneLabel.text = group.groupDetail.groupContactPhone
         groupContactEmailLabel.text = group.groupDetail.groupContactEmail
-        groupMeetUpAddressLabel.text = group.groupDetail.groupMeetUpAddress.address
+        if !group.groupDetail.groupMeetUpAddress.isEmpty() {
+            groupMeetUpAddressLabel.text = group.groupDetail.groupMeetUpAddress.address
+        } else {
+            groupMeetUpAddressLabel.text = "TBD"
+        }
+        
     }
 
     @IBAction func directionBtnPressed(_ sender: UIButton) {

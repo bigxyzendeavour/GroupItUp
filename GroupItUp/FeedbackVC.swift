@@ -14,6 +14,7 @@ class FeedbackVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var tableView: UITableView!
     
     var feedbacks = [Feedback]()
+    var selectedFeedback: Feedback!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,4 +53,20 @@ class FeedbackVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         cell.configureCell(title: feedback.feedbackTitle)
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectedFeedback = feedbacks[indexPath.row]
+        performSegue(withIdentifier: "FeedbackDetailVC", sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segue.destination as? FeedbackDetailVC {
+            destination.selectedFeedback = self.selectedFeedback
+        }
+    }
+    
+    @IBAction func addBtnPressed(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: "FeedbackCreationVC", sender: nil)
+    }
+    
 }

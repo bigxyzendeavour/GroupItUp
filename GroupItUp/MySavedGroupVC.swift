@@ -51,7 +51,7 @@ class MySavedGroupVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        fetchBySelectedOption(option: selectedSavedOption)
+        
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -127,102 +127,100 @@ class MySavedGroupVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     func fetchBySelectedOption(option: String) {
        
         let ref = DataService.ds.REF_USERS_CURRENT
-        ref.child(option).observeSingleEvent(of: .value, with: { (snapshot) in
-            if snapshot.children.allObjects.count == 0 {
-                self.endRefrenshing()
-                self.sendAlertWithoutHandler(alertTitle: "Empty", alertMessage: "No groups are currently in this category.", actionTitle: ["OK"])
-                return
-            }
-            
-            if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
-                var keyGroups = [String]()
-                var tempGroups = [Group]()
-                for snap in snapShot {
-                    let key = snap.key
-                    keyGroups.insert(key, at: 0)
+        if option != "Follow" {
+            ref.child(option).observeSingleEvent(of: .value, with: { (snapshot) in
+                if snapshot.children.allObjects.count == 0 {
+                    self.endRefrenshing()
+                    self.sendAlertWithoutHandler(alertTitle: "Empty", alertMessage: "No groups are currently in this category.", actionTitle: ["OK"])
+                    return
                 }
-                DataService.ds.REF_GROUPS.observeSingleEvent(of: .value, with: { (snapshot) in
-                    if let groupsSnap = snapshot.children.allObjects as? [DataSnapshot] {
-                        for snap in groupsSnap {
-                            let group = Group()
-                            let key = snap.key
-                            if keyGroups.contains(key) {
-                                var comments = [Comment]()
-                                var groupComments = [Comment]()
-                                var photos = [Photo]()
-                                var groupPhotos = [Photo]()
-                                let groupData = snap.value as! Dictionary<String, Any>
-                                let groupDetailData = groupData["Group Detail"] as! Dictionary<String, Any>
-                                if let commentData = groupData["Comments"] as? Dictionary<String, Any> {
-                                    for eachComment in commentData {
-                                        let commentID = eachComment.key
-                                        let commentDetail = eachComment.value as! Dictionary<String, Any>
-                                        let comment = Comment(commentID: commentID, commentData: commentDetail)
-                                        comments.append(comment)
+                
+                if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
+                    var keyGroups = [String]()
+                    var tempGroups = [Group]()
+                    for snap in snapShot {
+                        let key = snap.key
+                        keyGroups.insert(key, at: 0)
+                    }
+                    DataService.ds.REF_GROUPS.observeSingleEvent(of: .value, with: { (snapshot) in
+                        if let groupsSnap = snapshot.children.allObjects as? [DataSnapshot] {
+                            for snap in groupsSnap {
+                                let group = Group()
+                                let key = snap.key
+                                if keyGroups.contains(key) {
+                                    var comments = [Comment]()
+                                    var groupComments = [Comment]()
+                                    var photos = [Photo]()
+                                    var groupPhotos = [Photo]()
+                                    let groupData = snap.value as! Dictionary<String, Any>
+                                    let groupDetailData = groupData["Group Detail"] as! Dictionary<String, Any>
+                                    if let commentData = groupData["Comments"] as? Dictionary<String, Any> {
+                                        for eachComment in commentData {
+                                            let commentID = eachComment.key
+                                            let commentDetail = eachComment.value as! Dictionary<String, Any>
+                                            let comment = Comment(commentID: commentID, commentData: commentDetail)
+                                            comments.append(comment)
+                                        }
+                                        groupComments = self.orderCommentsByID(comments: comments)
+                                        group.groupComments = groupComments
                                     }
-                                    groupComments = self.orderCommentsByID(comments: comments)
-                                    group.groupComments = groupComments
-                                } else {
                                     
-                                }
-                                if let previousPhotoData = groupData["Previous Photos"] as? Dictionary<String, String> {
-                                    for eachPhoto in previousPhotoData {
-                                        let photoID = eachPhoto.key
-                                        let photoURL = eachPhoto.value
-                                        let photo = Photo(photoID: photoID, photoURL: photoURL)
-                                        photos.append(photo)
+                                    if let previousPhotoData = groupData["Previous Photos"] as? Dictionary<String, String> {
+                                        for eachPhoto in previousPhotoData {
+                                            let photoID = eachPhoto.key
+                                            let photoURL = eachPhoto.value
+                                            let photo = Photo(photoID: photoID, photoURL: photoURL)
+                                            photos.append(photo)
+                                        }
+                                        groupPhotos = self.orderPhotosByID(photos: photos)
+                                        group.groupPhotos = groupPhotos
                                     }
-                                    groupPhotos = self.orderPhotosByID(photos: photos)
-                                    group.groupPhotos = groupPhotos
-                                }
-                                
-                                group.groupID = key
-                                let details = GroupDetail(groupID: key, groupDetailData: groupDetailData)
-                                group.groupDetail = details
-                                if group.groupDetail.groupStatus == "Completed" {
                                     
+                                    group.groupID = key
+                                    let details = GroupDetail(groupID: key, groupDetailData: groupDetailData)
+                                    group.groupDetail = details
+                                    
+                                    tempGroups.append(group)
                                 }
-                                
-                                tempGroups.append(group)
                             }
-                        }
-                        self.displayedGroups = self.orderGroupsByID(groups: tempGroups)
-                        
-                        for group in self.displayedGroups {
-                            var photoURLs = [String]()
-                            let displayURL = group.groupDetail.groupDisplayImageURL
-                            photoURLs.append(displayURL)
-                            for photo in group.groupPhotos {
-                                let url = photo.photoURL
-                                photoURLs.append(url)
+                            self.displayedGroups = self.orderGroupsByID(groups: tempGroups)
+                            
+                            for group in self.displayedGroups {
+                                var photoURLs = [String]()
+                                let displayURL = group.groupDetail.groupDisplayImageURL
+                                photoURLs.append(displayURL)
+                                for photo in group.groupPhotos {
+                                    let url = photo.photoURL
+                                    photoURLs.append(url)
+                                }
+                                
+                                for i in 0..<photoURLs.count {
+                                    let url = photoURLs[i]
+                                    Storage.storage().reference(forURL: url).getData(maxSize: 1024 * 1024, completion: { (data, error) in
+                                        if error != nil {
+                                            self.endRefrenshing()
+                                            self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription)", actionTitle: ["Cancel"])
+                                            return
+                                        } else {
+                                            let image = UIImage(data: data!)
+                                            if i == 0 {
+                                                group.groupDetail.groupDisplayImage = image!
+                                            } else {
+                                                group.groupPhotos[i - 1].photo = image!
+                                            }
+                                        }
+                                        self.updateDisplayedGroups(groups: self.displayedGroups)
+                                        self.tableView.reloadData()
+                                        self.endRefrenshing()
+                                    })
+                                }
                             }
                             
-                            for i in 0..<photoURLs.count {
-                                let url = photoURLs[i]
-                                Storage.storage().reference(forURL: url).getData(maxSize: 1024 * 1024, completion: { (data, error) in
-                                    if error != nil {
-                                        self.endRefrenshing()
-                                        self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription)", actionTitle: ["Cancel"])
-                                        return
-                                    } else {
-                                        let image = UIImage(data: data!)
-                                        if i == 0 {
-                                            group.groupDetail.groupDisplayImage = image!
-                                        } else {
-                                            group.groupPhotos[i - 1].photo = image!
-                                        }
-                                    }
-                                    self.updateDisplayedGroups(groups: self.displayedGroups)
-                                    self.tableView.reloadData()
-                                    self.endRefrenshing()
-                                })
-                            }
                         }
-                        
-                    }
-                })
-            }
-        })
+                    })
+                }
+            })
+        }
     }
     
     func startRefreshing() {

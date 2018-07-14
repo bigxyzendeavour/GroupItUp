@@ -142,11 +142,26 @@ class GroupDetail {
         }
         
         if let meetUpAddressData = groupDetailData["Address"] as? Dictionary<String, String> {
-            let street = meetUpAddressData["Street"]!
-            let city = meetUpAddressData["City"]!
-            let province = meetUpAddressData["Province"]!
-            let postal = meetUpAddressData["Postal"]!
-            let country = meetUpAddressData["Country"]!
+            var street = ""
+            var city = ""
+            var province = ""
+            var postal = ""
+            var country = ""
+            if meetUpAddressData["Street"] != nil {
+                street = meetUpAddressData["Street"]!
+            }
+            if meetUpAddressData["City"] != nil {
+                city = meetUpAddressData["City"]!
+            }
+            if meetUpAddressData["Province"] != nil {
+                province = meetUpAddressData["Province"]!
+            }
+            if meetUpAddressData["Postal"] != nil {
+                postal = meetUpAddressData["Postal"]!
+            }
+            if meetUpAddressData["Country"] != nil {
+                country = meetUpAddressData["Country"]!
+            }
             let address = Address(street: street, city: city, province: province, postal: postal, country: country)
             self._groupMeetUpAddress = address
         } else {

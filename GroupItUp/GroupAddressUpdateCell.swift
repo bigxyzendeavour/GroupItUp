@@ -11,6 +11,8 @@ import UIKit
 protocol GroupAddressUpdateCellDelegate {
     func updateGroupAddressForFirebase(address: Dictionary<String, String>)
     func updateGroupAddressForCurrentGroup(address: Address)
+    func updateSelectedCountry(country: String)
+    func getSelectedProvinces() -> [String]
 }
 
 class GroupAddressUpdateCell: UITableViewCell, UITextFieldDelegate {
@@ -22,9 +24,9 @@ class GroupAddressUpdateCell: UITableViewCell, UITextFieldDelegate {
     @IBOutlet weak var countryTextField: UITextField!
     
     var delegate: GroupAddressUpdateCellDelegate?
-    var countries : [String]!
     var addressFields = ["Street", "City", "Province", "Postal Code", "Country"]
     var countryPicker: UIPickerView!
+    var provincePicker: UIPickerView!
     static var address = [String: String]()
     var currentGroup: Group!
     
@@ -39,11 +41,46 @@ class GroupAddressUpdateCell: UITableViewCell, UITextFieldDelegate {
     }
     
     func configureCell(group: Group) {
-        streetTextField.text = group.groupDetail.groupMeetUpAddress.street
-        cityTextField.text = group.groupDetail.groupMeetUpAddress.city
-        provinceTextField.text = group.groupDetail.groupMeetUpAddress.province
-        postalTextField.text = group.groupDetail.groupMeetUpAddress.postal
-        countryTextField.text = group.groupDetail.groupMeetUpAddress.country
+        
+        if !group.groupDetail.groupMeetUpAddress.isEmpty() {
+            streetTextField.text = group.groupDetail.groupMeetUpAddress.street
+            cityTextField.text = group.groupDetail.groupMeetUpAddress.city
+            provinceTextField.text = group.groupDetail.groupMeetUpAddress.province
+            provinceTextField.inputView = provincePicker
+            postalTextField.text = group.groupDetail.groupMeetUpAddress.postal
+            countryTextField.text = group.groupDetail.groupMeetUpAddress.country
+            var row = 0
+            for i in 0..<countries.count {
+                if countries[i] == group.groupDetail.groupMeetUpAddress.country {
+                    row = i
+                    break
+                }
+            }
+            countryPicker.selectRow(row, inComponent: 0, animated: false)
+            countryTextField.inputView = countryPicker
+            if let delegate = self.delegate {
+                delegate.updateSelectedCountry(country: group.groupDetail.groupMeetUpAddress.country)
+            }
+        } else {
+            var row = 0
+            for i in 0..<countries.count {
+                if countries[i] == currentUser.region {
+                    row = i
+                    break
+                }
+            }
+            countryPicker.selectRow(row, inComponent: 0, animated: false)
+            countryTextField.inputView = countryPicker
+            streetTextField.isEnabled = false
+            streetTextField.backgroundColor = UIColor.lightGray
+            cityTextField.isEnabled = false
+            cityTextField.backgroundColor = UIColor.lightGray
+            provinceTextField.isEnabled = false
+            provinceTextField.backgroundColor = UIColor.lightGray
+            postalTextField.isEnabled = false
+            postalTextField.backgroundColor = UIColor.lightGray
+        }
+        
     }
     
     func setCurrentGroup(group: Group) {
@@ -69,9 +106,13 @@ class GroupAddressUpdateCell: UITableViewCell, UITextFieldDelegate {
                 }
                 break
             case 2:
-                if let province = provinceTextField.text, province != "" {
-                    GroupAddressUpdateCell.address["Province"] = province
-                    currentGroup.groupDetail.groupMeetUpAddress.province = province
+                let selectedRow = provincePicker.selectedRow(inComponent: 0)
+                let selectedProvinces = delegate.getSelectedProvinces()
+                let selectedProvince = selectedProvinces[selectedRow]
+                if selectedProvince != "" {
+                    provinceTextField.text = selectedProvince
+                    GroupAddressUpdateCell.address["Province"] = selectedProvince
+                    currentGroup.groupDetail.groupMeetUpAddress.province = selectedProvince
                     currentGroup.groupDetail.groupMeetUpAddress.resetAddress()
                 }
                 break
@@ -89,6 +130,41 @@ class GroupAddressUpdateCell: UITableViewCell, UITextFieldDelegate {
                     countryTextField.text = selectedCountry
                     GroupAddressUpdateCell.address["Country"] = selectedCountry
                     currentGroup.groupDetail.groupMeetUpAddress.country = selectedCountry
+                    currentGroup.groupDetail.groupMeetUpAddress.resetAddress()
+                    delegate.updateSelectedCountry(country: selectedCountry)
+                    streetTextField.isEnabled = true
+                    streetTextField.backgroundColor = UIColor.clear
+                    cityTextField.isEnabled = true
+                    cityTextField.backgroundColor = UIColor.clear
+                    provinceTextField.isEnabled = true
+                    provinceTextField.backgroundColor = UIColor.clear
+                    postalTextField.isEnabled = true
+                    postalTextField.backgroundColor = UIColor.clear
+                } else {
+                    countryTextField.text = ""
+                    GroupAddressUpdateCell.address["Country"] = ""
+                    currentGroup.groupDetail.groupMeetUpAddress.country = ""
+                    delegate.updateSelectedCountry(country: "")
+                    streetTextField.isEnabled = false
+                    streetTextField.text = ""
+                    streetTextField.backgroundColor = UIColor.lightGray
+                    GroupAddressUpdateCell.address["Street"] = ""
+                    currentGroup.groupDetail.groupMeetUpAddress.street = ""
+                    cityTextField.isEnabled = false
+                    cityTextField.text = ""
+                    cityTextField.backgroundColor = UIColor.lightGray
+                    GroupAddressUpdateCell.address["City"] = ""
+                    currentGroup.groupDetail.groupMeetUpAddress.city = ""
+                    provinceTextField.isEnabled = false
+                    provinceTextField.text = ""
+                    provinceTextField.backgroundColor = UIColor.lightGray
+                    GroupAddressUpdateCell.address["Province"] = ""
+                    currentGroup.groupDetail.groupMeetUpAddress.province = ""
+                    postalTextField.isEnabled = false
+                    postalTextField.text = ""
+                    postalTextField.backgroundColor = UIColor.lightGray
+                    GroupAddressUpdateCell.address["Postal"] = ""
+                    currentGroup.groupDetail.groupMeetUpAddress.postal = ""
                     currentGroup.groupDetail.groupMeetUpAddress.resetAddress()
                 }
                 break

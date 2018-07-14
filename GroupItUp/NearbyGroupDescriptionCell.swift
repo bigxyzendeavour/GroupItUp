@@ -47,6 +47,13 @@ class NearbyGroupDescriptionCell: UITableViewCell {
                     }
                 }
             })
+            
+            if groupDetail.groupAttendingUsers.keys.contains(currentUser.userID) {
+                joinBtn.setTitle("I'm Out!", for: .normal)
+            } else {
+                joinBtn.setTitle("I'm In!", for: .normal)
+            }
+            
         } else {
             //owner viewing the group post
             joinBtn.isEnabled = false
@@ -89,6 +96,7 @@ class NearbyGroupDescriptionCell: UITableViewCell {
     
 
     @IBAction func joinBtnPressed(_ sender: UIButton) {
+        
         let attendingRef = DataService.ds.REF_GROUPS.child(selectedGroup.groupID).child("Group Detail").child("Attending")
         var attending: Int!
         attendingRef.observeSingleEvent(of: .value, with: { (snapshot) in

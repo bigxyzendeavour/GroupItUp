@@ -25,6 +25,7 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
     static var imageCache: NSCache<NSString, UIImage> = NSCache()
     private var refreshControl = UIRefreshControl()
     var isRefreshing: Bool!
+    var isFromSignUp = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,14 +48,15 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
         }
         refreshControl.addTarget(self, action: #selector(refreshNearbyGroups), for: .valueChanged)
         refreshControl.attributedTitle = NSAttributedString(string: "Refreshing nearby groups", attributes: nil)
-
         
         initialize()
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
+//        if city != nil && city != "" {
+//            fetchNearbyGroups(city: city)
+//        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -105,22 +107,23 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
 
     func initialize() {
         parseCountriesCSV()
-        currentLocation = locationManager.location
-        if currentLocation != nil {
-            LocationServices.shared.getAdress { address, error in
-                if error != nil {
-                    self.sendAlertWithoutHandler(alertTitle: "Location Error", alertMessage: "\(error?.localizedDescription). Please refresh.", actionTitle: ["Cancel"])
-                    return
-                }
-                if let a = address, let city = a["City"] as? String {
-                    self.city = city
-                    self.fetchNearbyGroups(city: city)
-                    
-                }
-            }
-        } else {
-            self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Network connection issue, please wait and refresh.", actionTitle: ["OK"])
-        }
+//        currentLocation = locationManager.location
+//        if currentLocation != nil {
+//            LocationServices.shared.getAdress { address, error in
+//                if error != nil {
+//                    self.sendAlertWithoutHandler(alertTitle: "Location Error", alertMessage: "\(error?.localizedDescription). Please refresh.", actionTitle: ["Cancel"])
+//                    return
+//                }
+//                self.inUse = true
+//                if let a = address, let city = a["City"] as? String {
+//                    self.city = city
+//                    self.fetchNearbyGroups(city: city)
+//                    
+//                }
+//            }
+//        } else {
+//            self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Network connection issue, please wait and refresh.", actionTitle: ["OK"])
+//        }
         
     }
     
@@ -188,12 +191,28 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
     
     @objc private func refreshNearbyGroups() {
         if inUse == true {
-            if city != nil {
-                fetchNearbyGroups(city: city)
-            } else {
-                endRefrenshing()
-                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Network connection issue, please check your network.", actionTitle: ["OK"])
-                return
+            currentLocation = locationManager.location
+            if currentLocation != nil {
+                locationManager.stopUpdatingLocation()
+            }
+            LocationServices.shared.getAdress { address, error in
+                if error != nil {
+                    self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription). Please refresh.", actionTitle: ["Cancel"])
+                    return
+                }
+                if let a = address, let city = a["City"] as? String, let country = a["Country"] as? String {
+                    self.city = city
+                    if currentUser.region == "" {
+                        currentUser.region = country
+                        DataService.ds.REF_USERS_CURRENT.child("Region").setValue(country)
+                    }
+                    
+                    self.fetchNearbyGroups(city: city)
+                    
+                } else {
+                    self.endRefrenshing()
+                    self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Network connection issue, please check your network.", actionTitle: ["OK"])
+                }
             }
             
         } else {
@@ -203,7 +222,7 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
     }
     
     func fetchNearbyGroups(city: String) {
-        nearbyGroups.removeAll()
+        
         var tempGroups = [Group]()
         self.startRefreshing()
         Timer.scheduledTimer(withTimeInterval: 30, repeats: false, block: { (timer) in
@@ -211,7 +230,6 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
                 self.endRefrenshing()
                 self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please refresh", actionTitle: ["Cancel"])
                 
-                return
             }
         })
         DataService.ds.REF_BASE.child("Groups").observeSingleEvent(of: .value, with: { (snapshot) -> Void in
@@ -285,14 +303,16 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
                                     group.groupDetail.groupDisplayImage = image!
                                 } else {
                                     group.groupPhotos[i - 1].photo = image!
+                                    
                                 }
-                                self.updateNearbyGroups(groups: self.nearbyGroups)
                                 self.tableView.reloadData()
                                 self.endRefrenshing()
                             }
                         })
                     }
                 }
+                
+                
             }
             
         })

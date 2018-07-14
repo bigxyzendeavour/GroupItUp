@@ -139,6 +139,9 @@ class SignUpVC: UIViewController {
                 usernameExisted = self.checkExistingUser(snapshot: snapshot, userName: username)
                 if usernameExisted == true {
                     self.sendAlertWithoutHandler(alertTitle: "Username Exists", alertMessage: "This username has been occupied, please use another.", actionTitle: ["Cancel"])
+                    self.activityIndicator.stopAnimating()
+                    self.isRefreshing = false
+                    self.view.isUserInteractionEnabled = true
                     return
                 } else {
                     Auth.auth().createUser(withEmail: email, password: password, completion: { (user, error) in
@@ -147,10 +150,10 @@ class SignUpVC: UIViewController {
                             let user = user
                             user?.delete(completion: { (error) in
                                 self.sendAlertWithoutHandler(alertTitle: "Sign up unsuccessful", alertMessage: "Please re-sign up", actionTitle: ["Cancel"])
+                                self.activityIndicator.stopAnimating()
+                                self.isRefreshing = false
+                                self.view.isUserInteractionEnabled = true
                             })
-                            self.activityIndicator.stopAnimating()
-                            self.isRefreshing = false
-                            self.view.isUserInteractionEnabled = true
                         } else {
                             if let user = user {
                                 var userData = [String: Any]()
@@ -161,6 +164,9 @@ class SignUpVC: UIViewController {
                                 DataService.ds.STORAGE_USER_IMAGE.child("\(user.uid).jpg").putData(imageData!, metadata: metadata, completion: { (metadata, error) in
                                     if error != nil {
                                         print("Something")
+                                        self.isRefreshing = false
+                                        self.activityIndicator.stopAnimating()
+                                        self.view.isUserInteractionEnabled = true
                                     } else {
                                         let imageURL = metadata?.downloadURL()?.absoluteString
                                         userData = ["Username": username, "User Display Photo URL": imageURL!]
@@ -216,6 +222,9 @@ class SignUpVC: UIViewController {
             } else if isPrivacyPolicy == true {
                 destination.displayText = privacyPolicy
             }
+        }
+        if let destination = segue.destination as? NearbyVC {
+            destination.isFromSignUp = true
         }
     }
     

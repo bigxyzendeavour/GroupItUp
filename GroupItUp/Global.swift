@@ -19,6 +19,7 @@ var newGroup = Group()
 var newGroupForFirebase = [String: Any]()
 var newGroupDetailForFirebase = [String: Any]()
 var newGroupAddressForFirebase = [String: Any]()
+let THEME_COLOR = UIColor(red: 153, green: 213, blue: 60, alpha: 0.8)
 
 extension UIView {
     func widthCircleView() {

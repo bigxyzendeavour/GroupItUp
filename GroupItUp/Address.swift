@@ -100,4 +100,12 @@ class Address {
             return false
         }
     }
+    
+    func isNotComplete() -> Bool {
+        if _street == "" || _city == "" || _province == "" || _postal == "" || _country == "" {
+            return true
+        } else {
+            return false
+        }
+    }
 }

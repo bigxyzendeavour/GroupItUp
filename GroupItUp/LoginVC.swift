@@ -135,7 +135,7 @@ class LoginVC: UIViewController {
     }
     
     @IBAction func signUpBtnPressed(_ sender: Any) {
-        performSegue(withIdentifier: "SingUpVC", sender: nil)
+        performSegue(withIdentifier: "SignUpVC", sender: nil)
     }
     
 }

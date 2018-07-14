@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 
 protocol GroupDetailUpdateCellDelegate {
-    func updateGroupDetailForFirebase(detail: Dictionary<String, Any>)
+    func updateGroupDetailForFirebase(detail: Dictionary<String, String>)
     func updateGroupDetailForCurrentGroup(detail: GroupDetail)
 }
 
@@ -28,8 +28,9 @@ class GroupDetailUpdateCell: UITableViewCell, UITextFieldDelegate {
     var datePicker: UIDatePicker!
     var pickerView: UIPickerView!
     let categoryArray = ["", "Sport", "Entertainment", "Travel", "Food", "Study"]
-    static var detail = [String: Any]()
+    static var detail = [String: String]()
     var currentGroup: Group!
+    var originalTime: String!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -50,10 +51,20 @@ class GroupDetailUpdateCell: UITableViewCell, UITextFieldDelegate {
     func configureCell(group: Group) {
         maxTextField.text = "\(group.groupDetail.groupMaxMembers)"
         timeTextField.text = group.groupDetail.groupMeetingTime
+        timeTextField.backgroundColor = UIColor.lightGray
+        originalTime = group.groupDetail.groupMeetingTime
         contactTextField.text = group.groupDetail.groupContact
         phoneTextField.text = "\(group.groupDetail.groupContactPhone)"
         emailTextField.text = group.groupDetail.groupContactEmail
         categoryTextField.text = group.groupDetail.groupCategory
+        var row = 0
+        for i in 0..<countries.count {
+            if countries[i] == group.groupDetail.groupMeetUpAddress.country {
+                row = i
+                break
+            }
+        }
+        pickerView.selectRow(row, inComponent: 0, animated: false)
     }
     
     func setCurrentGroup(group: Group) {
@@ -66,10 +77,11 @@ class GroupDetailUpdateCell: UITableViewCell, UITextFieldDelegate {
             switch tag {
             case 0:
                 if let max = Int(maxTextField.text!) {
-                    GroupDetailUpdateCell.detail["Max Attending Members"] = max
+                    GroupDetailUpdateCell.detail["Max Attending Members"] = "\(max)"
                     currentGroup.groupDetail.groupMaxMembers = max
                 } else {
-                    GroupDetailUpdateCell.detail["Max Attending Members"] = nil
+                    GroupDetailUpdateCell.detail["Max Attending Members"] = "1"
+                    currentGroup.groupDetail.groupMaxMembers = 1
                 }
                 break
             case 1:
@@ -77,11 +89,9 @@ class GroupDetailUpdateCell: UITableViewCell, UITextFieldDelegate {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
                 let date = dateFormatter.string(from: selectedDate as Date)
-                if timeSwitch.isOn {
-                    timeTextField.text = date
-                    GroupDetailUpdateCell.detail["Time"] = date
-                    currentGroup.groupDetail.groupMeetingTime = date
-                }
+                timeTextField.text = date
+                GroupDetailUpdateCell.detail["Time"] = date
+                currentGroup.groupDetail.groupMeetingTime = date
                 break
             case 2:
                 let contactPerson = contactTextField.text
@@ -89,7 +99,8 @@ class GroupDetailUpdateCell: UITableViewCell, UITextFieldDelegate {
                     GroupDetailUpdateCell.detail["Contact"] = contactPerson
                     currentGroup.groupDetail.groupContact = contactPerson!
                 } else {
-                    GroupDetailUpdateCell.detail["Contact"] = nil
+                    GroupDetailUpdateCell.detail["Contact"] = ""
+                    currentGroup.groupDetail.groupContact = ""
                 }
                 break
             case 3:
@@ -98,7 +109,8 @@ class GroupDetailUpdateCell: UITableViewCell, UITextFieldDelegate {
                         GroupDetailUpdateCell.detail["Phone"] = phoneNumber
                         currentGroup.groupDetail.groupContactPhone = phoneNumber
                     } else {
-                        GroupDetailUpdateCell.detail["Phone"] = nil
+                        GroupDetailUpdateCell.detail["Phone"] = ""
+                        currentGroup.groupDetail.groupContactPhone = ""
                     }
                 }
                 break
@@ -108,7 +120,8 @@ class GroupDetailUpdateCell: UITableViewCell, UITextFieldDelegate {
                     GroupDetailUpdateCell.detail["Email"] = emailAddress
                     currentGroup.groupDetail.groupContactEmail = emailAddress!
                 } else {
-                    GroupDetailUpdateCell.detail["Email"] = nil
+                    GroupDetailUpdateCell.detail["Email"] = ""
+                    currentGroup.groupDetail.groupContactEmail = ""
                 }
                 break
             case 5:
@@ -120,7 +133,8 @@ class GroupDetailUpdateCell: UITableViewCell, UITextFieldDelegate {
                     currentGroup.groupDetail.groupCategory = selectedCategory
                 } else {
                     categoryTextField.text = ""
-                    GroupDetailUpdateCell.detail["Category"] = nil
+                    GroupDetailUpdateCell.detail["Category"] = ""
+                    currentGroup.groupDetail.groupCategory = ""
                 }
                 break
             default:
@@ -132,14 +146,21 @@ class GroupDetailUpdateCell: UITableViewCell, UITextFieldDelegate {
     }
     
     @IBAction func timeSwitchChanged(_ sender: UISwitch) {
-        if timeSwitch.isOn {
-            timeTextField.isEnabled = true
-            timeTextField.backgroundColor = UIColor.clear
-        } else {
-            timeTextField.isEnabled = false
-            timeTextField.text = ""
-            self.backgroundColor = UIColor.lightGray
+        if let delegate = self.delegate {
+            if timeSwitch.isOn {
+                timeTextField.isEnabled = true
+                timeTextField.backgroundColor = UIColor.clear
+            } else {
+                timeTextField.isEnabled = false
+                timeTextField.text = ""
+                GroupDetailUpdateCell.detail["Time"] = ""
+                currentGroup.groupDetail.groupMeetingTime = ""
+                timeTextField.backgroundColor = UIColor.lightGray
+                delegate.updateGroupDetailForFirebase(detail: GroupDetailUpdateCell.detail)
+                delegate.updateGroupDetailForCurrentGroup(detail: currentGroup.groupDetail)
+            }
         }
+        
     }
     
 }

@@ -20,9 +20,10 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     var selectedGroup: Group!
     private var refreshControl = UIRefreshControl()
     var isRefreshing: Bool!
+    var keyword: String?
     
     override func viewWillAppear(_ animated: Bool) {
-        fetchBySelectedOption(selectedOption: selectedOption)
+        
     }
     
     override func viewDidLoad() {
@@ -30,7 +31,6 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
 
         tableView.delegate = self
         tableView.dataSource = self
-        self.title = selectedOption!
         
         if #available(iOS 10.0, *) {
             tableView.refreshControl = refreshControl
@@ -40,7 +40,16 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         refreshControl.addTarget(self, action: #selector(refreshGroups), for: .valueChanged)
         refreshControl.attributedTitle = NSAttributedString(string: "Refreshing nearby groups", attributes: nil)
         
-        self.title = selectedOption
+        if keyword != nil && keyword != "" {
+            fetchByKeyword(keyword: keyword!)
+        } else if locationValue != nil && !locationValue.isEmpty {
+            self.title = selectedOption
+            fetchByLocation(locationValue: locationValue)
+        } else {
+            self.title = selectedOption
+            fetchBySelectedOption(selectedOption: selectedOption)
+        }
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -48,7 +57,12 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     @objc private func refreshGroups() {
-        fetchBySelectedOption(selectedOption: selectedOption)
+        if keyword != nil && keyword != "" {
+            fetchByKeyword(keyword: keyword!)
+        } else {
+            fetchBySelectedOption(selectedOption: selectedOption)
+        }
+        
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -86,6 +100,85 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         searchResults.removeAll()
         var tempGroups = [Group]()
         self.startRefreshing()
+//        Timer.scheduledTimer(withTimeInterval: 20, repeats: false, block:  { (timer) in
+//            if self.isRefreshing == true {
+//                self.endRefrenshing()
+//                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please refresh", actionTitle: ["Cancel"])
+//            }
+//        })
+        let ref = DataService.ds.REF_GROUPS
+        ref.observeSingleEvent(of: .value, with: { (snapshot) in
+            if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
+                for snap in snapShot {
+                    let groupData = snap.value as! Dictionary<String, Any>
+                    let groupDetailData = groupData["Group Detail"] as! Dictionary<String, Any>
+                    
+                    switch selectedOption {
+                    case "All":
+                        let group = self.addGroup(snap: snap)
+                        tempGroups.append(group)
+                        break
+                    case "Sport":
+                        let category = groupDetailData["Category"] as! String
+                        if category == "Sport" {
+                            let group = self.addGroup(snap: snap)
+                            tempGroups.append(group)
+                        }
+                        break
+                    case "Entertainment":
+                        let category = groupDetailData["Category"] as! String
+                        if category == "Entertainment" {
+                            let group = self.addGroup(snap: snap)
+                            tempGroups.append(group)
+                        }
+                        break
+                    case "Travel":
+                        let category = groupDetailData["Category"] as! String
+                        if category == "Travel" {
+                            let group = self.addGroup(snap: snap)
+                            tempGroups.append(group)
+                        }
+                        break
+                    case "Food":
+                        let category = groupDetailData["Category"] as! String
+                        if category == "Food" {
+                            let group = self.addGroup(snap: snap)
+                            tempGroups.append(group)
+                        }
+                        break
+                    case "Study":
+                        let category = groupDetailData["Category"] as! String
+                        if category == "Study" {
+                            let group = self.addGroup(snap: snap)
+                            tempGroups.append(group)
+                        }
+                        break
+                    case "Other":
+                        let category = groupDetailData["Category"] as! String
+                        if category == "Other" {
+                            let group = self.addGroup(snap: snap)
+                            tempGroups.append(group)
+                        }
+                        break
+                    default:
+                        break
+                    }
+                }
+                self.searchResults = self.orderGroupsByID(groups: tempGroups)
+                self.processPhotos(groups: self.searchResults)
+                if self.searchResults.count == 0 {
+                    self.sendAlertWithoutHandler(alertTitle: "Currently Empty", alertMessage: "We can't find a group, there isn't a group yet, be the first one to create a group!", actionTitle: ["Cancel"])
+                    self.endRefrenshing()
+                }
+                self.tableView.reloadData()
+            }
+        })
+    }
+    
+    func fetchByLocation(locationValue: Dictionary<String, String>) {
+        searchResults.removeAll()
+        var tempGroups = [Group]()
+        self.startRefreshing()
         Timer.scheduledTimer(withTimeInterval: 20, repeats: false, block:  { (timer) in
             if self.isRefreshing == true {
                 self.endRefrenshing()
@@ -98,8 +191,8 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                 for snap in snapShot {
                     let groupData = snap.value as! Dictionary<String, Any>
                     let groupDetailData = groupData["Group Detail"] as! Dictionary<String, Any>
-                    let addressData = groupDetailData["Address"] as! Dictionary<String, String>
-                    switch selectedOption {
+                    if let addressData = groupDetailData["Address"] as? Dictionary<String, String> {
+                        switch self.selectedOption {
                         case "Country":
                             let country = addressData["Country"]!
                             let location = ["Country": country]
@@ -127,49 +220,79 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                                 tempGroups.append(group)
                             }
                             break
-                        case "Sport":
-                            let category = groupDetailData["Category"] as! String
-                            if category == "Sport" {
-                                let group = self.addGroup(snap: snap)
-                                tempGroups.append(group)
-                            }
-                            break
-                        case "Entertainment":
-                            let category = groupDetailData["Category"] as! String
-                            if category == "Entertainment" {
-                                let group = self.addGroup(snap: snap)
-                                tempGroups.append(group)
-                            }
-                            break
-                        case "Travel":
-                            let category = groupDetailData["Category"] as! String
-                            if category == "Travel" {
-                                let group = self.addGroup(snap: snap)
-                                tempGroups.append(group)
-                            }
-                            break
-                        case "Food":
-                            let category = groupDetailData["Category"] as! String
-                            if category == "Food" {
-                                let group = self.addGroup(snap: snap)
-                                tempGroups.append(group)
-                            }
-                            break
-                        case "Study":
-                            let category = groupDetailData["Category"] as! String
-                            if category == "Study" {
-                                let group = self.addGroup(snap: snap)
-                                tempGroups.append(group)
-                            }
-                            break
                         default:
                             break
+                        }
                     }
+                    
                 }
                 self.searchResults = self.orderGroupsByID(groups: tempGroups)
                 self.processPhotos(groups: self.searchResults)
                 if self.searchResults.count == 0 {
-                    self.sendAlertWithoutHandler(alertTitle: "Currently Empty", alertMessage: "We can't find a group, there isn't a group yet or please double check the location entered", actionTitle: ["Cancel"])
+                    self.sendAlertWithoutHandler(alertTitle: "Currently Empty", alertMessage: "We can't find a group, there isn't a group yet, be the first one to create a group!", actionTitle: ["Cancel"])
+                    self.endRefrenshing()
+                }
+                self.tableView.reloadData()
+            }
+        })
+    }
+    
+    func fetchByKeyword(keyword: String) {
+        var tempGroups = [Group]()
+        self.startRefreshing()
+        Timer.scheduledTimer(withTimeInterval: 20, repeats: false, block:  { (timer) in
+            if self.isRefreshing == true {
+                self.endRefrenshing()
+                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please refresh", actionTitle: ["Cancel"])
+            }
+        })
+        DataService.ds.REF_GROUPS.observeSingleEvent(of: .value, with: { (snapshot) in
+            if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
+                if snapShot.count == 0 {
+                    self.sendAlertWithoutHandler(alertTitle: "No Groups Found", alertMessage: "There are no groups found, please search another keyword.", actionTitle: ["OK"])
+                    return
+                }
+                for snap in snapShot {
+                    let group = Group()
+                    var comments = [Comment]()
+                    var previousPhotos = [Photo]()
+                    
+                    let groupID = snap.key
+                    let groupData = snap.value as! Dictionary<String, Any>
+                    let groupDetailData = groupData["Group Detail"] as! Dictionary<String, Any>
+                    let groupTitle = groupDetailData["Title"] as! String
+                    if groupTitle.lowercased().contains(keyword.lowercased()) {
+                        if let commentData = groupData["Comments"] as? Dictionary<String, Any> {
+                            for eachComment in commentData {
+                                let commentID = eachComment.key
+                                let commentDetail = eachComment.value as! Dictionary<String, Any>
+                                let comment = Comment(commentID: commentID, commentData: commentDetail)
+                                comments.append(comment)
+                            }
+                            let newComments = self.orderCommentsByID(comments: comments)
+                            group.groupComments = newComments
+                        }
+                        if let previousPhotoData = groupData["Previous Photos"] as? Dictionary<String, String> {
+                            for eachPhoto in previousPhotoData {
+                                let photoID = eachPhoto.key
+                                let photoURL = eachPhoto.value
+                                let photo = Photo(photoID: photoID, photoURL: photoURL)
+                                previousPhotos.append(photo)
+                            }
+                            let newPhotos = self.orderPhotosByID(photos: previousPhotos)
+                            group.groupPhotos = newPhotos
+                        }
+                        group.groupID = groupID
+                        let details = GroupDetail(groupID: groupID, groupDetailData: groupDetailData)
+                        group.groupDetail = details
+                        tempGroups.append(group)
+                    }
+                }
+                self.searchResults = self.orderGroupsByID(groups: tempGroups)
+                
+                self.processPhotos(groups: self.searchResults)
+                if self.searchResults.count == 0 {
+                    self.sendAlertWithoutHandler(alertTitle: "No Groups Found", alertMessage: "We can't find a group, there isn't a group yet, be the first one to create a group!", actionTitle: ["Cancel"])
                     self.endRefrenshing()
                 }
                 self.tableView.reloadData()
@@ -233,15 +356,16 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                         let image = UIImage(data: data!)
                         if i == 0 {
                             group.groupDetail.groupDisplayImage = image!
+                            self.endRefrenshing()
                         } else {
                             group.groupPhotos[i - 1].photo = image!
+                            self.endRefrenshing()
                         }
-                        self.tableView.reloadData()
-                        self.endRefrenshing()
                     }
                 })
             }
         }
+        
     }
     
     func startRefreshing() {

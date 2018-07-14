@@ -179,8 +179,6 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
 //    }
 
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-//        loadingView.show()
-        //        activityIndicator.startAnimating()
         selectedImage = (info[UIImagePickerControllerEditedImage] as! UIImage)
         newGroup.groupDetail.groupDisplayImage = selectedImage!
         reloadSection(tableView: self.tableView, indexSection: selectedIndex)
@@ -194,12 +192,6 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
         selectedIndex = ip.row
         imagePicker.sourceType = .photoLibrary
         self.present(imagePicker, animated: true, completion: nil)
-    }
-    
-    func imagePicker(_ picker: OpalImagePickerController, didFinishPickingImages images: [UIImage]) {
-        previousPhotos = images
-        picker.dismiss(animated: true, completion: nil)
-        reloadSection(tableView: self.tableView, indexSection: 5)
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
