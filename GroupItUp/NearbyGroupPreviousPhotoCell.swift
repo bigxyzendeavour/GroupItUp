@@ -16,7 +16,10 @@ class NearbyGroupPreviousPhotoCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        
+        let previousPhotoCollectionViewLayout = previousPhotoCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        previousPhotoCollectionViewLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0)
+        previousPhotoCollectionViewLayout.minimumInteritemSpacing = 0
+        previousPhotoCollectionViewLayout.itemSize = CGSize(width: (previousPhotoCollectionView.frame.width - 20)/3, height: (previousPhotoCollectionView.frame.width - 20)/3)
     }
 
 //    func configureCell(group: Group) {

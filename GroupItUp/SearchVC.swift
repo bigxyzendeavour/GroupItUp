@@ -52,10 +52,10 @@ class SearchVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
             let fontName = btn.titleLabel?.font.fontName
             if btn.isEqual(searchButton) {
                 btn.setTitleColor(UIColor.white, for: .normal)
-                btn.titleLabel?.font = UIFont(name: fontName!, size: 16)
+                btn.titleLabel?.font = UIFont(name: fontName!, size: 18)
             } else {
                 btn.setTitleColor(UIColor.lightGray, for: .normal)
-                btn.titleLabel?.font = UIFont(name: fontName!, size: 14)
+                btn.titleLabel?.font = UIFont(name: fontName!, size: 16)
             }
         }
     }

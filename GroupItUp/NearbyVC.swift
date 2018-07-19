@@ -21,7 +21,7 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
     var selectedGroup: Group!
     let locationManager = CLLocationManager()
     var currentLocation: CLLocation!
-    var inUse = false
+    var inUse: Bool!
     static var imageCache: NSCache<NSString, UIImage> = NSCache()
     private var refreshControl = UIRefreshControl()
     var isRefreshing: Bool!
@@ -33,7 +33,7 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
         tableView.delegate = self
         tableView.dataSource = self
         
-        let insets = UIEdgeInsets(top: 0, left: 0, bottom: 100, right: 0)
+        let insets = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
         tableView.contentInset = insets
         
         locationManager.delegate = self
@@ -67,10 +67,13 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
         switch status {
         case CLAuthorizationStatus.authorizedWhenInUse:
             inUse = true
+            KeychainWrapper.standard.set(true, forKey: "In Use Status")
         case CLAuthorizationStatus.authorizedAlways:
             inUse = true
+            KeychainWrapper.standard.set(true, forKey: "In Use Status")
         default:
             inUse = false
+            KeychainWrapper.standard.set(false, forKey: "In Use Status")
         }
         
         if inUse == true {
@@ -95,7 +98,7 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
                         currentUser.region = country
                         DataService.ds.REF_USERS_CURRENT.child("Region").setValue(country)
                     }
-                    
+                    self.fetchAllGroupStatus()
                     self.fetchNearbyGroups(city: city)
                     
                 }
@@ -107,24 +110,13 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
 
     func initialize() {
         parseCountriesCSV()
-//        currentLocation = locationManager.location
-//        if currentLocation != nil {
-//            LocationServices.shared.getAdress { address, error in
-//                if error != nil {
-//                    self.sendAlertWithoutHandler(alertTitle: "Location Error", alertMessage: "\(error?.localizedDescription). Please refresh.", actionTitle: ["Cancel"])
-//                    return
-//                }
-//                self.inUse = true
-//                if let a = address, let city = a["City"] as? String {
-//                    self.city = city
-//                    self.fetchNearbyGroups(city: city)
-//                    
-//                }
-//            }
-//        } else {
-//            self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Network connection issue, please wait and refresh.", actionTitle: ["OK"])
-//        }
         
+        if KeychainWrapper.standard.bool(forKey: "In Use Status") != nil {
+            inUse = KeychainWrapper.standard.bool(forKey: "In Use Status")!
+        } else {
+            inUse = false
+            KeychainWrapper.standard.set(false, forKey: "In Use Status")
+        }
     }
     
     func parseCountriesCSV() {
@@ -161,16 +153,17 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return nearbyGroups.count
+        if nearbyGroups.count < 20 {
+            return nearbyGroups.count
+        } else {
+            return 20
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let group = nearbyGroups[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "NearbyGroupCell") as! NearbyGroupCell
         cell.configureCell(group: group)
-        //            DispatchQueue.main.async {
-        //                self.activityIndicator.stopAnimating()
-        //            }
         return cell
     }
     
@@ -206,7 +199,7 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
                         currentUser.region = country
                         DataService.ds.REF_USERS_CURRENT.child("Region").setValue(country)
                     }
-                    
+                    self.fetchAllGroupStatus()
                     self.fetchNearbyGroups(city: city)
                     
                 } else {
@@ -317,6 +310,41 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
             
         })
         
+    }
+    
+    func fetchAllGroupStatus() {
+        DataService.ds.REF_GROUPS.observeSingleEvent(of: .value, with: { (snapshot) in
+            if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
+                for snap in snapShot {
+                    if let groupData = snap.value as? Dictionary<String, Any> {
+                        let key = snap.key
+                        let groupDetailData = groupData["Group Detail"] as! Dictionary<String, Any>
+                        
+                        let attendingMembers = groupDetailData["Attending Users"] as! Dictionary<String, Any>
+                        let host = groupDetailData["Host"] as! String
+                        
+                        let date = groupDetailData["Time"] as! String
+                        
+                        let df = DateFormatter()
+                        df.dateFormat = "yyyy-MM-dd HH:mm"
+                        let currentDate = NSDate() as Date
+                        let groupMeetingDate = df.date(from: date)!
+                        let daysDiff = NSDate().calculateIntervalBetweenDates(newDate: groupMeetingDate, compareDate: currentDate)
+                        if daysDiff > 1 {
+                            DataService.ds.REF_GROUPS.child(key).child("Group Detail").child("Status").setValue("Completed")
+                            if attendingMembers.keys.contains(currentUser.userID) {
+                                DataService.ds.REF_USERS_CURRENT.child("Attending").child(key).removeValue()
+                                DataService.ds.REF_USERS_CURRENT.child("Joined").child(key).setValue(true)
+                            }
+                            if host == currentUser.userID {
+                                DataService.ds.REF_USERS_CURRENT.child("Hosting").child(key).removeValue()
+                                DataService.ds.REF_USERS_CURRENT.child("Hosted").child(key).setValue(true)
+                            }
+                        }
+                    }
+                }
+            }
+        })
     }
     
     func startRefreshing() {

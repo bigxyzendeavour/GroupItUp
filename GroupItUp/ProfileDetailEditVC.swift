@@ -36,7 +36,7 @@ class ProfileDetailEditVC: UIViewController, UIPickerViewDelegate, UIPickerViewD
         countryPicker.dataSource = self
         
         individualDetailTextField.delegate = self
-        
+        individualDetailTextField.layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0)
         initialize(currentValue: displayText)
     }
     

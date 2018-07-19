@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import SwiftKeychainWrapper
 
 var username: String!
 let EMPTY_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/groupitup.appspot.com/o/emptyImage.jpg?alt=media&token=506a3a20-cccb-4a6d-9c71-fbf61e0b17e5"
@@ -19,7 +20,8 @@ var newGroup = Group()
 var newGroupForFirebase = [String: Any]()
 var newGroupDetailForFirebase = [String: Any]()
 var newGroupAddressForFirebase = [String: Any]()
-let THEME_COLOR = UIColor(red: 153, green: 213, blue: 60, alpha: 0.8)
+let THEME_COLOR = UIColor(red: 0.957826, green: 0.656833, blue: 0.120666, alpha: 1)
+var inUse = KeychainWrapper.standard.bool(forKey: "In Use Status")
 
 extension UIView {
     func widthCircleView() {

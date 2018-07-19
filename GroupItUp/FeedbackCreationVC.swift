@@ -62,6 +62,8 @@ class FeedbackCreationVC: UIViewController, UITextViewDelegate {
                 self.newFeedback = Feedback(feedbackID: feedbackID, feedbackTitle: self.feedbackTitleTextField.text!, feedbackContent: self.feedbackTextView.text!)
                 let feedbackForFirebase = ["Created": self.newFeedback.created, "Feedback Description": self.newFeedback.feedbackContent, "Title": self.newFeedback.feedbackTitle, "User ID": self.newFeedback.userID, "Username": self.newFeedback.username]
                 DataService.ds.REF_FEEDBACKS.child(feedbackID).updateChildValues(feedbackForFirebase)
+                let adminAutoResponseCommentForFirebase = ["01": ["Comment": "Thank you very much for your feedback. Your feedback is valuable.", "User ID": "U328589739844329", "Username": "GroupUpTeam"]]
+                DataService.ds.REF_FEEDBACKS.child(feedbackID).child("Comments").updateChildValues(adminAutoResponseCommentForFirebase)
                 self.performSegue(withIdentifier: "FeedbackVC", sender: nil)
             })
         } else {

@@ -15,5 +15,6 @@ target 'GroupItUp' do
   pod 'SwiftKeychainWrapper'
   pod 'IQKeyboardManagerSwift'
   pod 'OpalImagePicker', '~> 1.4.0'
+  pod 'NVActivityIndicatorView'
   
 end

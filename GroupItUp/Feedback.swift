@@ -17,6 +17,7 @@ class Feedback {
     private var _feedbackTitle: String!
     private var _feedbackContent: String!
     private var _created: String!
+    private var _comments: [Comment]?
     
     init() {
         self._feedbackID = ""
@@ -25,6 +26,7 @@ class Feedback {
         self._feedbackTitle = ""
         self._feedbackContent = ""
         self._created = ""
+        self._comments = [Comment]()
     }
     
     //Initiate a feedback to be sent, no ID yet, this is set when initiating a comment
@@ -55,6 +57,16 @@ class Feedback {
         
         let creationTime = feedbackData["Created"] as! String
         self._created = creationTime
+        
+        if let comments = feedbackData["Comments"] as? Dictionary<String, Any> {
+            self._comments = [Comment]()
+            for comment in comments {
+                let commentID = comment.key
+                let commentData = comment.value as! Dictionary<String, String>
+                let commentEntry = Comment(commentID: commentID, commentData: commentData)
+                self._comments?.append(commentEntry)
+            }
+        }
     }
     
     var feedbackID: String {
@@ -126,6 +138,18 @@ class Feedback {
         }
         set {
             _created = newValue
+        }
+    }
+    
+    var comments: [Comment] {
+        get {
+            if _comments == nil {
+                _comments = [Comment]()
+            }
+            return _comments!
+        }
+        set {
+            _comments = newValue
         }
     }
 }

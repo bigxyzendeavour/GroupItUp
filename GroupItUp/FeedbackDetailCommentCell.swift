@@ -21,6 +21,7 @@ class FeedbackDetailCommentCell: UITableViewCell {
     }
 
     func configureCell(comment: Comment) {
+        userDisplayImage.heightCircleView()
         userDisplayImage.image = comment.userDisplayImage
         usernameLabel.text = comment.username
         userCommentLabel.text = comment.comment

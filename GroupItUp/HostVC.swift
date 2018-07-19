@@ -8,8 +8,9 @@
 
 import UIKit
 import Firebase
+import NVActivityIndicatorView
 
-class HostVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class HostVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NVActivityIndicatorViewable {
 
     @IBOutlet weak var hostDisplayImage: UIImageView!
     @IBOutlet weak var hostNameLabel: UILabel!
@@ -20,6 +21,7 @@ class HostVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var host: Host!
     var searchResults = [Group]()
     var selectedGroup: Group!
+    var activityIndicatorView: NVActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,6 +39,17 @@ class HostVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         hostDisplayImage.image = host.userDisplayImage
         
         DataService.ds.REF_USERS.child(host.userID).child("Fans").observeSingleEvent(of: .value, with: { (snapshot) in
+//            let cols = 4
+//            let rows = 8
+//            let cellWidth = Int(self.view.frame.width / CGFloat(cols))
+//            let cellHeight = Int(self.view.frame.height / CGFloat(rows))
+//            
+//            let frame = CGRect(x: Double(self.view.frame.midX - CGFloat(cellWidth/2)), y: Double(self.view.frame.midY - CGFloat(cellHeight/2)), width: Double(cellWidth), height: Double(cellHeight))
+//            self.activityIndicatorView = NVActivityIndicatorView(frame: frame, type: .ballSpinFadeLoader, color: UIColor.orange, padding: 20)
+//            
+//            self.view.addSubview(self.activityIndicatorView)
+//            self.activityIndicatorView.startAnimating()
+            
             let snapCount = snapshot.childrenCount
             self.hostFansNumberLabel.text = "\(snapCount)"
             if let snapShot = snapshot.value as? Dictionary<String, Bool> {
@@ -52,11 +65,15 @@ class HostVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
+        if let destination = segue.destination as? GroupDetailVC {
+            destination.selectedGroup = selectedGroup
+        }
     }
     
     func fetchHostPreviousHostedGroups() {
         DataService.ds.REF_USERS.child(host.userID).child("Hosted").observeSingleEvent(of: .value, with: { (snapshot) in
+            let activityData = ActivityData()
+            NVActivityIndicatorPresenter.sharedInstance.startAnimating(activityData)
             if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
                 var keyGroups = [String]()
                 var tempGroups = [Group]()
@@ -126,6 +143,8 @@ class HostVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
                                             group.groupPhotos[i - 1].photo = image!
                                         }
                                     }
+//                                    self.activityIndicatorView.stopAnimating()
+                                    NVActivityIndicatorPresenter.sharedInstance.stopAnimating()
                                     self.tableView.reloadData()
                                 })
                             }
@@ -169,18 +188,19 @@ class HostVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBAction func followBtnPressed(_ sender: UIButton) {
         let currentFansNumber = Int(hostFansNumberLabel.text!)
+        //When pressed
         if followButton.currentTitle == "Follow" {
             followButton.setTitle("Unfollow", for: .normal)
             followButton.backgroundColor = UIColor.green
-            hostFansNumberLabel.text = "\(currentFansNumber! - 1)"
-            DataService.ds.REF_USERS.child(host.userID).child("Fans").child(currentUser.userID).removeValue()
-            DataService.ds.REF_USERS_CURRENT.child("Follow").child(host.userID).removeValue()
-        } else {
-            followButton.setTitle("Follow", for: .normal)
-            followButton.backgroundColor = THEME_COLOR
             hostFansNumberLabel.text = "\(currentFansNumber! + 1)"
             DataService.ds.REF_USERS.child(host.userID).child("Fans").child(currentUser.userID).setValue(true)
             DataService.ds.REF_USERS_CURRENT.child("Follow").child(host.userID).setValue(true)
+        } else {
+            followButton.setTitle("Follow", for: .normal)
+            followButton.backgroundColor = THEME_COLOR
+            hostFansNumberLabel.text = "\(currentFansNumber! - 1)"
+            DataService.ds.REF_USERS.child(host.userID).child("Fans").child(currentUser.userID).removeValue()
+            DataService.ds.REF_USERS_CURRENT.child("Follow").child(host.userID).removeValue()
         }
     }
     

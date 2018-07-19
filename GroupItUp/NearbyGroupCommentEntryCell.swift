@@ -11,7 +11,7 @@ import Firebase
 
 protocol NearbyGroupCommentEntryCellDelegate {
     func reloadCommentSection()
-    func updateSelectedGroupComments(comments: [Comment])
+    func updateComments(comments: [Comment])
 }
 
 class NearbyGroupCommentEntryCell: UITableViewCell {
@@ -26,14 +26,9 @@ class NearbyGroupCommentEntryCell: UITableViewCell {
         // Initialization code
     }
     
-//    func getNearbyGroupDetailCommentCell() -> NearbyGroupDetailCommentCell {
-//        return 
-//    }
-    
     func configureCell() {
         commentTextField.placeholder = "Leave a comment"
     }
-
 
     func setSelectedGroup(group: Group) {
         selectedGroup = group
@@ -63,9 +58,11 @@ class NearbyGroupCommentEntryCell: UITableViewCell {
                         userEntryComment.userDisplayImage = image!
                         comments.insert(userEntryComment, at: 0)
                         let commentData = [userEntryComment.commentID: ["Comment": comment, "User ID": userEntryComment.userID, "Username": userEntryComment.username]]
+
                         DataService.ds.REF_GROUPS.child(self.selectedGroup.groupID).child("Comments").updateChildValues(commentData)
+                        
                         if let delegate = self.delegate {
-                            delegate.updateSelectedGroupComments(comments: comments)
+                            delegate.updateComments(comments: comments)
                             delegate.reloadCommentSection()
                         }
                         self.commentTextField.text = ""

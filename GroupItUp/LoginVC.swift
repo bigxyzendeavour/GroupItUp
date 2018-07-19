@@ -65,6 +65,12 @@ class LoginVC: UIViewController {
         loginButton.heightCircleView()
         credentialView.heightCircleView(radius: 15)
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segue.destination as? NearbyVC {
+            destination.isFromSignUp = true
+        }
+    }
 
     @IBAction func logInBtnPressed(_ sender: Any) {
         if let email = emailTextField.text, let password = passwordTextField.text {

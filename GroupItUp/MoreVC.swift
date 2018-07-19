@@ -73,9 +73,9 @@ class MoreVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
             performSegue(withIdentifier: "TermsAndPrivacyVC", sender: nil)
         } else if indexPath.row == 2 {
             performSegue(withIdentifier: "FeedbackVC", sender: nil)
+        } else {
+            performSegue(withIdentifier: "BugReportVC", sender: nil)
         }
-        
-        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

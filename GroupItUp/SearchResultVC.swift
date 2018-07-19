@@ -38,7 +38,7 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             tableView.addSubview(refreshControl)
         }
         refreshControl.addTarget(self, action: #selector(refreshGroups), for: .valueChanged)
-        refreshControl.attributedTitle = NSAttributedString(string: "Refreshing nearby groups", attributes: nil)
+        refreshControl.attributedTitle = NSAttributedString(string: "Refreshing Groups", attributes: nil)
         
         if keyword != nil && keyword != "" {
             fetchByKeyword(keyword: keyword!)

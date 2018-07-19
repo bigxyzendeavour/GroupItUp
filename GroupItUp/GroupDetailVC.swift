@@ -224,17 +224,14 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         }
     }
     
-    func updateSelectedGroupComments(comments: [Comment]) {
+    func updateComments(comments: [Comment]) {
         selectedGroup.groupComments = comments
     }
     
     func reloadCommentSection() {
         tableView.beginUpdates()
-//        let indexSet = NSIndexSet(index: 4)
-//        tableView.reloadSections(indexSet as IndexSet, with: .bottom)
-        let indexPath = IndexPath(row: 0, section: 4)
+        let indexPath = IndexPath(row: 0, section: 5)
         tableView.insertRows(at: [indexPath], with: .automatic)
-//        tableView.reloadData()
         tableView.endUpdates()
         tableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
