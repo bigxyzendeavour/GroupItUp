@@ -87,6 +87,7 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
         performSegue(withIdentifier: "PreviousPhotoOpenVC", sender: nil)
     }
     

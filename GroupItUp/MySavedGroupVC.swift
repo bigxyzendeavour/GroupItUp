@@ -12,14 +12,12 @@ import Firebase
 class MySavedGroupVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var selectedSavedOption: String!
     var displayedGroups = [Group]()
     var selectedGroup: Group!
     static var imageCache: NSCache<NSString, UIImage> = NSCache()
     private var refreshControl = UIRefreshControl()
-    var isRefreshing: Bool!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,7 +37,7 @@ class MySavedGroupVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         startRefreshing()
         Timer.scheduledTimer(withTimeInterval: 30, repeats: false, block: { (timer) in
-            if self.isRefreshing == true {
+            if isRefreshing == true {
                 self.endRefrenshing()
                 self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please refresh", actionTitle: ["Cancel"])
                 return
@@ -115,9 +113,6 @@ class MySavedGroupVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                                 DataService.ds.REF_USERS_CURRENT.child("Hosted").child(key).setValue(true)
                             }
                         }
-                        
-                        
-                        
                     }
                 }
             }
@@ -314,22 +309,6 @@ class MySavedGroupVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }
             })
         }
-    }
-    
-    func startRefreshing() {
-        self.isRefreshing = true
-        self.activityIndicator.startAnimating()
-        self.refreshControl.beginRefreshing()
-        self.tableView.isUserInteractionEnabled = false
-        self.view.isUserInteractionEnabled = false
-    }
-    
-    func endRefrenshing() {
-        self.isRefreshing = false
-        self.activityIndicator.stopAnimating()
-        self.refreshControl.endRefreshing()
-        self.tableView.isUserInteractionEnabled = true
-        self.view.isUserInteractionEnabled = true
     }
     
     func updateDisplayedGroups(groups: [Group]) {

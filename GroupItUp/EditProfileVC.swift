@@ -145,19 +145,7 @@ class EditProfileVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         imagePicker.dismiss(animated: true, completion: nil)
     }
     
-    func startRefreshing() {
-        self.isRefreshing = true
-        self.activityIndicator.startAnimating()
-        self.tableView.isUserInteractionEnabled = false
-        self.view.isUserInteractionEnabled = false
-    }
     
-    func endRefrenshing() {
-        self.isRefreshing = false
-        self.activityIndicator.stopAnimating()
-        self.tableView.isUserInteractionEnabled = true
-        self.view.isUserInteractionEnabled = true
-    }
     
     func refreshData() {
         reloadSection(tableView: self.tableView, indexSection: 1)

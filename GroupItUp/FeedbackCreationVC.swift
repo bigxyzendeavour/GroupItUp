@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class FeedbackCreationVC: UIViewController, UITextViewDelegate {
+class FeedbackCreationVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     
     @IBOutlet weak var feedbackTitleTextField: UITextField!
     @IBOutlet weak var feedbackTextView: UITextView!
@@ -19,9 +19,16 @@ class FeedbackCreationVC: UIViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        newFeedback = Feedback()
+        
+        feedbackTitleTextField.delegate = self
         feedbackTextView.delegate = self
         feedbackTextView.toolbarPlaceholder = "Please help us out by providing feedback."
         
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        newFeedback.feedbackTitle = feedbackTitleTextField.text!
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -36,6 +43,7 @@ class FeedbackCreationVC: UIViewController, UITextViewDelegate {
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
+        newFeedback.feedbackContent = feedbackTextView.text
         if textView.text == "" {
             textView.textColor = UIColor.lightGray
             textView.text = "Please help us out by providing feedback."
@@ -50,7 +58,7 @@ class FeedbackCreationVC: UIViewController, UITextViewDelegate {
 
    
     @IBAction func submitBtnPressed(_ sender: UIButton) {
-        if feedbackTitleTextField.text != "" &&  feedbackTextView.text != "" {
+        if newFeedback.feedbackTitle != "" && newFeedback.feedbackContent != "" {
             DataService.ds.REF_FEEDBACKS.observeSingleEvent(of: .value, with: { (snapshot) in
                 let feedbackCount = snapshot.childrenCount
                 var feedbackID: String
@@ -67,12 +75,12 @@ class FeedbackCreationVC: UIViewController, UITextViewDelegate {
                 self.performSegue(withIdentifier: "FeedbackVC", sender: nil)
             })
         } else {
-            if feedbackTitleTextField.text == "" {
+            if newFeedback.feedbackTitle == "" {
                 sendAlertWithoutHandler(alertTitle: "Information Incomplete", alertMessage: "Please fill in the feedback title.", actionTitle: ["OK"])
-            } else if feedbackTextView.text == "" {
+                return
+            } else if newFeedback.feedbackContent == "" {
                 sendAlertWithoutHandler(alertTitle: "Information Incomplete", alertMessage: "Please provide feedback content before submitting.", actionTitle: ["OK"])
-            } else {
-                sendAlertWithoutHandler(alertTitle: "Information Incomplete", alertMessage: "Please fill in the feedback title and provide feedback content for the submission.", actionTitle: ["OK"])
+                return
             }
         }
     }

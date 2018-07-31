@@ -27,6 +27,8 @@ class PreviousPhotoOpenVC: UIViewController, UICollectionViewDelegate, UICollect
         layout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0)
         layout.minimumInteritemSpacing = 0
         layout.itemSize = CGSize(width: self.view.frame.width, height: self.view.frame.height)
+        
+        
     }
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {

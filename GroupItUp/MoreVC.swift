@@ -74,7 +74,7 @@ class MoreVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         } else if indexPath.row == 2 {
             performSegue(withIdentifier: "FeedbackVC", sender: nil)
         } else {
-            performSegue(withIdentifier: "BugReportVC", sender: nil)
+            performSegue(withIdentifier: "BugListVC", sender: nil)
         }
     }
     

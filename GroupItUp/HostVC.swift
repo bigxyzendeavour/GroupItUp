@@ -72,8 +72,7 @@ class HostVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NVAc
     
     func fetchHostPreviousHostedGroups() {
         DataService.ds.REF_USERS.child(host.userID).child("Hosted").observeSingleEvent(of: .value, with: { (snapshot) in
-            let activityData = ActivityData()
-            NVActivityIndicatorPresenter.sharedInstance.startAnimating(activityData)
+            self.startRefreshing()
             if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
                 var keyGroups = [String]()
                 var tempGroups = [Group]()
@@ -143,8 +142,7 @@ class HostVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NVAc
                                             group.groupPhotos[i - 1].photo = image!
                                         }
                                     }
-//                                    self.activityIndicatorView.stopAnimating()
-                                    NVActivityIndicatorPresenter.sharedInstance.stopAnimating()
+                                    self.endRefrenshing()
                                     self.tableView.reloadData()
                                 })
                             }

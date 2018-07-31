@@ -20,7 +20,6 @@ class SignUpVC: UIViewController {
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    var isRefreshing: Bool!
     var termsOfServices = ""
     var isTermsOfServices: Bool!
     var privacyPolicy = ""
@@ -121,15 +120,12 @@ class SignUpVC: UIViewController {
     }
     
     func processSignUp(username: String, email: String, password: String) {
-        activityIndicator.startAnimating()
-        self.view.isUserInteractionEnabled = false
-        self.isRefreshing = true
+        startRefreshing()
         Timer.scheduledTimer(withTimeInterval: 20, repeats: false, block: { (timer) in
-            if self.isRefreshing == true {
+            if isRefreshing == true {
+                self.endRefrenshing()
                 self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please refresh", actionTitle: ["Cancel"])
-                self.isRefreshing = false
-                self.activityIndicator.stopAnimating()
-                self.view.isUserInteractionEnabled = true
+                
                 return
             }
         })
@@ -139,10 +135,7 @@ class SignUpVC: UIViewController {
                 usernameExisted = self.checkExistingUser(snapshot: snapshot, userName: username)
                 if usernameExisted == true {
                     self.sendAlertWithoutHandler(alertTitle: "Username Exists", alertMessage: "This username has been occupied, please use another.", actionTitle: ["Cancel"])
-                    self.activityIndicator.stopAnimating()
-                    self.isRefreshing = false
-                    self.view.isUserInteractionEnabled = true
-                    return
+                    self.endRefrenshing()
                 } else {
                     Auth.auth().createUser(withEmail: email, password: password, completion: { (user, error) in
                         if let error = error {
@@ -150,9 +143,7 @@ class SignUpVC: UIViewController {
                             let user = user
                             user?.delete(completion: { (error) in
                                 self.sendAlertWithoutHandler(alertTitle: "Sign up unsuccessful", alertMessage: "Please re-sign up", actionTitle: ["Cancel"])
-                                self.activityIndicator.stopAnimating()
-                                self.isRefreshing = false
-                                self.view.isUserInteractionEnabled = true
+                                self.endRefrenshing()
                             })
                         } else {
                             if let user = user {
@@ -163,10 +154,7 @@ class SignUpVC: UIViewController {
                                 metadata.contentType = "image/jpeg"
                                 DataService.ds.STORAGE_USER_IMAGE.child("\(user.uid).jpg").putData(imageData!, metadata: metadata, completion: { (metadata, error) in
                                     if error != nil {
-                                        print("Something")
-                                        self.isRefreshing = false
-                                        self.activityIndicator.stopAnimating()
-                                        self.view.isUserInteractionEnabled = true
+                                        self.endRefrenshing()
                                     } else {
                                         let imageURL = metadata?.downloadURL()?.absoluteString
                                         userData = ["Username": username, "User Display Photo URL": imageURL!]

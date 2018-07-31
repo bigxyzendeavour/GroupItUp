@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import SwiftKeychainWrapper
+import NVActivityIndicatorView
 
 var username: String!
 let EMPTY_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/groupitup.appspot.com/o/emptyImage.jpg?alt=media&token=506a3a20-cccb-4a6d-9c71-fbf61e0b17e5"
@@ -21,7 +22,9 @@ var newGroupForFirebase = [String: Any]()
 var newGroupDetailForFirebase = [String: Any]()
 var newGroupAddressForFirebase = [String: Any]()
 let THEME_COLOR = UIColor(red: 0.957826, green: 0.656833, blue: 0.120666, alpha: 1)
-var inUse = KeychainWrapper.standard.bool(forKey: "In Use Status")
+//var inUse = KeychainWrapper.standard.bool(forKey: "In Use Status")
+let activityData = ActivityData()
+var isRefreshing = false
 
 extension UIView {
     func widthCircleView() {
@@ -56,11 +59,6 @@ extension UIViewController {
         }
         self.present(alert, animated: true, completion: nil)
     }
-//    
-//    func setNoTextOnBackBarButton() {
-//        let backButton = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
-//        self.navigationItem.setLeftBarButton(backButton, animated: false)
-//    }
     
     func configureTextFieldWithImage(textFields: [UITextField]) {
         for i in 0..<textFields.count {
@@ -151,6 +149,23 @@ extension UIViewController {
         return newGroups
     }
     
+    func orderDefectListByID(defects: [Defect]) -> [Defect] {
+        var newDefectList = defects
+        for i in 0..<defects.count {
+            newDefectList[defects.count - 1 - i] = defects[i]
+        }
+        return newDefectList
+    }
+    
+    func orderDefectStepListByID(steps: [Step]) -> [Step] {
+        var newDefectStepList = steps
+        for i in 0..<steps.count {
+            let stepNum = steps[i].stepNum
+            newDefectStepList[stepNum - 1] = steps[i]
+        }
+        return newDefectStepList
+    }
+    
     func reloadSection(tableView: UITableView, indexSection: Int) {
         tableView.beginUpdates()
         let indexSet = NSIndexSet(index: indexSection)
@@ -158,7 +173,16 @@ extension UIViewController {
         tableView.endUpdates()
     }
     
-
+    func startRefreshing() {
+        isRefreshing = true
+        NVActivityIndicatorView.DEFAULT_COLOR = THEME_COLOR
+        NVActivityIndicatorPresenter.sharedInstance.startAnimating(activityData)
+    }
+    
+    func endRefrenshing() {
+        isRefreshing = false
+        NVActivityIndicatorPresenter.sharedInstance.stopAnimating()
+    }
 }
 
 extension UIImage {

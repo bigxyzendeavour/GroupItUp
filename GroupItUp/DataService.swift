@@ -28,6 +28,7 @@ class DataService {
     //STORAGE references
     private var _STORAGE_USER_IMAGE = STORAGE_BASE.child("Users")
     private var _STORAGE_GROUP_IMAGE = STORAGE_BASE.child("All Groups")
+    private var _STORAGE_DEFECT_IMAGE = STORAGE_BASE.child("Defects")
     
     var REF_BASE: DatabaseReference {
         return _REF_BASE
@@ -85,10 +86,10 @@ class DataService {
     var STORAGE_GROUP_IMAGE: StorageReference {
         return _STORAGE_GROUP_IMAGE
     }
-//
-//    var STEP_IMAGE: StorageReference {
-//        return _STEP_IMAGE
-//    }
+    
+    var STORAGE_DEFECT_IMAGE: StorageReference {
+        return _STORAGE_DEFECT_IMAGE
+    }
     
     func createFirebaseDBUser(uid: String, userData: Dictionary<String, Any>) {
         REF_USERS.child(uid).updateChildValues(userData)

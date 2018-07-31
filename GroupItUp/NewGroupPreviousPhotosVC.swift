@@ -14,7 +14,6 @@ class NewGroupPreviousPhotosVC: UIViewController, UICollectionViewDelegate, UICo
     
     @IBOutlet weak var selectedPhotoImageView: UIImageView!
     @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var createButton: UIButton!
 
     var previousPhotos = [Photo]()
@@ -129,8 +128,9 @@ class NewGroupPreviousPhotosVC: UIViewController, UICollectionViewDelegate, UICo
                 metadata.contentType = "image/jpeg"
                 DataService.ds.STORAGE_GROUP_IMAGE.child(groupID).child(displayID).putData(imageData!, metadata: metadata, completion: { (metadata, error) in
                     if error != nil {
-                        self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error!.localizedDescription)", actionTitle: ["Cancel"])
                         self.endRefrenshing()
+                        self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error!.localizedDescription)", actionTitle: ["Cancel"])
+                        
                     } else {
                         let url = metadata?.downloadURL()?.absoluteString
                         newGroupDetailForFirebase["Group Display Photo URL"] = url
@@ -138,6 +138,7 @@ class NewGroupPreviousPhotosVC: UIViewController, UICollectionViewDelegate, UICo
                         
                         //Update current Group object
                         newGroup.groupDetail.groupDisplayImageURL = url!
+                        self.endRefrenshing()
                     }
                 })
                 
@@ -188,17 +189,5 @@ class NewGroupPreviousPhotosVC: UIViewController, UICollectionViewDelegate, UICo
         newGroupDetailForFirebase["Host"] = newGroup.groupDetail.groupHost
         newGroupDetailForFirebase["Likes"] = newGroup.groupDetail.groupLikes
         newGroupDetailForFirebase["Status"] = newGroup.groupDetail.groupStatus
-    }
-    
-    func startRefreshing() {
-        self.isRefreshing = true
-        self.activityIndicator.startAnimating()
-        self.view.isUserInteractionEnabled = false
-    }
-    
-    func endRefrenshing() {
-        self.isRefreshing = false
-        self.activityIndicator.stopAnimating()
-        self.view.isUserInteractionEnabled = true
     }
 }

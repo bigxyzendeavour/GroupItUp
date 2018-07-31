@@ -15,9 +15,6 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var userDisplayImageView: UIImageView!
     @IBOutlet weak var userCollectionView: UICollectionView!
-//    @IBOutlet weak var fansNumberLabel: UILabel!
-//    @IBOutlet weak var editProfileButton: UIButton!
-//    @IBOutlet weak var previousHostedGroupDisplayImage: UIImageView!
     @IBOutlet weak var userDataCollectionView: UICollectionView!
     
     let savedCategory = ["Likes", "Follow", "Attending", "Joined", "Hosting", "Hosted"]
@@ -42,14 +39,13 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
         let userCollectionLayout = userCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
         userCollectionLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0)
         userCollectionLayout.minimumInteritemSpacing = 0
-        userCollectionLayout.itemSize = CGSize(width: (self.view.frame.width - 20)/3, height: (self.view.frame.width - 20)/3)
+        userCollectionLayout.itemSize = CGSize(width: (self.view.frame.width - 50)/3, height: (userCollectionView.frame.height - 20)/2)
         
         let userDataCollectionLayout = userDataCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
         userDataCollectionLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0)
         userDataCollectionLayout.minimumInteritemSpacing = 0
         userDataCollectionLayout.itemSize = CGSize(width: (self.view.frame.width - 30)/3, height: userDataCollectionView.frame.height - 10)
         
-//        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         initialize()
         
@@ -163,14 +159,7 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
         alert.addAction(UIAlertAction(title: "Create a New Group", style: .default, handler: createNewGroupHandler))
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
-        
     }
-    
-//    @IBAction func editProfileBtnPressed(_ sender: UIButton) {
-//        
-//        
-//        performSegue(withIdentifier: "EditProfileVC", sender: nil)
-//    }
     
     func updateProfileDisplayImageFromEditProfileVC(image: UIImage) {
         userDisplayImageView.image = image

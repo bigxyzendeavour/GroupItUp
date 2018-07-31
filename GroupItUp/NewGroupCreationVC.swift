@@ -14,7 +14,6 @@ import IQKeyboardManagerSwift
 class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NewGroupDescriptionCellDelegate, NewGroupCreateBtnCellDelegate, NewGroupDetailCellDelegate, OpalImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, NewGroupPreviousPhotoCellDelegate {
 
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var imagePicker: UIImagePickerController!
     var groupCreatingInProgress: Group!
@@ -28,7 +27,6 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
     var previousPhotos = [UIImage]()
     var groupMeetingAddress: Address!
     var groupDetailForGroup: GroupDetail!
-    var isRefreshing: Bool!
 
     
     override func viewWillAppear(_ animated: Bool) {
@@ -315,12 +313,10 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func startActivityIndicator() {
-        activityIndicator.startAnimating()
-        isRefreshing = true
+        startRefreshing()
         Timer.scheduledTimer(withTimeInterval: 20, repeats: false, block: { (timer) in
-            if self.isRefreshing == true {
-                self.stopActivityIndicator()
-                self.isRefreshing = false
+            if isRefreshing == true {
+                self.endRefrenshing()
                 self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please send again", actionTitle: ["OK"])
                 return
             }
@@ -329,8 +325,7 @@ class NewGroupCreationVC: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func stopActivityIndicator() {
-        activityIndicator.stopAnimating()
-        isRefreshing = false
+        endRefrenshing()
     }
     
 //    func setSelectedCountry(country: String) {

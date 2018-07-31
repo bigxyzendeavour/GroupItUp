@@ -8,18 +8,17 @@
 
 import UIKit
 import Firebase
+import NVActivityIndicatorView
 
 class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var searchResults = [Group]()
     var selectedOption: String!
     var locationValue: Dictionary<String, String>!
     var selectedGroup: Group!
     private var refreshControl = UIRefreshControl()
-    var isRefreshing: Bool!
     var keyword: String?
     
     override func viewWillAppear(_ animated: Bool) {
@@ -100,12 +99,13 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         searchResults.removeAll()
         var tempGroups = [Group]()
         self.startRefreshing()
-//        Timer.scheduledTimer(withTimeInterval: 20, repeats: false, block:  { (timer) in
-//            if self.isRefreshing == true {
-//                self.endRefrenshing()
-//                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please refresh", actionTitle: ["Cancel"])
-//            }
-//        })
+        
+        Timer.scheduledTimer(withTimeInterval: 20, repeats: false, block:  { (timer) in
+            if isRefreshing == true {
+                self.endRefrenshing()
+                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please refresh", actionTitle: ["Cancel"])
+            }
+        })
         let ref = DataService.ds.REF_GROUPS
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
@@ -180,7 +180,7 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         var tempGroups = [Group]()
         self.startRefreshing()
         Timer.scheduledTimer(withTimeInterval: 20, repeats: false, block:  { (timer) in
-            if self.isRefreshing == true {
+            if isRefreshing == true {
                 self.endRefrenshing()
                 self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please refresh", actionTitle: ["Cancel"])
             }
@@ -241,7 +241,7 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         var tempGroups = [Group]()
         self.startRefreshing()
         Timer.scheduledTimer(withTimeInterval: 20, repeats: false, block:  { (timer) in
-            if self.isRefreshing == true {
+            if isRefreshing == true {
                 self.endRefrenshing()
                 self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please refresh", actionTitle: ["Cancel"])
             }
@@ -250,7 +250,7 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
                 if snapShot.count == 0 {
                     self.sendAlertWithoutHandler(alertTitle: "No Groups Found", alertMessage: "There are no groups found, please search another keyword.", actionTitle: ["OK"])
-                    return
+                    self.endRefrenshing()
                 }
                 for snap in snapShot {
                     let group = Group()
@@ -367,21 +367,4 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
     }
-    
-    func startRefreshing() {
-        self.isRefreshing = true
-        self.activityIndicator.startAnimating()
-        self.refreshControl.beginRefreshing()
-        self.tableView.isUserInteractionEnabled = false
-        self.view.isUserInteractionEnabled = false
-    }
-    
-    func endRefrenshing() {
-        self.isRefreshing = false
-        self.activityIndicator.stopAnimating()
-        self.refreshControl.endRefreshing()
-        self.tableView.isUserInteractionEnabled = true
-        self.view.isUserInteractionEnabled = true
-    }
-    
 }

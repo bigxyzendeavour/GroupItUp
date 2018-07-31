@@ -58,7 +58,7 @@ class NearbyGroupDetailCell: UITableViewCell {
             directionButton.backgroundColor = UIColor.lightGray
         } else {
             directionButton.isEnabled = true
-            directionButton.backgroundColor = UIColor(red: 225, green: 166, blue: 51, alpha: 1)
+            directionButton.backgroundColor = THEME_COLOR
         }
     }
     

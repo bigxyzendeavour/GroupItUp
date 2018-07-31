@@ -8,6 +8,11 @@
 
 import UIKit
 import Firebase
+import NVActivityIndicatorView
+
+protocol NearbyGroupCellDelegate {
+    func callEndRefreshing()
+}
 
 class NearbyGroupCell: UITableViewCell {
     
@@ -17,6 +22,7 @@ class NearbyGroupCell: UITableViewCell {
     @IBOutlet weak var groupLocationLabel: UILabel!
     @IBOutlet weak var groupCreationDateLabel: UILabel!
     
+    var delegate: NearbyGroupCellDelegate!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,7 +30,7 @@ class NearbyGroupCell: UITableViewCell {
     }
 
     func configureCell(group: Group) {
-        groupDisplayImage.image = group.groupDetail.groupDisplayImage
+        self.groupDisplayImage.image = group.groupDetail.groupDisplayImage
         groupTitleLabel.text = group.groupDetail.groupTitle
         groupDetailLabel.text = group.groupDetail.groupDetailDescription
         groupLocationLabel.text = group.groupDetail.groupMeetUpAddress.city
@@ -34,6 +40,9 @@ class NearbyGroupCell: UITableViewCell {
         let creationDate = df.date(from: group.groupDetail.groupCreationDate)!
         let daysDiff = NSDate().calculateIntervalBetweenDates(newDate: creationDate, compareDate: currentDate)
         assignPostDateLbl(daysDifference: Int(daysDiff), group: group)
+//        if let delegate = self.delegate {
+//            delegate.callEndRefreshing()
+//        }
     }
 
     func assignPostDateLbl(daysDifference: Int, group: Group) {
