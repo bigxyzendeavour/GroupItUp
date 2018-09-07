@@ -69,7 +69,7 @@ extension UIViewController {
     
     func configureTextFieldWithoutImage(textFields: [UITextField]) {
         for i in 0..<textFields.count {
-            textFields[i].layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0)
+            textFields[i].layer.sublayerTransform = CATransform3DMakeTranslation(10, 0, 0)
         }
     }
     

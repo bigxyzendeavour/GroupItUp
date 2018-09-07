@@ -25,6 +25,14 @@ class MyFollowUserVC: UIViewController, UITableViewDelegate, UITableViewDataSour
         tableView.delegate = self
         tableView.dataSource = self
      
+        startRefreshing()
+        Timer.scheduledTimer(withTimeInterval: 30, repeats: false, block: { (timer) in
+            if isRefreshing == true {
+                self.endRefrenshing()
+                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please refresh", actionTitle: ["Cancel"])
+                return
+            }
+        })
         fetchMyFollowUsers()
     }
     
@@ -59,6 +67,7 @@ class MyFollowUserVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                                     eachHost.userDisplayImage = image!
                                     self.followHosts.append(eachHost)
                                     self.tableView.reloadData()
+                                    self.endRefrenshing()
                                 }
                                
                             })

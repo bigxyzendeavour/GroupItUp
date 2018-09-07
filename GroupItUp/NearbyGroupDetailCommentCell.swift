@@ -20,15 +20,25 @@ class NearbyGroupDetailCommentCell: UITableViewCell {
         
     }
     
-    func configureCell(comment: Comment) {
+    func configureCell(comment: Comment, group: Group) {
         userDisplayImage.image = comment.userDisplayImage
-        if comment.userID == currentUser.userID {
-            usernameLabel.text = "\(comment.username)(Group host)"
+        userCommentLabel.text = comment.comment
+        
+        if comment.userID == group.groupDetail.groupHost {
+            DataService.ds.REF_USERS.child(group.groupDetail.groupHost).child("Username").observeSingleEvent(of: .value, with: { (snapshot) in
+                if let hostName = snapshot.value as? String {
+                    self.usernameLabel.text = "\(hostName)(Group host)"
+                }
+            })
         } else {
-            usernameLabel.text = "\(comment.username)"
+            DataService.ds.REF_USERS.child(comment.userID).child("Username").observeSingleEvent(of: .value, with: { (snapshot) in
+                if let hostName = snapshot.value as? String {
+                    self.usernameLabel.text = hostName
+                }
+            })
         }
         
-        userCommentLabel.text = comment.comment        
+        
     }
 
 //    func setTableViewDataSourceDelegate

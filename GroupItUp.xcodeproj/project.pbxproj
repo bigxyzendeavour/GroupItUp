@@ -78,6 +78,7 @@
 		C1B079BA2109659600DF07B9 /* ViewDefectDisplayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B079B92109659600DF07B9 /* ViewDefectDisplayCell.swift */; };
 		C1B079BC210965F100DF07B9 /* ViewDefectDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B079BB210965F100DF07B9 /* ViewDefectDescriptionCell.swift */; };
 		C1B079BE2109665D00DF07B9 /* ViewDefectStepCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B079BD2109665D00DF07B9 /* ViewDefectStepCell.swift */; };
+		C1B417672141CAEE00A9F5F1 /* InternetConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B417662141CAEE00A9F5F1 /* InternetConnection.swift */; };
 		C1BD778320F9987500A83994 /* MyFollowUserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BD778220F9987500A83994 /* MyFollowUserVC.swift */; };
 		C1BD778520F99A7500A83994 /* MyFollowUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BD778420F99A7500A83994 /* MyFollowUserCell.swift */; };
 		C1BD778720FAD0F700A83994 /* FeedbackDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BD778620FAD0F700A83994 /* FeedbackDescriptionCell.swift */; };
@@ -188,6 +189,7 @@
 		C1B079B92109659600DF07B9 /* ViewDefectDisplayCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewDefectDisplayCell.swift; sourceTree = "<group>"; };
 		C1B079BB210965F100DF07B9 /* ViewDefectDescriptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewDefectDescriptionCell.swift; sourceTree = "<group>"; };
 		C1B079BD2109665D00DF07B9 /* ViewDefectStepCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewDefectStepCell.swift; sourceTree = "<group>"; };
+		C1B417662141CAEE00A9F5F1 /* InternetConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternetConnection.swift; sourceTree = "<group>"; };
 		C1BD778220F9987500A83994 /* MyFollowUserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyFollowUserVC.swift; sourceTree = "<group>"; };
 		C1BD778420F99A7500A83994 /* MyFollowUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyFollowUserCell.swift; sourceTree = "<group>"; };
 		C1BD778620FAD0F700A83994 /* FeedbackDescriptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackDescriptionCell.swift; sourceTree = "<group>"; };
@@ -430,6 +432,7 @@
 				C144652820876637002D219D /* DataService.swift */,
 				C144652A2088B4C7002D219D /* LocationService.swift */,
 				C1FB2BEA20AA6A72004857A0 /* csv.swift */,
+				C1B417662141CAEE00A9F5F1 /* InternetConnection.swift */,
 			);
 			name = Global;
 			sourceTree = "<group>";
@@ -624,6 +627,7 @@
 				C144652D2088B7B8002D219D /* Group.swift in Sources */,
 				C150275720D899A700EE1110 /* NewGroupAddressEntryVC.swift in Sources */,
 				C14465252085A15D002D219D /* NearbyGroupPreviousPhotoCell.swift in Sources */,
+				C1B417672141CAEE00A9F5F1 /* InternetConnection.swift in Sources */,
 				C1B079B2210567B100DF07B9 /* BugListCell.swift in Sources */,
 				C15F20F3207EE571004BF1FB /* LoginVC.swift in Sources */,
 				C12407F2209A61B6006DBC4E /* MySavedGroupVC.swift in Sources */,

@@ -81,8 +81,10 @@ class MoreVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? TermsAndPrivacyVC {
             if isTermsOfServices == true {
+                destination.title = "Terms of Services"
                 destination.displayText = termsOfServices
             } else if isPrivacyPolicy == true {
+                destination.title = "Privacy Policy"
                 destination.displayText = privacyPolicy
             }
         }

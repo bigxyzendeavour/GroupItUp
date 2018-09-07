@@ -80,76 +80,68 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
         switch status {
         case CLAuthorizationStatus.authorizedWhenInUse:
             inUse = true
+            locationManager.startUpdatingLocation()
         case CLAuthorizationStatus.authorizedAlways:
             inUse = true
+            locationManager.startUpdatingLocation()
         case CLAuthorizationStatus.denied:
             inUse = false
             self.endRefrenshing()
             isRefreshing = false
             self.sendAlertWithoutHandler(alertTitle: "Location Service Disabled", alertMessage: "Please make sure location service is enabled for GroupUp.", actionTitle: ["OK"])
-            
         default:
-            inUse = false
-        }
-        
-        if inUse == true {
-            locationManager.startUpdatingLocation()
-            print("Starting")
+            //Not determined
+            locationManager.requestWhenInUseAuthorization()
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if inUse == true {
-            currentLocation = locationManager.location
-            if currentLocation != nil {
-                locationManager.stopUpdatingLocation()
+        currentLocation = locationManager.location
+        if currentLocation != nil {
+            locationManager.stopUpdatingLocation()
+        }
+        LocationServices.shared.getAdress { address, error in
+            if error != nil {
+                self.endRefrenshing()
+                if self.refreshControl.isRefreshing {
+                    self.refreshControl.endRefreshing()
+                }
+                self.sendAlertWithoutHandler(alertTitle: "Location Error", alertMessage: "\(error!.localizedDescription). Please refresh.", actionTitle: ["Cancel"])
+                
+                return
             }
-            LocationServices.shared.getAdress { address, error in
-                if error != nil {
-                    self.endRefrenshing()
+            if let a = address, let city = a["City"] as? String, let country = a["Country"] as? String {
+                self.city = city
+                if currentUser.region == "" {
+                    currentUser.region = country
+                    DataService.ds.REF_USERS_CURRENT.child("Region").setValue(country)
+                }
+                
+                
+                self.fetchAllGroupStatus()
+                //                    self.fetchNearbyGroups(city: city)
+                //                    self.dispatchGroup.enter()
+                
+                self.fetchNearbyGroups(city: city, completion: { (nearbyGroups) in
+                    self.nearbyGroups = nearbyGroups
                     if self.refreshControl.isRefreshing {
                         self.refreshControl.endRefreshing()
                     }
-                    self.sendAlertWithoutHandler(alertTitle: "Location Error", alertMessage: "\(error!.localizedDescription). Please refresh.", actionTitle: ["Cancel"])
-                    
-                    return
-                }
-                if let a = address, let city = a["City"] as? String, let country = a["Country"] as? String {
-                    self.city = city
-                    if currentUser.region == "" {
-                        currentUser.region = country
-                        DataService.ds.REF_USERS_CURRENT.child("Region").setValue(country)
-                    }
-                    
-                    
-                    self.fetchAllGroupStatus()
-                    //                    self.fetchNearbyGroups(city: city)
-                    //                    self.dispatchGroup.enter()
-                    
-                    self.fetchNearbyGroups(city: city, completion: { (nearbyGroups) in
-                        self.nearbyGroups = nearbyGroups
-                        if self.refreshControl.isRefreshing {
-                            self.refreshControl.endRefreshing()
-                        }
-                        self.endRefrenshing()
-                        self.tableView.reloadData()
-                    })
-                    //                    self.dispatchGroup.leave()
-                    //
-                    //                    self.dispatchGroup.notify(queue: .main, execute: {
-                    //                        if self.refreshControl.isRefreshing {
-                    //                            self.refreshControl.endRefreshing()
-                    //                        }
-                    //                        self.endRefrenshing()
-                    //                        self.tableView.reloadData()
-                    //                    })
-                    
-                }
+                    self.endRefrenshing()
+                    self.tableView.reloadData()
+                })
+                //                    self.dispatchGroup.leave()
+                //
+                //                    self.dispatchGroup.notify(queue: .main, execute: {
+                //                        if self.refreshControl.isRefreshing {
+                //                            self.refreshControl.endRefreshing()
+                //                        }
+                //                        self.endRefrenshing()
+                //                        self.tableView.reloadData()
+                //                    })
+                
             }
-        } else {
-            locationManager.requestWhenInUseAuthorization()
         }
-        
     }
 
     func initialize() {
@@ -324,7 +316,7 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
             if isRefreshing == true {
                 self.refreshControl.endRefreshing()
                 self.endRefrenshing()
-                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please refresh", actionTitle: ["Cancel"])
+                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Network connection issue, please refresh", actionTitle: ["Cancel"])
             }
         })
         DataService.ds.REF_BASE.child("Groups").observeSingleEvent(of: .value, with: { (snapshot) -> Void in

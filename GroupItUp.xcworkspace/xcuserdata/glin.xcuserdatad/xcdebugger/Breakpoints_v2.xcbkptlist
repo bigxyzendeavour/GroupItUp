@@ -458,11 +458,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/LoginVC.swift"
-            timestampString = "553555859.832702"
+            timestampString = "557960458.110999"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "125"
-            endingLineNumber = "125"
+            startingLineNumber = "131"
+            endingLineNumber = "131"
             landmarkName = "completeSignIn(id:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -554,59 +554,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/LoginVC.swift"
-            timestampString = "553555859.832702"
+            timestampString = "557960038.290192"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "77"
-            endingLineNumber = "77"
-            landmarkName = "logInBtnPressed(_:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "GroupItUp.LoginVC.logInBtnPressed (Any) -&gt; ()"
-                  moduleName = "GroupItUp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/glin/Documents/Mobile_App_Development/IOS/GroupItUp/GroupItUp/LoginVC.swift"
-                  timestampString = "549494688.617901"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "58"
-                  endingLineNumber = "58"
-                  offsetFromSymbolStart = "1018">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "GroupItUp.LoginVC.(logInBtnPressed (Any) -&gt; ()).(closure #1)"
-                  moduleName = "GroupItUp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/glin/Documents/Mobile_App_Development/IOS/GroupItUp/GroupItUp/LoginVC.swift"
-                  timestampString = "549494688.620052"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "59"
-                  endingLineNumber = "59"
-                  offsetFromSymbolStart = "23">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GroupItUp/LoginVC.swift"
-            timestampString = "551240869.609888"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
             landmarkName = "viewDidLoad()"
             landmarkType = "7">
             <Locations>
@@ -650,11 +602,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/MoreVC.swift"
-            timestampString = "550294436.438213"
+            timestampString = "554727051.677195"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "92"
-            endingLineNumber = "92"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
             landmarkName = "logOutBtnPressed(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -666,11 +618,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/LoginVC.swift"
-            timestampString = "553555859.832702"
+            timestampString = "557960458.110999"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "89"
-            endingLineNumber = "89"
+            startingLineNumber = "95"
+            endingLineNumber = "95"
             landmarkName = "logInBtnPressed(_:)"
             landmarkType = "7">
             <Locations>
@@ -714,11 +666,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/LoginVC.swift"
-            timestampString = "553555859.832702"
+            timestampString = "557960458.110999"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "90"
-            endingLineNumber = "90"
+            startingLineNumber = "96"
+            endingLineNumber = "96"
             landmarkName = "logInBtnPressed(_:)"
             landmarkType = "7">
             <Locations>
@@ -762,11 +714,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/LoginVC.swift"
-            timestampString = "553555859.832702"
+            timestampString = "557960458.110999"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "91"
-            endingLineNumber = "91"
+            startingLineNumber = "97"
+            endingLineNumber = "97"
             landmarkName = "logInBtnPressed(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -954,11 +906,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/LoginVC.swift"
-            timestampString = "551240869.609888"
+            timestampString = "557960038.290192"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "55"
-            endingLineNumber = "55"
+            startingLineNumber = "56"
+            endingLineNumber = "56"
             landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
@@ -970,11 +922,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/LoginVC.swift"
-            timestampString = "553555859.832702"
+            timestampString = "557960458.110999"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "97"
-            endingLineNumber = "97"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
             landmarkName = "logInBtnPressed(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -986,11 +938,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/LoginVC.swift"
-            timestampString = "553555859.832702"
+            timestampString = "557960458.110999"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "96"
-            endingLineNumber = "96"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
             landmarkName = "logInBtnPressed(_:)"
             landmarkType = "7">
             <Locations>
@@ -1274,11 +1226,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/LoginVC.swift"
-            timestampString = "551930362.387086"
+            timestampString = "557960038.290192"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "30"
-            endingLineNumber = "30"
+            startingLineNumber = "31"
+            endingLineNumber = "31"
             landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1382,7 +1334,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/LocationSearchVC.swift"
@@ -1398,7 +1350,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/LocationSearchVC.swift"
@@ -1562,11 +1514,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/NearbyVC.swift"
-            timestampString = "554697496.6786489"
+            timestampString = "554814660.797778"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "247"
-            endingLineNumber = "247"
+            startingLineNumber = "239"
+            endingLineNumber = "239"
             landmarkName = "tableView(_:cellForRowAt:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1834,11 +1786,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/HostVC.swift"
-            timestampString = "553905506.643219"
+            timestampString = "554782760.18529"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "188"
-            endingLineNumber = "188"
+            startingLineNumber = "196"
+            endingLineNumber = "196"
             landmarkName = "followBtnPressed(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1850,11 +1802,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/MyFollowUserVC.swift"
-            timestampString = "553291738.410197"
+            timestampString = "554814835.95538"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "50"
-            endingLineNumber = "50"
+            startingLineNumber = "58"
+            endingLineNumber = "58"
             landmarkName = "fetchMyFollowUsers()"
             landmarkType = "7">
             <Locations>
@@ -1866,11 +1818,11 @@
                   moduleName = "GroupItUp"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/glin/Documents/Mobile_App_Development/IOS/GroupItUp/GroupItUp/MyFollowUserVC.swift"
-                  timestampString = "554698067.453356"
+                  timestampString = "557961673.1906"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "50"
-                  endingLineNumber = "50"
+                  startingLineNumber = "58"
+                  endingLineNumber = "58"
                   offsetFromSymbolStart = "23">
                </Location>
                <Location
@@ -1881,11 +1833,11 @@
                   moduleName = "GroupItUp"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/glin/Documents/Mobile_App_Development/IOS/GroupItUp/GroupItUp/MyFollowUserVC.swift"
-                  timestampString = "554698067.4556251"
+                  timestampString = "557961673.1937031"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "50"
-                  endingLineNumber = "50"
+                  startingLineNumber = "58"
+                  endingLineNumber = "58"
                   offsetFromSymbolStart = "547">
                </Location>
             </Locations>
@@ -1898,11 +1850,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/MyFollowUserVC.swift"
-            timestampString = "553291738.410197"
+            timestampString = "554814835.95538"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "55"
-            endingLineNumber = "55"
+            startingLineNumber = "63"
+            endingLineNumber = "63"
             landmarkName = "fetchMyFollowUsers()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1926,7 +1878,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/NearbyVC.swift"
@@ -2122,11 +2074,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/NearbyVC.swift"
-            timestampString = "554698487.700642"
+            timestampString = "554814660.797778"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "432"
-            endingLineNumber = "432"
+            startingLineNumber = "424"
+            endingLineNumber = "424"
             landmarkName = "fetchAllGroupStatus()"
             landmarkType = "7">
          </BreakpointContent>
@@ -2154,11 +2106,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/NearbyVC.swift"
-            timestampString = "554697496.6786489"
+            timestampString = "554814660.797778"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "180"
-            endingLineNumber = "180"
+            startingLineNumber = "172"
+            endingLineNumber = "172"
             landmarkName = "initialize()"
             landmarkType = "7">
          </BreakpointContent>
@@ -2170,11 +2122,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/NearbyVC.swift"
-            timestampString = "554697496.6786489"
+            timestampString = "554814660.797778"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "179"
-            endingLineNumber = "179"
+            startingLineNumber = "171"
+            endingLineNumber = "171"
             landmarkName = "initialize()"
             landmarkType = "7">
          </BreakpointContent>
@@ -2202,11 +2154,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/NearbyVC.swift"
-            timestampString = "554698487.700642"
+            timestampString = "554814660.797778"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "415"
-            endingLineNumber = "415"
+            startingLineNumber = "407"
+            endingLineNumber = "407"
             landmarkName = "fetchNearbyGroups(city:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -2218,11 +2170,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/NearbyVC.swift"
-            timestampString = "554698487.700642"
+            timestampString = "554814660.797778"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "399"
-            endingLineNumber = "399"
+            startingLineNumber = "391"
+            endingLineNumber = "391"
             landmarkName = "fetchNearbyGroups(city:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -2234,11 +2186,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/NearbyVC.swift"
-            timestampString = "554698487.700642"
+            timestampString = "554814660.797778"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "388"
-            endingLineNumber = "388"
+            startingLineNumber = "324"
+            endingLineNumber = "324"
             landmarkName = "fetchNearbyGroups(city:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -2250,12 +2202,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/NearbyVC.swift"
-            timestampString = "554698405.420109"
+            timestampString = "554814660.797778"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "375"
-            endingLineNumber = "375"
-            landmarkName = "fetchNearbyGroups(city:completion:)"
+            startingLineNumber = "278"
+            endingLineNumber = "278"
+            landmarkName = "refreshNearbyGroups()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GroupItUp/LocationService.swift"
+            timestampString = "554785964.429382"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "getAdress(completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2266,11 +2234,43 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/NearbyVC.swift"
-            timestampString = "554698405.420109"
+            timestampString = "554814660.797778"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "332"
-            endingLineNumber = "332"
+            startingLineNumber = "272"
+            endingLineNumber = "272"
+            landmarkName = "refreshNearbyGroups()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GroupItUp/LoginVC.swift"
+            timestampString = "557960458.110999"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "82"
+            endingLineNumber = "82"
+            landmarkName = "logInBtnPressed(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GroupItUp/NearbyVC.swift"
+            timestampString = "557960574.948568"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "378"
+            endingLineNumber = "378"
             landmarkName = "fetchNearbyGroups(city:completion:)"
             landmarkType = "7">
          </BreakpointContent>

@@ -167,7 +167,7 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             if selectedGroup.groupComments.count > 0 {
                 let comment = selectedGroup.groupComments[indexPath.row]
                 cell.userDisplayImage.heightCircleView()
-                cell.configureCell(comment: comment)
+                cell.configureCell(comment: comment, group: selectedGroup)
             } 
             return cell
         } else {
@@ -189,7 +189,7 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 2 {
+        if indexPath.section == 2 || indexPath.section == 5 {
             return 130
         } else {
             return tableView.rowHeight

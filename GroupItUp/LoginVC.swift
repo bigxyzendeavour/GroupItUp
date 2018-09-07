@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import SwiftKeychainWrapper
+import NVActivityIndicatorView
 
 class LoginVC: UIViewController {
 
@@ -73,6 +74,11 @@ class LoginVC: UIViewController {
     }
 
     @IBAction func logInBtnPressed(_ sender: Any) {
+        NVActivityIndicatorPresenter.sharedInstance.startAnimating(activityData)
+        if !InternetConnection.Connection() {
+            NVActivityIndicatorPresenter.sharedInstance.stopAnimating()
+            self.sendAlertWithoutHandler(alertTitle: "Connection Issue", alertMessage: "Please make sure your device is connected to the internet", actionTitle: ["OK"])
+        }
         if let email = emailTextField.text, let password = passwordTextField.text {
             Auth.auth().signIn(withEmail: email, password: password, completion: { (user, error) in
                 if error != nil {

@@ -60,7 +60,11 @@ class HostVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NVAc
             }
         })
         
-        fetchHostPreviousHostedGroups()
+        fetchHostPreviousHostedGroups { (groups) in
+            self.searchResults = groups
+            self.endRefrenshing()
+            self.tableView.reloadData()
+        }
         
     }
     
@@ -70,7 +74,7 @@ class HostVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NVAc
         }
     }
     
-    func fetchHostPreviousHostedGroups() {
+    func fetchHostPreviousHostedGroups(completion: @escaping ([Group]) -> Void) {
         DataService.ds.REF_USERS.child(host.userID).child("Hosted").observeSingleEvent(of: .value, with: { (snapshot) in
             self.startRefreshing()
             if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
@@ -119,7 +123,8 @@ class HostVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NVAc
                         }
                         self.searchResults = self.orderGroupsByID(groups: tempGroups)
                         
-                        for group in self.searchResults {
+                        for j in 0..<self.searchResults.count {
+                            let group = self.searchResults[j]
                             var photoURLs = [String]()
                             let displayURL = group.groupDetail.groupDisplayImageURL
                             photoURLs.append(displayURL)
@@ -141,12 +146,15 @@ class HostVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NVAc
                                         } else {
                                             group.groupPhotos[i - 1].photo = image!
                                         }
+                                        if j == self.searchResults.count - 1 && i == photoURLs.count - 1 {
+                                            completion(self.searchResults)
+                                        }
                                     }
-                                    self.endRefrenshing()
-                                    self.tableView.reloadData()
+                                    
                                 })
                             }
                         }
+                        
                         
                     }
                 })
