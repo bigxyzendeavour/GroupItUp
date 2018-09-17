@@ -14,6 +14,7 @@ class PreviousPhotoOpenVC: UIViewController, UICollectionViewDelegate, UICollect
     @IBOutlet weak var pageControl: UIPageControl!
     
     var selectedGroup: Group!
+    var selectedImageIndex: IndexPath!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +29,10 @@ class PreviousPhotoOpenVC: UIViewController, UICollectionViewDelegate, UICollect
         layout.minimumInteritemSpacing = 0
         layout.itemSize = CGSize(width: self.view.frame.width, height: self.view.frame.height)
         
+        if selectedImageIndex != nil {
+            pageControl.currentPage = selectedImageIndex.item
+            photoCollectionView.scrollToItem(at: selectedImageIndex, at: .centeredHorizontally, animated: false)
+        }
         
     }
 

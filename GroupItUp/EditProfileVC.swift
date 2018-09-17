@@ -24,7 +24,6 @@ class EditProfileVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     var currentValue: String!
     var displayImage: UIImage!
     var imagePicker: UIImagePickerController!
-    var isRefreshing: Bool!
     var delegate: EditProfileVCDelegate?
     var displayText: String!
     
@@ -117,7 +116,7 @@ class EditProfileVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         metadata.contentType = "image/jpeg"
         startRefreshing()
         Timer.scheduledTimer(withTimeInterval: 20, repeats: false, block: { (timer) in
-            if self.isRefreshing == true {
+            if isRefreshing == true {
                 self.endRefrenshing()
                 self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please re-send.", actionTitle: ["OK"])
                 return

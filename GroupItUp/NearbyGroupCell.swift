@@ -30,7 +30,15 @@ class NearbyGroupCell: UITableViewCell {
     }
 
     func configureCell(group: Group) {
-        self.groupDisplayImage.image = group.groupDetail.groupDisplayImage
+//        self.groupDisplayImage.image = group.groupDetail.groupDisplayImage
+        Storage.storage().reference(forURL: group.groupDetail.groupDisplayImageURL).getData(maxSize: 1024 * 1024) { (data, error) in
+            if error != nil {
+                print("\(error?.localizedDescription)")
+            } else {
+                let image = UIImage(data: data!)
+                self.groupDisplayImage.image = image
+            }
+        }
         groupTitleLabel.text = group.groupDetail.groupTitle
         groupDetailLabel.text = group.groupDetail.groupDetailDescription
         groupLocationLabel.text = group.groupDetail.groupMeetUpAddress.city
@@ -40,9 +48,7 @@ class NearbyGroupCell: UITableViewCell {
         let creationDate = df.date(from: group.groupDetail.groupCreationDate)!
         let daysDiff = NSDate().calculateIntervalBetweenDates(newDate: creationDate, compareDate: currentDate)
         assignPostDateLbl(daysDifference: Int(daysDiff), group: group)
-//        if let delegate = self.delegate {
-//            delegate.callEndRefreshing()
-//        }
+        
     }
 
     func assignPostDateLbl(daysDifference: Int, group: Group) {

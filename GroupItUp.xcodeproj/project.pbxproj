@@ -69,6 +69,8 @@
 		C1783E5020C9486D00C26924 /* TermsAndPrivacyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1783E4F20C9486D00C26924 /* TermsAndPrivacyVC.swift */; };
 		C1783E5620CCCCC700C26924 /* TermsOfServices.txt in Resources */ = {isa = PBXBuildFile; fileRef = C1783E5520CCCCC700C26924 /* TermsOfServices.txt */; };
 		C1783E5820CCD09500C26924 /* PrivacyPolicy.txt in Resources */ = {isa = PBXBuildFile; fileRef = C1783E5720CCD09500C26924 /* PrivacyPolicy.txt */; };
+		C1965984214F2D1D00B4CD01 /* AppPreviewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1965983214F2D1D00B4CD01 /* AppPreviewVC.swift */; };
+		C1965987214F36E500B4CD01 /* AppPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1965986214F36E500B4CD01 /* AppPreviewCell.swift */; };
 		C1B079AC2102D98300DF07B9 /* Step.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B079AB2102D98300DF07B9 /* Step.swift */; };
 		C1B079B02105658300DF07B9 /* BugListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B079AF2105658300DF07B9 /* BugListVC.swift */; };
 		C1B079B2210567B100DF07B9 /* BugListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B079B1210567B100DF07B9 /* BugListCell.swift */; };
@@ -180,6 +182,8 @@
 		C1783E4F20C9486D00C26924 /* TermsAndPrivacyVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsAndPrivacyVC.swift; sourceTree = "<group>"; };
 		C1783E5520CCCCC700C26924 /* TermsOfServices.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TermsOfServices.txt; sourceTree = "<group>"; };
 		C1783E5720CCD09500C26924 /* PrivacyPolicy.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PrivacyPolicy.txt; sourceTree = "<group>"; };
+		C1965983214F2D1D00B4CD01 /* AppPreviewVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppPreviewVC.swift; sourceTree = "<group>"; };
+		C1965986214F36E500B4CD01 /* AppPreviewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppPreviewCell.swift; sourceTree = "<group>"; };
 		C1B079AB2102D98300DF07B9 /* Step.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Step.swift; sourceTree = "<group>"; };
 		C1B079AF2105658300DF07B9 /* BugListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BugListVC.swift; sourceTree = "<group>"; };
 		C1B079B1210567B100DF07B9 /* BugListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BugListCell.swift; sourceTree = "<group>"; };
@@ -247,6 +251,7 @@
 		C12407E820976370006DBC4E /* SignUpAndLogIn */ = {
 			isa = PBXGroup;
 			children = (
+				C1965983214F2D1D00B4CD01 /* AppPreviewVC.swift */,
 				C15F211220802DAC004BF1FB /* SignUpVC.swift */,
 				C15F20F2207EE571004BF1FB /* LoginVC.swift */,
 			);
@@ -400,6 +405,7 @@
 		C15F2105207EF35E004BF1FB /* View */ = {
 			isa = PBXGroup;
 			children = (
+				C1965985214F36C500B4CD01 /* SignUpAndLogIn */,
 				C12407F9209F96AF006DBC4E /* NearbyViews */,
 				C12407FA209F96CA006DBC4E /* SearchViews */,
 				C12407FB209F972C006DBC4E /* MeViews */,
@@ -470,6 +476,14 @@
 				C1B079BD2109665D00DF07B9 /* ViewDefectStepCell.swift */,
 			);
 			name = MoreViews;
+			sourceTree = "<group>";
+		};
+		C1965985214F36C500B4CD01 /* SignUpAndLogIn */ = {
+			isa = PBXGroup;
+			children = (
+				C1965986214F36E500B4CD01 /* AppPreviewCell.swift */,
+			);
+			name = SignUpAndLogIn;
 			sourceTree = "<group>";
 		};
 		C1FB2BEC20AA6E72004857A0 /* Resource */ = {
@@ -646,6 +660,7 @@
 				C1B079AC2102D98300DF07B9 /* Step.swift in Sources */,
 				C16B0C5220EB984E00AA9409 /* FeedbackDetailVC.swift in Sources */,
 				C12407F02099D83C006DBC4E /* UserSavedGroupCollectionCell.swift in Sources */,
+				C1965984214F2D1D00B4CD01 /* AppPreviewVC.swift in Sources */,
 				C1FB2BE920AA69DB004857A0 /* NewGroupAddressEntryCell.swift in Sources */,
 				C1D5072A20B76277000D5ACB /* GroupAddressUpdateCell.swift in Sources */,
 				C1B079B8210961CA00DF07B9 /* ViewDefectTitleCell.swift in Sources */,
@@ -684,6 +699,7 @@
 				C1783E4620C016BE00C26924 /* ProfileDetailEditVC.swift in Sources */,
 				C1783E4E20C760B200C26924 /* MoreOptionsCell.swift in Sources */,
 				C1D5071820ABCBBF000D5ACB /* SettingVC.swift in Sources */,
+				C1965987214F36E500B4CD01 /* AppPreviewCell.swift in Sources */,
 				C1240801209FEA30006DBC4E /* NewGroupDetailCell.swift in Sources */,
 				C15F211120802D69004BF1FB /* MoreVC.swift in Sources */,
 				C1D5072020AE22A4000D5ACB /* DisplayPhotoUpdateVC.swift in Sources */,

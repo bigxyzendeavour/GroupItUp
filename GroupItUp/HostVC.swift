@@ -35,20 +35,31 @@ class HostVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NVAc
     }
 
     func initialize() {
-        hostNameLabel.text = host.username
-        hostDisplayImage.image = host.userDisplayImage
+        if host.username != "" {
+            hostNameLabel.text = host.username
+        } else {
+            DataService.ds.REF_USERS.child(host.userID).child("Username").observeSingleEvent(of: .value, with: { (snapshot) in
+                if let name = snapshot.value as? String {
+                    self.host.username = name
+                    self.hostNameLabel.text = name
+                }
+            })
+        }
+        
+        if !host.userDisplayImage.size.equalTo(CGSize.zero) {
+            hostDisplayImage.image = host.userDisplayImage
+        } else {
+            DataService.ds.STORAGE_USER_IMAGE.child("\(host.userID).jpg").getData(maxSize: 1024 * 1024) { (data, error) in
+                if error != nil {
+                    print("GroupUp: \(error?.localizedDescription)")
+                } else {
+                    let image = UIImage(data: data!)
+                    self.hostDisplayImage.image = image!
+                }
+            }
+        }
         
         DataService.ds.REF_USERS.child(host.userID).child("Fans").observeSingleEvent(of: .value, with: { (snapshot) in
-//            let cols = 4
-//            let rows = 8
-//            let cellWidth = Int(self.view.frame.width / CGFloat(cols))
-//            let cellHeight = Int(self.view.frame.height / CGFloat(rows))
-//            
-//            let frame = CGRect(x: Double(self.view.frame.midX - CGFloat(cellWidth/2)), y: Double(self.view.frame.midY - CGFloat(cellHeight/2)), width: Double(cellWidth), height: Double(cellHeight))
-//            self.activityIndicatorView = NVActivityIndicatorView(frame: frame, type: .ballSpinFadeLoader, color: UIColor.orange, padding: 20)
-//            
-//            self.view.addSubview(self.activityIndicatorView)
-//            self.activityIndicatorView.startAnimating()
             
             let snapCount = snapshot.childrenCount
             self.hostFansNumberLabel.text = "\(snapCount)"

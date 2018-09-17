@@ -38,11 +38,7 @@ class Comment {
         self._commentID = commentID
         let userID = commentData["User ID"] as! String
         self._userID = userID
-//        DataService.ds.REF_USERS.child(userID).observeSingleEvent(of: .value, with: { (snapshot) in
-//            if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
-//                print(snapShot)
-//            }
-//        })
+
         DataService.ds.STORAGE_USER_IMAGE.child("\(userID).jpg").getData(maxSize: 1024 * 1024) { (data, error) in
             if error != nil {
                 print("Comment(2): Error - \(error?.localizedDescription)")
@@ -53,8 +49,12 @@ class Comment {
         }
         let comment = commentData["Comment"] as! String
         self._comment = comment
-        let username = commentData["Username"] as! String
-        self._username = username
+        
+        DataService.ds.REF_USERS.child(userID).child("Username").observeSingleEvent(of: .value, with: { (snapshot) in
+            if let commentUser = snapshot.value as? String {
+                self._username = commentUser
+            }
+        })
     }
     
     var commentID: String {

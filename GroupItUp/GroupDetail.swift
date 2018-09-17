@@ -74,16 +74,6 @@ class GroupDetail {
         
         if let groupDisplayImageURL = groupDetailData["Group Display Photo URL"] as? String {
             self._groupDisplayImageURL = groupDisplayImageURL
-//            DispatchQueue.global().async {
-//                Storage.storage().reference(forURL: groupDisplayImageURL).getData(maxSize: 1024 * 1024){ (data, error) in
-//                    if error != nil {
-//                        print("GroupDetailModel: Error - \(error?.localizedDescription)")
-//                    } else {
-//                        let image = UIImage(data: data!)
-//                        self._groupDisplayImage = image
-//                    }
-//                }
-//            }
         } else {
             self._groupDisplayImageURL = ""
         }
@@ -167,8 +157,6 @@ class GroupDetail {
         } else {
             self._groupMeetUpAddress = Address()
         }
-        
-        
         
         if let groupHost = groupDetailData["Host"] as? String {
             self._groupHost = groupHost

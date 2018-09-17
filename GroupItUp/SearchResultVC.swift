@@ -58,6 +58,8 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     @objc private func refreshGroups() {
         if keyword != nil && keyword != "" {
             fetchByKeyword(keyword: keyword!)
+        } else if locationValue != nil && !locationValue.isEmpty {
+            fetchByLocation(locationValue: locationValue)
         } else {
             fetchBySelectedOption(selectedOption: selectedOption)
         }
@@ -73,10 +75,14 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let group = searchResults[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell") as! SearchResultCell
-        cell.configureCell(group: group)
-        return cell
+        if searchResults.count > 0 {
+            let group = searchResults[indexPath.row]
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell") as! SearchResultCell
+            cell.configureCell(group: group)
+            return cell
+        } else {
+            return UITableViewCell()
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -96,11 +102,11 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func fetchBySelectedOption(selectedOption: String) {
-        searchResults.removeAll()
+//        searchResults.removeAll()
         var tempGroups = [Group]()
         self.startRefreshing()
         
-        Timer.scheduledTimer(withTimeInterval: 20, repeats: false, block:  { (timer) in
+        Timer.scheduledTimer(withTimeInterval: 30, repeats: false, block:  { (timer) in
             if isRefreshing == true {
                 self.endRefrenshing()
                 self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Time out, please refresh", actionTitle: ["Cancel"])
@@ -167,10 +173,14 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                 self.searchResults = self.orderGroupsByID(groups: tempGroups)
                 self.processPhotos(groups: self.searchResults)
                 if self.searchResults.count == 0 {
-                    self.sendAlertWithoutHandler(alertTitle: "Currently Empty", alertMessage: "We can't find a group, there isn't a group yet, be the first one to create a group!", actionTitle: ["Cancel"])
                     self.endRefrenshing()
+                    self.sendAlertWithoutHandler(alertTitle: "Currently Empty", alertMessage: "We can't find a group, there isn't a group yet, be the first one to create a group!", actionTitle: ["Cancel"])
+                    return
+                } else {
+                    self.endRefrenshing()
+                    self.refreshControl.endRefreshing()
+                    self.tableView.reloadData()
                 }
-                self.tableView.reloadData()
             }
         })
     }
@@ -229,8 +239,9 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                 self.searchResults = self.orderGroupsByID(groups: tempGroups)
                 self.processPhotos(groups: self.searchResults)
                 if self.searchResults.count == 0 {
-                    self.sendAlertWithoutHandler(alertTitle: "Currently Empty", alertMessage: "We can't find a group, there isn't a group yet, be the first one to create a group!", actionTitle: ["Cancel"])
                     self.endRefrenshing()
+                    self.sendAlertWithoutHandler(alertTitle: "Currently Empty", alertMessage: "We can't find a group, there isn't a group yet, be the first one to create a group!", actionTitle: ["Cancel"])
+                    return
                 }
                 self.tableView.reloadData()
             }
@@ -295,7 +306,7 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                     self.sendAlertWithoutHandler(alertTitle: "No Groups Found", alertMessage: "We can't find a group, there isn't a group yet, be the first one to create a group!", actionTitle: ["Cancel"])
                     self.endRefrenshing()
                 }
-                self.tableView.reloadData()
+//                self.tableView.reloadData()
             }
         })
     }
@@ -359,7 +370,11 @@ class SearchResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                             self.endRefrenshing()
                         } else {
                             group.groupPhotos[i - 1].photo = image!
+                        }
+                        if i == photoURLs.count - 1 {
                             self.endRefrenshing()
+                            self.refreshControl.endRefreshing()
+                            self.tableView.reloadData()
                         }
                     }
                 })

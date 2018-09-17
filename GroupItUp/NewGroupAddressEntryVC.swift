@@ -47,34 +47,19 @@ class NewGroupAddressEntryVC: UIViewController, UIPickerViewDelegate, UIPickerVi
         countryTextField.delegate = self
         
         initialize()
-        
-        
-        
     }
     
     func initialize() {
         if setAddressNow == true {
-            if newGroup.groupDetail.groupMeetUpAddress.country == "" {
-                streetTextField.isEnabled = false
-                streetTextField.backgroundColor = UIColor.lightGray
-                cityTextField.isEnabled = false
-                cityTextField.backgroundColor = UIColor.lightGray
-                provinceTextField.isEnabled = false
-                provinceTextField.backgroundColor = UIColor.lightGray
-                postalTextField.isEnabled = false
-                postalTextField.backgroundColor = UIColor.lightGray
-            } else {
-                streetTextField.text = newGroup.groupDetail.groupMeetUpAddress.street
-                cityTextField.text = newGroup.groupDetail.groupMeetUpAddress.city
-                provinceTextField.text = newGroup.groupDetail.groupMeetUpAddress.province
-                postalTextField.text = newGroup.groupDetail.groupMeetUpAddress.postal
-                countryTextField.text = newGroup.groupDetail.groupMeetUpAddress.country
-                selectedCountry = newGroup.groupDetail.groupMeetUpAddress.country
-            }
+            streetTextField.text = newGroup.groupDetail.groupMeetUpAddress.street
+            cityTextField.text = newGroup.groupDetail.groupMeetUpAddress.city
+            provinceTextField.text = newGroup.groupDetail.groupMeetUpAddress.province
+            postalTextField.text = newGroup.groupDetail.groupMeetUpAddress.postal
+            countryTextField.text = newGroup.groupDetail.groupMeetUpAddress.country
+            selectedCountry = newGroup.groupDetail.groupMeetUpAddress.country
         } else {
             for textField in textFields {
                 textField.isEnabled = false
-                textField.backgroundColor = UIColor.lightGray
             }
         }
         

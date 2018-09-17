@@ -85,7 +85,7 @@ class NearbyGroupDetailCell: UITableViewCell {
             geoCoder.geocodeAddressString(address!, completionHandler: { (placemarks, error) in
                 if error != nil {
                     if let delegate = self.delegate {
-                        delegate.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Address is not found or incorrect, please contact the host for correction.", actionTitle: ["Cancel"])
+                        delegate.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Address is not found or incorrect, please contact the host for more information.", actionTitle: ["Cancel"])
                     }
                 } else {
                     if let placemark = placemarks?.first {

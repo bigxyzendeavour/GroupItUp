@@ -21,36 +21,29 @@ class LocationServices {
     let inUse = CLAuthorizationStatus.authorizedWhenInUse
     let always = CLAuthorizationStatus.authorizedAlways
     
-    func getAdress(completion: @escaping (_ address: JSONDictionary?, _ error: Error?) -> ()) {
+    func getAddress(location: CLLocation, completion: @escaping (_ address: JSONDictionary?, _ error: Error?) -> ()) {
         
-        self.locManager.requestWhenInUseAuthorization()
+        let geoCoder = CLGeocoder()
         
-        if self.authStatus == inUse || self.authStatus == always {
+        geoCoder.reverseGeocodeLocation(location) { placemarks, error in
             
-            self.currentLocation = locManager.location
-            
-            let geoCoder = CLGeocoder()
-            
-            geoCoder.reverseGeocodeLocation(self.currentLocation) { placemarks, error in
+            if let e = error {
                 
-                if let e = error {
-                    
-                    completion(nil, e)
-                    
-                } else {
-                    
-                    let placeArray = placemarks as [CLPlacemark]!
-                    
-                    var placeMark: CLPlacemark!
-                    
-                    placeMark = placeArray?[0]
-                    
-                    guard let address = placeMark.addressDictionary as? JSONDictionary else {
-                        return
-                    }
-                    
-                    completion(address, nil)
+                completion(nil, e)
+                
+            } else {
+                
+                let placeArray = placemarks as [CLPlacemark]!
+                
+                var placeMark: CLPlacemark!
+                
+                placeMark = placeArray?[0]
+                
+                guard let address = placeMark.addressDictionary as? JSONDictionary else {
+                    return
                 }
+                
+                completion(address, nil)
             }
         }
     }

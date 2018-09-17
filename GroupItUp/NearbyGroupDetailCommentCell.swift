@@ -25,31 +25,10 @@ class NearbyGroupDetailCommentCell: UITableViewCell {
         userCommentLabel.text = comment.comment
         
         if comment.userID == group.groupDetail.groupHost {
-            DataService.ds.REF_USERS.child(group.groupDetail.groupHost).child("Username").observeSingleEvent(of: .value, with: { (snapshot) in
-                if let hostName = snapshot.value as? String {
-                    self.usernameLabel.text = "\(hostName)(Group host)"
-                }
-            })
+            self.usernameLabel.text = "\(comment.username)(Group host)"
         } else {
-            DataService.ds.REF_USERS.child(comment.userID).child("Username").observeSingleEvent(of: .value, with: { (snapshot) in
-                if let hostName = snapshot.value as? String {
-                    self.usernameLabel.text = hostName
-                }
-            })
+            self.usernameLabel.text = comment.username
         }
-        
-        
     }
-
-//    func setTableViewDataSourceDelegate
-//        <D: UITableViewDelegate & UITableViewDataSource>
-//        (dataSourceDelegate: D, forRow row: Int) {
-//        
-//        commentTableView.delegate = dataSourceDelegate
-//        commentTableView.dataSource = dataSourceDelegate
-////        commentTableView.tag = row
-//        commentTableView.reloadData()
-//    }
-    
 }
 

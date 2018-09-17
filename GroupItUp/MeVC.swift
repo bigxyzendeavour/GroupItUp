@@ -37,7 +37,7 @@ class MeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSour
         userDisplayImageView.heightCircleView()
     
         let userCollectionLayout = userCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
-        userCollectionLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0)
+        userCollectionLayout.sectionInset = UIEdgeInsetsMake(0, 0, -10, 0)
         userCollectionLayout.minimumInteritemSpacing = 0
         userCollectionLayout.itemSize = CGSize(width: (self.view.frame.width - 50)/3, height: (userCollectionView.frame.height - 20)/2)
         

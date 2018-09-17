@@ -13,7 +13,6 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var actionBtn: UIBarButtonItem!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
     var newCreatedGroup: Bool = false
     var selectedGroup: Group!
@@ -21,6 +20,7 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     var groupDisplay: UIImage!
     var hostDisplayImage: UIImage!
     var hostName: String!
+    var selectedImageIndex: IndexPath!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,23 +87,30 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+//        collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+        selectedImageIndex = indexPath
         performSegue(withIdentifier: "PreviousPhotoOpenVC", sender: nil)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? PreviousPhotoOpenVC {
             destination.selectedGroup = selectedGroup
+            destination.selectedImageIndex = selectedImageIndex
         }
         if let destination = segue.destination as? SettingVC {
             destination.currentGroup = selectedGroup
             destination.delegate = self
         }
         if let destination = segue.destination as? HostVC {
+            
             let host = Host()
             host.userID = selectedGroup.groupDetail.groupHost
-            host.username = hostName
-            host.userDisplayImage = hostDisplayImage
+            if hostName != nil {
+                host.username = hostName
+            }
+            if hostDisplayImage != nil {
+                host.userDisplayImage = hostDisplayImage
+            }
             destination.host = host
         }
     }
@@ -189,7 +196,7 @@ class GroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 2 || indexPath.section == 5 {
+        if indexPath.section == 2 {
             return 130
         } else {
             return tableView.rowHeight

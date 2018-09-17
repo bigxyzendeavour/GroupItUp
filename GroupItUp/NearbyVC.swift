@@ -30,19 +30,6 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (timer) in
-            self.startRefreshing()
-        })
-        
-        Timer.scheduledTimer(withTimeInterval: 30, repeats: false, block: { (timer) in
-            if isRefreshing == true {
-                self.refreshControl.endRefreshing()
-                self.endRefrenshing()
-                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Network connection issue, please refresh", actionTitle: ["Cancel"])
-                self.refreshControl.endRefreshing()
-            }
-        })
-        
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -59,10 +46,21 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
         
         initialize()
         
+        self.startRefreshing()
+        
+//        Timer.scheduledTimer(withTimeInterval: 30, repeats: false) { (timer) in
+//            if isRefreshing == true {
+//                self.endRefrenshing()
+//                self.refreshControl.endRefreshing()
+//                self.sendAlertWithoutHandler(alertTitle: "Time Out", alertMessage: "Your network connection may have an issue, please refresh", actionTitle: ["OK"])
+//            }
+//        }
+        
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
-        locationManager.startMonitoringSignificantLocationChanges()
+//        locationManager.startMonitoringSignificantLocationChanges()
+        locationManager.startUpdatingLocation()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -96,102 +94,56 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        currentLocation = locationManager.location
+        currentLocation = locations[0]
         if currentLocation != nil {
             locationManager.stopUpdatingLocation()
-        }
-        LocationServices.shared.getAdress { address, error in
-            if error != nil {
-                self.endRefrenshing()
-                if self.refreshControl.isRefreshing {
-                    self.refreshControl.endRefreshing()
-                }
-                self.sendAlertWithoutHandler(alertTitle: "Location Error", alertMessage: "\(error!.localizedDescription). Please refresh.", actionTitle: ["Cancel"])
-                
-                return
-            }
-            if let a = address, let city = a["City"] as? String, let country = a["Country"] as? String {
-                self.city = city
-                if currentUser.region == "" {
-                    currentUser.region = country
-                    DataService.ds.REF_USERS_CURRENT.child("Region").setValue(country)
-                }
-                
-                
-                self.fetchAllGroupStatus()
-                //                    self.fetchNearbyGroups(city: city)
-                //                    self.dispatchGroup.enter()
-                
-                self.fetchNearbyGroups(city: city, completion: { (nearbyGroups) in
-                    self.nearbyGroups = nearbyGroups
+            LocationServices.shared.getAddress(location: currentLocation) { (address, error) in
+                if error != nil {
+                    self.endRefrenshing()
                     if self.refreshControl.isRefreshing {
                         self.refreshControl.endRefreshing()
                     }
-                    self.endRefrenshing()
-                    self.tableView.reloadData()
-                })
-                //                    self.dispatchGroup.leave()
-                //
-                //                    self.dispatchGroup.notify(queue: .main, execute: {
-                //                        if self.refreshControl.isRefreshing {
-                //                            self.refreshControl.endRefreshing()
-                //                        }
-                //                        self.endRefrenshing()
-                //                        self.tableView.reloadData()
-                //                    })
-                
+                    self.sendAlertWithoutHandler(alertTitle: "Location Error", alertMessage: "\(error!.localizedDescription). Please refresh.", actionTitle: ["Cancel"])
+                    
+                    return
+                }
+                if let a = address, let city = a["City"] as? String, let country = a["Country"] as? String {
+                    self.city = city
+                    if currentUser.region == "" {
+                        currentUser.region = country
+                        DataService.ds.REF_USERS_CURRENT.child("Region").setValue(country)
+                    }
+                    self.fetchAllGroupStatus()
+                    
+                    self.fetchNearbyGroups(city: city, completion: { (nearbyGroups) in
+                        self.endRefrenshing()
+                        self.refreshControl.endRefreshing()
+                        if nearbyGroups.count == 0 {
+                            self.nearbyGroups = nearbyGroups
+                            self.tableView.reloadData()
+                            self.sendAlertWithoutHandler(alertTitle: "No Groups Nearby", alertMessage: "There are no groups around, please search by another location or interest, or be the first one to create a group event!", actionTitle: ["OK"])
+                            return
+                        } else {
+                            self.processURLs(groups: nearbyGroups, completion: { (groups) in
+                                self.refreshControl.endRefreshing()
+                                self.nearbyGroups = groups
+                                self.tableView.reloadData()
+                            })
+                            
+                        }
+                    })
+                }
             }
+        } else {
+            self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Can't get your location, please refresh", actionTitle: ["OK"])
         }
+        
     }
 
     func initialize() {
         if countries.isEmpty == true {
             parseCountriesCSV()
         }
-        
-        
-//        if KeychainWrapper.standard.bool(forKey: "In Use Status") != nil {
-//            inUse = KeychainWrapper.standard.bool(forKey: "In Use Status")!
-//            if inUse == true {
-//                currentLocation = locationManager.location
-//                if currentLocation != nil {
-//                    locationManager.stopUpdatingLocation()
-//                }
-//                LocationServices.shared.getAdress { address, error in
-//                    if error != nil {
-//                        self.sendAlertWithoutHandler(alertTitle: "Location Error", alertMessage: "\(error?.localizedDescription). Please refresh.", actionTitle: ["Cancel"])
-//                        return
-//                    }
-//                    if let a = address, let city = a["City"] as? String, let country = a["Country"] as? String {
-//                        self.city = city
-//                        if currentUser.region == "" {
-//                            currentUser.region = country
-//                            DataService.ds.REF_USERS_CURRENT.child("Region").setValue(country)
-//                        }
-//                        self.dispatchGroup.enter()
-//                        self.fetchAllGroupStatus()
-//                        self.dispatchGroup.leave()
-//                        
-//                        self.dispatchGroup.enter()
-//                        self.fetchNearbyGroups(city: city)
-//                        self.dispatchGroup.leave()
-//                        
-//                        self.dispatchGroup.notify(queue: .main, execute: { 
-//                            if self.refreshControl.isRefreshing {
-//                                self.refreshControl.endRefreshing()
-//                            }
-//                            self.endRefrenshing()
-//                            self.tableView.reloadData()
-//                        })
-//                    }
-//                }
-//            }
-//        } else {
-//            inUse = false
-//            KeychainWrapper.standard.set(false, forKey: "In Use Status")
-//            locationManager.requestWhenInUseAuthorization()
-//        }
-        
     }
     
     func parseCountriesCSV() {
@@ -270,39 +222,7 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
             }
         })
         if inUse == true {
-            currentLocation = locationManager.location
-            if currentLocation != nil {
-                locationManager.stopUpdatingLocation()
-            }
-            LocationServices.shared.getAdress { address, error in
-                if error != nil {
-                    self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription). Please refresh.", actionTitle: ["Cancel"])
-                    return
-                }
-                if let a = address, let city = a["City"] as? String, let country = a["Country"] as? String {
-                    self.city = city
-                    if currentUser.region == "" {
-                        currentUser.region = country
-                        DataService.ds.REF_USERS_CURRENT.child("Region").setValue(country)
-                    }
-                    
-                    isRefreshing = true
-                    self.fetchAllGroupStatus()
-                    
-                    self.fetchNearbyGroups(city: city, completion: { (nearbyGroups) in
-                        self.nearbyGroups = nearbyGroups
-                        if self.refreshControl.isRefreshing {
-                            self.refreshControl.endRefreshing()
-                        }
-                        self.tableView.reloadData()
-                    })
-                    
-                } else {
-                    self.endRefrenshing()
-                    self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Network connection issue, please check your network.", actionTitle: ["OK"])
-                }
-            }
-            
+            locationManager.startUpdatingLocation()
         } else {
              locationManager.requestWhenInUseAuthorization()
         }
@@ -312,13 +232,6 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
     
         var tempGroups = [Group]()
         
-        Timer.scheduledTimer(withTimeInterval: 30, repeats: false, block: { (timer) in
-            if isRefreshing == true {
-                self.refreshControl.endRefreshing()
-                self.endRefrenshing()
-                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "Network connection issue, please refresh", actionTitle: ["Cancel"])
-            }
-        })
         DataService.ds.REF_BASE.child("Groups").observeSingleEvent(of: .value, with: { (snapshot) -> Void in
             self.tabBarItem.isEnabled = false
             if let snapShot = snapshot.children.allObjects as? [DataSnapshot] {
@@ -364,56 +277,10 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
                     }
                 }
                 tempGroups = self.orderGroupsByID(groups: tempGroups)
-                if tempGroups.count == 0 {
-                    
-                    if isRefreshing == true {
-                        self.endRefrenshing()
-                        self.refreshControl.endRefreshing()
-                    }
-                    self.sendAlertWithoutHandler(alertTitle: "No groups nearby", alertMessage: "There are no groups around, please search by another location or interest.", actionTitle: ["OK"])
-                    return
-                }
-                
-                self.tableView.reloadData()
+                print("TempGroups has record or not")
                 print("Ready to process photo urls")
                 
-                for j in 0..<tempGroups.count {
-                    let group = tempGroups[j]
-                    var photoURLs = [String]()
-                    let displayURL = group.groupDetail.groupDisplayImageURL
-                    photoURLs.append(displayURL)
-                    for photo in group.groupPhotos {
-                        let url = photo.photoURL
-                        photoURLs.append(url)
-                    }
-                    
-                    for i in 0..<photoURLs.count {
-                        let url = photoURLs[i]
-                        Storage.storage().reference(forURL: url).getData(maxSize: 1024 * 1024, completion: { (data, error) in
-                            
-                            if error != nil {
-                                self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error!.localizedDescription)", actionTitle: ["Cancel"])
-                                self.refreshControl.endRefreshing()
-                                self.endRefrenshing()
-                                return
-                            } else {
-                                let image = UIImage(data: data!)
-                                if i == 0 {
-                                    group.groupDetail.groupDisplayImage = image!
-                                    
-                                } else {
-                                    group.groupPhotos[i - 1].photo = image!
-                                }
-                                if j == tempGroups.count - 1 && i == group.groupPhotos.count - 1 {
-                                    completion(tempGroups)
-                                }
-                            }
-                        })
-                    }
-                    
-                }
-//                self.tableView.reloadData()
-//                self.endRefrenshing()
+                completion(tempGroups)
             }
         })
         
@@ -453,6 +320,25 @@ class NearbyVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CL
                 print("finishing updating status")
             }
         })
+    }
+    
+    func processURLs(groups: [Group], completion: @escaping ([Group]) -> Void) {
+        if groups.count > 0 {
+            for j in 0..<groups.count {
+                let group = groups[j]
+                let displayURL = group.groupDetail.groupDisplayImageURL
+                Storage.storage().reference(forURL: displayURL).getData(maxSize: 1024 * 1024, completion: { (data, error) in
+                    if error != nil {
+                        self.sendAlertWithoutHandler(alertTitle: "Error", alertMessage: "\(error?.localizedDescription)", actionTitle: ["OK"])
+                    } else {
+                        let image = UIImage(data: data!)
+                        group.groupDetail.groupDisplayImage = image!
+                    }
+                    completion(groups)
+                })
+            }
+        }
+
     }
     
     func updateNearbyGroups(groups: [Group]) {

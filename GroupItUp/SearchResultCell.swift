@@ -24,16 +24,16 @@ class SearchResultCell: UITableViewCell {
 
     func configureCell(group: Group) {
         groupDisplayImage.image = group.groupDetail.groupDisplayImage
-        let groupDisplayURL = group.groupDetail.groupDisplayImageURL
-        let groupDisplayPhotoRef = Storage.storage().reference(forURL: groupDisplayURL)
-        groupDisplayPhotoRef.getData(maxSize: 1024 * 1024) { (data, error) in
-            if error != nil {
-                print("Photo: Error - \(error?.localizedDescription)")
-            } else {
-                let image = UIImage(data: data!)
-                self.groupDisplayImage.image = image
-            }
-        }
+//        let groupDisplayURL = group.groupDetail.groupDisplayImageURL
+//        let groupDisplayPhotoRef = Storage.storage().reference(forURL: groupDisplayURL)
+//        groupDisplayPhotoRef.getData(maxSize: 1024 * 1024) { (data, error) in
+//            if error != nil {
+//                print("Photo: Error - \(error?.localizedDescription)")
+//            } else {
+//                let image = UIImage(data: data!)
+//                self.groupDisplayImage.image = image
+//            }
+//        }
         groupTitleLabel.text = group.groupDetail.groupTitle
         groupDetailLabel.text = group.groupDetail.groupDetailDescription
         groupLocationLabel.text = group.groupDetail.groupMeetUpAddress.city
