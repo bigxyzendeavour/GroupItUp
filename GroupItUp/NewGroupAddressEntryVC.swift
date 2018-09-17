@@ -240,15 +240,11 @@ class NewGroupAddressEntryVC: UIViewController, UIPickerViewDelegate, UIPickerVi
         if specifyAddressSwitch.isOn {
             setAddressNow = true
             countryTextField.isEnabled = true
-            countryTextField.backgroundColor = UIColor.clear
-            
         } else {
             setAddressNow = false
             for textField in textFields {
                 textField.text = ""
                 textField.isEnabled = false
-                textField.backgroundColor = UIColor.lightGray
-                
             }
             resetAddress()
         }

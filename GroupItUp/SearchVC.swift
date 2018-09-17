@@ -30,15 +30,19 @@ class SearchVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        tableView.delegate = self
-        tableView.dataSource = self
         
-        tableView.reloadData()
-        
-        hideKeyboardWhenTappedAround()
-        
-        initialize()
+        if Auth.auth().currentUser != nil {
+            tableView.delegate = self
+            tableView.dataSource = self
+            
+            tableView.reloadData()
+            
+            hideKeyboardWhenTappedAround()
+            
+            initialize()
+        } else {
+            presentLogInScreen()
+        }
     }
     
     func initialize() {

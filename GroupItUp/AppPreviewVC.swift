@@ -13,6 +13,10 @@ class AppPreviewVC: UIViewController, UICollectionViewDelegate, UICollectionView
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var pageControl: UIPageControl!
+    @IBOutlet weak var startButton: UIButton!
+    
+    let previewOne: [UIImage: String] = [UIImage(named: "preview1")!: "Find someone with the same interest around you and do it together with new friends"]
+    let previewTwo: [UIImage: String] = [UIImage(named: "preview2")!: "Create group events or join group events to make new friends"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,7 +69,15 @@ class AppPreviewVC: UIViewController, UICollectionViewDelegate, UICollectionView
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let x = targetContentOffset.pointee.x
         pageControl.currentPage = Int(x / self.view.frame.width)
-        let layout = photoCollectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         layout.minimumLineSpacing = 0
+        if pageControl.currentPage == 2 {
+            startButton.isHidden = false
+        }
+        
+    }
+    
+    @IBAction func startBtnPressed(_ sender: UIButton) {
+        performSegue(withIdentifier: "NearbyVC", sender: nil)
     }
 }

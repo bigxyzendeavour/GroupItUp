@@ -183,6 +183,10 @@ extension UIViewController {
         isRefreshing = false
         NVActivityIndicatorPresenter.sharedInstance.stopAnimating()
     }
+    
+    func presentLogInScreen() {
+        performSegue(withIdentifier: "LoginVC", sender: nil)
+    }
 }
 
 extension UIImage {
