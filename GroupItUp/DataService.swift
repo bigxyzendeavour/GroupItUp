@@ -95,27 +95,4 @@ class DataService {
         REF_USERS.child(uid).updateChildValues(userData)
         
     }
-    
-    //    func existingUserDetermined(profileKey: String, ref: FIRDatabaseReference) -> Bool {
-    //
-    //        ref.observe(.value, with: { (snapshot) in
-    //            if let profileDict = snapshot.value as? Dictionary<String, String> {
-    //                print("Grandon(DataService): existing user snap is \(profileDict)")
-    //                let username = profileDict["userName"]
-    //                print("Grandon(DataService): username in profileDict is \(username)")
-    //                if username != "" && username != nil {
-    //                    userName = username
-    //                }
-    //            }
-    //        })
-    //        print("Grandon(DataService): userName is \(userName)")
-    //
-    //        if userName != "" && userName != nil {
-    //            return true
-    //        } else {
-    //            return false
-    //        }
-    //    }
-    
-    
 }

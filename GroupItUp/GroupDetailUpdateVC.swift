@@ -47,8 +47,6 @@ class GroupDetailUpdateVC: UIViewController, UITableViewDelegate, UITableViewDat
         pickerView = UIPickerView()
         pickerView.delegate = self
         pickerView.dataSource = self
-        
-//        parseCountriesCSV()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -66,7 +64,6 @@ class GroupDetailUpdateVC: UIViewController, UITableViewDelegate, UITableViewDat
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "GroupDetailUpdateCell") as! GroupDetailUpdateCell
             cell.maxTextField.keyboardType = .numberPad
-            //            cell.timeSwitch.setOn(false, animated: false)
             let datePicker = UIDatePicker()
             datePicker.minimumDate = NSDate() as Date
             cell.timeTextField.inputView = datePicker

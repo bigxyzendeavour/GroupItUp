@@ -18,7 +18,6 @@ class GroupDetailUpdateCell: UITableViewCell, UITextFieldDelegate {
     
     @IBOutlet weak var maxTextField: UITextField!
     @IBOutlet weak var timeTextField: UITextField!
-    @IBOutlet weak var timeSwitch: UISwitch!
     @IBOutlet weak var contactTextField: UITextField!
     @IBOutlet weak var phoneTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
@@ -41,17 +40,11 @@ class GroupDetailUpdateCell: UITableViewCell, UITextFieldDelegate {
         phoneTextField.delegate = self
         emailTextField.delegate = self
         categoryTextField.delegate = self
-        
-        if !timeSwitch.isOn {
-            timeTextField.isEnabled = false
-        }
-        
     }
 
     func configureCell(group: Group) {
         maxTextField.text = "\(group.groupDetail.groupMaxMembers)"
         timeTextField.text = group.groupDetail.groupMeetingTime
-        timeTextField.backgroundColor = UIColor.lightGray
         originalTime = group.groupDetail.groupMeetingTime
         contactTextField.text = group.groupDetail.groupContact
         phoneTextField.text = "\(group.groupDetail.groupContactPhone)"
@@ -143,24 +136,6 @@ class GroupDetailUpdateCell: UITableViewCell, UITextFieldDelegate {
             delegate.updateGroupDetailForFirebase(detail: GroupDetailUpdateCell.detail)
             delegate.updateGroupDetailForCurrentGroup(detail: currentGroup.groupDetail)
         }
-    }
-    
-    @IBAction func timeSwitchChanged(_ sender: UISwitch) {
-        if let delegate = self.delegate {
-            if timeSwitch.isOn {
-                timeTextField.isEnabled = true
-                timeTextField.backgroundColor = UIColor.clear
-            } else {
-                timeTextField.isEnabled = false
-                timeTextField.text = ""
-                GroupDetailUpdateCell.detail["Time"] = ""
-                currentGroup.groupDetail.groupMeetingTime = ""
-                timeTextField.backgroundColor = UIColor.lightGray
-                delegate.updateGroupDetailForFirebase(detail: GroupDetailUpdateCell.detail)
-                delegate.updateGroupDetailForCurrentGroup(detail: currentGroup.groupDetail)
-            }
-        }
-        
     }
     
 }

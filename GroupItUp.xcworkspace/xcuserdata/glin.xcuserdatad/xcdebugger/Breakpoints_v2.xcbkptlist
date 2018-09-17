@@ -442,11 +442,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/LoginVC.swift"
-            timestampString = "558842570.185258"
+            timestampString = "558910522.522706"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
+            startingLineNumber = "131"
+            endingLineNumber = "131"
             landmarkName = "completeSignIn(id:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -810,11 +810,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/SearchVC.swift"
-            timestampString = "552165841.617558"
+            timestampString = "558877382.159301"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "51"
-            endingLineNumber = "51"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
             landmarkName = "changeFontDisplayForSearchButtonSelected(searchButton:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -826,11 +826,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/SearchVC.swift"
-            timestampString = "552165841.617558"
+            timestampString = "558877382.159301"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "64"
-            endingLineNumber = "64"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
             landmarkName = "changeSearchOptionList(searchButton:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1162,11 +1162,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/SearchVC.swift"
-            timestampString = "552184711.441882"
+            timestampString = "558877382.159301"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "122"
-            endingLineNumber = "122"
+            startingLineNumber = "126"
+            endingLineNumber = "126"
             landmarkName = "prepare(for:sender:)"
             landmarkType = "7">
             <Locations>
@@ -1210,11 +1210,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/SearchVC.swift"
-            timestampString = "552184798.232141"
+            timestampString = "558877382.159301"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "137"
-            endingLineNumber = "137"
+            startingLineNumber = "141"
+            endingLineNumber = "141"
             landmarkName = "searchBtnPressed(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1290,11 +1290,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/GroupAddressUpdateCell.swift"
-            timestampString = "552531102.3577141"
+            timestampString = "558911582.2895041"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "174"
-            endingLineNumber = "174"
+            startingLineNumber = "162"
+            endingLineNumber = "162"
             landmarkName = "textFieldDidEndEditing(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1306,11 +1306,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/GroupAddressUpdateCell.swift"
-            timestampString = "552531102.3577141"
+            timestampString = "558911582.2895041"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "127"
-            endingLineNumber = "127"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
             landmarkName = "textFieldDidEndEditing(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1322,11 +1322,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/GroupAddressUpdateCell.swift"
-            timestampString = "552531102.3577141"
+            timestampString = "558911582.2895041"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "109"
-            endingLineNumber = "109"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
             landmarkName = "textFieldDidEndEditing(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1546,7 +1546,7 @@
                   moduleName = "GroupItUp"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/glin/Documents/Mobile_App_Development/IOS/GroupItUp/GroupItUp/MyFollowUserVC.swift"
-                  timestampString = "558844524.094981"
+                  timestampString = "558912288.646999"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "58"
@@ -1561,7 +1561,7 @@
                   moduleName = "GroupItUp"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/glin/Documents/Mobile_App_Development/IOS/GroupItUp/GroupItUp/MyFollowUserVC.swift"
-                  timestampString = "558844524.0977941"
+                  timestampString = "558912288.650027"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "58"
@@ -1866,11 +1866,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/LoginVC.swift"
-            timestampString = "558842570.185258"
+            timestampString = "558910522.522706"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "56"
-            endingLineNumber = "56"
+            startingLineNumber = "82"
+            endingLineNumber = "82"
             landmarkName = "logInBtnPressed(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1930,11 +1930,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GroupItUp/LoginVC.swift"
-            timestampString = "558842570.185258"
+            timestampString = "558910522.522706"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
+            startingLineNumber = "96"
+            endingLineNumber = "96"
             landmarkName = "logInBtnPressed(_:)"
             landmarkType = "7">
             <Locations>
@@ -1946,11 +1946,11 @@
                   moduleName = "GroupItUp"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/glin/Documents/Mobile_App_Development/IOS/GroupItUp/GroupItUp/LoginVC.swift"
-                  timestampString = "558844524.113614"
+                  timestampString = "558912288.662674"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "70"
-                  endingLineNumber = "70"
+                  startingLineNumber = "96"
+                  endingLineNumber = "96"
                   offsetFromSymbolStart = "19">
                </Location>
                <Location
@@ -1961,11 +1961,11 @@
                   moduleName = "GroupItUp"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/glin/Documents/Mobile_App_Development/IOS/GroupItUp/GroupItUp/LoginVC.swift"
-                  timestampString = "558844524.116042"
+                  timestampString = "558912288.665409"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "70"
-                  endingLineNumber = "70"
+                  startingLineNumber = "96"
+                  endingLineNumber = "96"
                   offsetFromSymbolStart = "533">
                </Location>
             </Locations>
@@ -2090,7 +2090,7 @@
                   moduleName = "GroupItUp"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/glin/Documents/Mobile_App_Development/IOS/GroupItUp/GroupItUp/GroupDetailVC.swift"
-                  timestampString = "558844524.1295691"
+                  timestampString = "558912288.681095"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "104"
@@ -2105,7 +2105,7 @@
                   moduleName = "GroupItUp"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/glin/Documents/Mobile_App_Development/IOS/GroupItUp/GroupItUp/GroupDetailVC.swift"
-                  timestampString = "558844524.1357909"
+                  timestampString = "558912288.683076"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "104"
@@ -2160,6 +2160,22 @@
             startingLineNumber = "236"
             endingLineNumber = "236"
             landmarkName = "updateComments(comments:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GroupItUp/SettingVC.swift"
+            timestampString = "558912288.324912"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
+            landmarkName = "tableView(_:didSelectRowAt:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

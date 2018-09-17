@@ -29,7 +29,33 @@ class LoginVC: UIViewController {
         super.viewDidLoad()
 
         initialize()
-        
+        if Auth.auth().currentUser != nil {
+            currentUser.username = (Auth.auth().currentUser?.displayName)!
+            currentUser.userDisplayImageURL = (Auth.auth().currentUser?.photoURL?.absoluteString)!
+            currentUser.userID = (Auth.auth().currentUser?.uid)!
+            Storage.storage().reference(forURL: currentUser.userDisplayImageURL).getData(maxSize: 1024 * 1024, completion: { (data, error) in
+                if error != nil {
+                    print("LoginVC: initialize() - \(error!.localizedDescription)")
+                } else {
+                    let image = UIImage(data: data!)
+                    currentUser.userDisplayImage = image!
+                }
+                
+            })
+            DataService.ds.REF_USERS_CURRENT.observeSingleEvent(of: .value, with: { (snapshot) in
+                if let snapShot = snapshot.value as? Dictionary<String, Any> {
+                    if let region = snapShot["Region"] as? String {
+                        currentUser.region = region
+                    }
+                    if let gender = snapShot["Gender"] as? String {
+                        currentUser.gender = gender
+                    }
+                }
+            })
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (timer) in
+                self.performSegue(withIdentifier: "NearbyVC", sender: nil)
+            })
+        }
         self.hideKeyboardWhenTappedAround()
         
     }
